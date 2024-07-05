@@ -1,0 +1,19 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		}
+	],
+	"settings": {
+		"python.analysis.exclude": [
+			"wandb"
+		   ],
+		 "files.watcherExclude": {
+			"**/.git/objects/**": true,
+			"**/.git/subtree-cache/**": true,
+			"**/state_dict/**": true,
+			"**/wandb/**": true,
+			"**/output/**": true,
+		   }
+	}
+}

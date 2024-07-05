@@ -1,0 +1,14 @@
+wandb_version: 1
+
+beta_pool:
+  value: 0.7095020577515001
+hgcn_mix1:
+  value: 10
+hgcn_mix2:
+  value: 0.01
+lr:
+  value: 0.001
+pre_lr:
+  value: 0.5
+regs1:
+  value: 0.4

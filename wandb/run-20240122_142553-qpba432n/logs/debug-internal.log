@@ -1,0 +1,988 @@
+2024-01-22 14:25:53,950 INFO    StreamThr :3891595 [internal.py:wandb_internal():86] W&B internal server running at pid: 3891595, started at: 2024-01-22 14:25:53.949179
+2024-01-22 14:25:53,952 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status
+2024-01-22 14:25:53,958 INFO    WriterThread:3891595 [datastore.py:open_for_write():85] open: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/run-qpba432n.wandb
+2024-01-22 14:25:53,959 DEBUG   SenderThread:3891595 [sender.py:send():379] send: header
+2024-01-22 14:25:53,959 DEBUG   SenderThread:3891595 [sender.py:send():379] send: run
+2024-01-22 14:25:54,842 INFO    SenderThread:3891595 [dir_watcher.py:__init__():211] watching files in: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files
+2024-01-22 14:25:54,843 INFO    SenderThread:3891595 [sender.py:_start_run_threads():1121] run started: qpba432n with start time 1705933553.947919
+2024-01-22 14:25:54,850 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: summary_record
+2024-01-22 14:25:54,850 INFO    SenderThread:3891595 [sender.py:_save_file():1375] saving file wandb-summary.json with policy end
+2024-01-22 14:25:54,862 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: check_version
+2024-01-22 14:25:54,862 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: check_version
+2024-01-22 14:25:55,644 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: run_start
+2024-01-22 14:25:55,678 DEBUG   HandlerThread:3891595 [system_info.py:__init__():31] System info init
+2024-01-22 14:25:55,678 DEBUG   HandlerThread:3891595 [system_info.py:__init__():46] System info init done
+2024-01-22 14:25:55,678 INFO    HandlerThread:3891595 [system_monitor.py:start():181] Starting system monitor
+2024-01-22 14:25:55,679 INFO    SystemMonitor:3891595 [system_monitor.py:_start():145] Starting system asset monitoring threads
+2024-01-22 14:25:55,679 INFO    HandlerThread:3891595 [system_monitor.py:probe():201] Collecting system info
+2024-01-22 14:25:55,680 INFO    SystemMonitor:3891595 [interfaces.py:start():190] Started cpu monitoring
+2024-01-22 14:25:55,681 INFO    SystemMonitor:3891595 [interfaces.py:start():190] Started disk monitoring
+2024-01-22 14:25:55,683 INFO    SystemMonitor:3891595 [interfaces.py:start():190] Started gpu monitoring
+2024-01-22 14:25:55,683 INFO    SystemMonitor:3891595 [interfaces.py:start():190] Started memory monitoring
+2024-01-22 14:25:55,687 INFO    SystemMonitor:3891595 [interfaces.py:start():190] Started network monitoring
+2024-01-22 14:25:55,772 DEBUG   HandlerThread:3891595 [system_info.py:probe():195] Probing system
+2024-01-22 14:25:55,774 DEBUG   HandlerThread:3891595 [gitlib.py:_init_repo():53] git repository is invalid
+2024-01-22 14:25:55,774 DEBUG   HandlerThread:3891595 [system_info.py:probe():240] Probing system done
+2024-01-22 14:25:55,774 DEBUG   HandlerThread:3891595 [system_monitor.py:probe():210] {'os': 'Linux-5.15.0-83-generic-x86_64-with-glibc2.35', 'python': '3.10.12', 'heartbeatAt': '2024-01-22T14:25:55.772146', 'startedAt': '2024-01-22T14:25:53.937596', 'docker': None, 'cuda': None, 'args': ('--beta_pool=0.5129350235930994', '--hgcn_mix1=1', '--hgcn_mix2=0.01', '--lr=0.1', '--pre_lr=0.01', '--random_seed=1', '--regs1=0.4'), 'state': 'running', 'program': '/workspace/UPRTH/sweep.py', 'codePath': 'sweep.py', 'host': '470e8c8e5128', 'username': 'root', 'executable': '/usr/bin/python', 'cpu_count': 32, 'cpu_count_logical': 64, 'cpu_freq': {'current': 1386.1214999999997, 'min': 800.0, 'max': 3500.0}, 'cpu_freq_per_core': [{'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 2263.748, 'min': 800.0, 'max': 3500.0}, {'current': 2194.236, 'min': 800.0, 'max': 3500.0}, {'current': 1940.925, 'min': 800.0, 'max': 3500.0}, {'current': 2900.0, 'min': 800.0, 'max': 3500.0}, {'current': 2300.0, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 3402.588, 'min': 800.0, 'max': 3500.0}, {'current': 2259.128, 'min': 800.0, 'max': 3500.0}, {'current': 2300.0, 'min': 800.0, 'max': 3500.0}, {'current': 2700.0, 'min': 800.0, 'max': 3500.0}, {'current': 1400.0, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 1600.0, 'min': 800.0, 'max': 3500.0}, {'current': 2300.0, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 2700.0, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 1000.0, 'min': 800.0, 'max': 3500.0}, {'current': 1191.009, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 2900.0, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 2900.0, 'min': 800.0, 'max': 3500.0}, {'current': 1000.0, 'min': 800.0, 'max': 3500.0}, {'current': 2289.654, 'min': 800.0, 'max': 3500.0}, {'current': 1900.0, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 2600.0, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 1400.0, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 3100.0, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 900.0, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 2300.0, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 1400.0, 'min': 800.0, 'max': 3500.0}, {'current': 2300.0, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 2300.002, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 900.0, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}], 'disk': {'total': 1758.8579597473145, 'used': 946.6148452758789}, 'gpu': 'NVIDIA A800-SXM4-80GB', 'gpu_count': 1, 'gpu_devices': [{'name': 'NVIDIA A800-SXM4-80GB', 'memory_total': 85899345920}], 'memory': {'total': 503.3061103820801}}
+2024-01-22 14:25:55,774 INFO    HandlerThread:3891595 [system_monitor.py:probe():211] Finished collecting system info
+2024-01-22 14:25:55,774 INFO    HandlerThread:3891595 [system_monitor.py:probe():214] Publishing system info
+2024-01-22 14:25:55,774 DEBUG   HandlerThread:3891595 [system_info.py:_save_pip():51] Saving list of pip packages installed into the current environment
+2024-01-22 14:25:55,774 DEBUG   HandlerThread:3891595 [system_info.py:_save_pip():67] Saving pip packages done
+2024-01-22 14:25:55,775 INFO    HandlerThread:3891595 [system_monitor.py:probe():216] Finished publishing system info
+2024-01-22 14:25:55,777 DEBUG   SenderThread:3891595 [sender.py:send():379] send: files
+2024-01-22 14:25:55,777 INFO    SenderThread:3891595 [sender.py:_save_file():1375] saving file wandb-metadata.json with policy now
+2024-01-22 14:25:55,787 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:25:55,787 DEBUG   SenderThread:3891595 [sender.py:send():379] send: telemetry
+2024-01-22 14:25:55,788 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:25:55,845 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_created():271] file/dir created: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/requirements.txt
+2024-01-22 14:25:55,846 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_created():271] file/dir created: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/wandb-metadata.json
+2024-01-22 14:25:55,846 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_created():271] file/dir created: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/wandb-summary.json
+2024-01-22 14:25:56,366 ERROR   wandb-upload_0:3891595 [internal_api.py:upload_file():2496] upload_file exception https://storage.googleapis.com/wandb-production.appspot.com/zjylab/UPRTH/qpba432n/wandb-metadata.json?Expires=1706019956&GoogleAccessId=gorilla-files-url-signer-man%40wandb-production.iam.gserviceaccount.com&Signature=BHR4ilMPAugOn%2BCFRy4rG66bYIQ8iYpoLjrqoFILGv5MMc1gEFQPTsZgl2XfadvukvXxJb6VCotUYN%2B6%2F8x3JbGa6QlPJ9DQpvgEmZ3FCTXLHnKw9pBWUg0Hwq3EAbE51LPbqpBB9ciD2cA1j24VxMHt6Hd0jrbnelGSb0xRJm7QQmn9LSoTlYV37cD8ifzn3gs1Cq4RDbHosOREcHxeHiIzrwUO5qlzHFEWPbkkC7ROYcj6auyWy8Asfb43RLYB%2Ba5n2%2B2GUOcsC3XPawznEsanF5VGyTXSh0R73LseSRodEWxS%2Fzh5%2B7Rxqy%2FmphW394mhukGZ%2FaP0w0bw%2FzZMrg%3D%3D: ('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))
+2024-01-22 14:25:56,366 ERROR   wandb-upload_0:3891595 [internal_api.py:upload_file():2498] upload_file request headers: {'User-Agent': 'python-requests/2.28.1', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Length': '7781'}
+2024-01-22 14:25:56,366 ERROR   wandb-upload_0:3891595 [internal_api.py:upload_file():2500] upload_file response body: 
+2024-01-22 14:25:56,843 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_created():271] file/dir created: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:25:58,143 INFO    wandb-upload_0:3891595 [upload_job.py:push():131] Uploaded file /tmp/tmp5can__prwandb/lae5z3hf-wandb-metadata.json
+2024-01-22 14:25:58,844 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:25:59,753 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:25:59,845 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:26:04,754 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:26:10,392 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:26:10,786 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:26:10,787 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:26:11,849 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:26:16,028 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:26:21,150 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:26:21,853 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:26:25,786 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:26:25,787 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:26:27,077 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:26:28,856 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/config.yaml
+2024-01-22 14:26:31,858 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:26:34,016 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:26:39,017 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:26:40,786 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:26:40,787 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:26:43,862 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:26:44,763 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:26:49,764 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:26:53,867 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:26:55,545 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:26:55,687 DEBUG   SystemMonitor:3891595 [system_monitor.py:_start():159] Starting system metrics aggregation loop
+2024-01-22 14:26:55,691 DEBUG   SenderThread:3891595 [sender.py:send():379] send: stats
+2024-01-22 14:26:55,786 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:26:55,787 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:27:01,111 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:27:05,872 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:27:06,492 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:27:10,786 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:27:10,787 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:27:12,109 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:27:17,878 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:27:18,047 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:27:23,048 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:27:25,691 DEBUG   SenderThread:3891595 [sender.py:send():379] send: stats
+2024-01-22 14:27:25,786 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:27:25,787 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:27:28,089 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:27:29,884 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:27:33,164 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:27:38,165 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:27:39,887 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:27:40,787 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:27:40,788 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:27:44,030 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:27:49,031 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:27:51,893 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:27:54,042 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:27:55,693 DEBUG   SenderThread:3891595 [sender.py:send():379] send: stats
+2024-01-22 14:27:55,787 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:27:55,788 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:27:59,105 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:28:01,898 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:28:04,922 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:28:09,923 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:28:10,787 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:28:10,787 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:28:13,903 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:28:15,801 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:28:20,802 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:28:23,908 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:28:25,695 DEBUG   SenderThread:3891595 [sender.py:send():379] send: stats
+2024-01-22 14:28:25,791 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:28:25,792 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:28:26,021 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:28:31,023 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:28:35,913 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:28:36,505 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:28:40,789 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:28:40,790 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:28:42,013 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:28:45,917 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:28:47,389 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:28:52,390 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:28:55,697 DEBUG   SenderThread:3891595 [sender.py:send():379] send: stats
+2024-01-22 14:28:55,818 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:28:55,818 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:28:56,921 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:28:58,049 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:29:03,050 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:29:08,181 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:29:08,926 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:29:10,817 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:29:10,818 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:29:14,122 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:29:18,930 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:29:19,131 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:29:24,132 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:29:25,700 DEBUG   SenderThread:3891595 [sender.py:send():379] send: stats
+2024-01-22 14:29:25,817 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:29:25,818 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:29:30,003 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:29:30,936 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:29:35,004 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:29:40,817 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:29:40,818 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:29:40,940 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:29:41,070 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:29:46,071 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:29:50,950 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:29:51,816 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:29:55,701 DEBUG   SenderThread:3891595 [sender.py:send():379] send: stats
+2024-01-22 14:29:55,817 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:29:55,819 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:29:57,131 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:30:02,771 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:30:02,958 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:30:07,772 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:30:10,817 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:30:10,818 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:30:13,112 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:30:16,966 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:30:18,393 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:30:23,394 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:30:25,703 DEBUG   SenderThread:3891595 [sender.py:send():379] send: stats
+2024-01-22 14:30:25,817 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:30:25,818 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:30:28,971 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:30:29,196 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:30:34,197 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:30:39,197 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:30:40,817 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:30:40,818 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:30:40,975 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:30:45,042 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:30:50,043 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:30:52,981 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:30:55,294 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:30:55,704 DEBUG   SenderThread:3891595 [sender.py:send():379] send: stats
+2024-01-22 14:30:55,817 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:30:55,818 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:31:01,092 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:31:02,986 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:31:06,155 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:31:10,818 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:31:10,818 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:31:12,097 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:31:14,992 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:31:17,097 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:31:22,098 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:31:24,997 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:31:25,707 DEBUG   SenderThread:3891595 [sender.py:send():379] send: stats
+2024-01-22 14:31:25,818 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:31:25,819 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:31:28,072 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:31:33,072 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:31:37,002 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:31:38,161 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:31:40,818 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:31:40,819 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:31:44,131 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:31:47,007 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:31:50,122 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:31:55,123 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:31:55,710 DEBUG   SenderThread:3891595 [sender.py:send():379] send: stats
+2024-01-22 14:31:55,823 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:31:55,824 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:31:59,012 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:32:00,125 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:32:05,126 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:32:09,017 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:32:10,822 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:32:10,823 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:32:10,824 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:32:15,826 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: keepalive
+2024-01-22 14:32:16,454 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:32:21,021 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:32:21,874 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:32:25,710 DEBUG   SenderThread:3891595 [sender.py:send():379] send: stats
+2024-01-22 14:32:25,822 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:32:25,823 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:32:27,095 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:32:31,025 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:32:32,741 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:32:37,742 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:32:40,823 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:32:40,824 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:32:41,028 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:32:43,080 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:32:48,080 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:32:53,034 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:32:53,281 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:32:55,713 DEBUG   SenderThread:3891595 [sender.py:send():379] send: stats
+2024-01-22 14:32:55,823 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:32:55,824 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:32:59,107 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:33:03,038 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:33:04,117 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:33:09,118 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:33:10,823 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:33:10,824 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:33:14,820 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:33:15,043 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:33:19,821 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:33:24,921 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:33:25,714 DEBUG   SenderThread:3891595 [sender.py:send():379] send: stats
+2024-01-22 14:33:25,824 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:33:25,824 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:33:27,049 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:33:30,085 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:33:35,832 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:33:37,053 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:33:40,833 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:33:40,884 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:33:40,884 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:33:46,693 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:33:47,057 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:33:51,693 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:33:55,716 DEBUG   SenderThread:3891595 [sender.py:send():379] send: stats
+2024-01-22 14:33:55,884 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:33:55,885 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:33:56,705 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:33:59,061 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:34:01,749 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:34:06,750 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:34:09,065 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:34:10,884 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:34:10,884 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:34:12,113 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:34:17,114 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:34:21,070 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:34:22,961 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:34:25,718 DEBUG   SenderThread:3891595 [sender.py:send():379] send: stats
+2024-01-22 14:34:25,883 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:34:25,884 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:34:28,156 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:34:33,075 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:34:33,849 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:34:38,850 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:34:40,884 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:34:40,885 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:34:44,784 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:34:45,080 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:34:49,785 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:34:55,084 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:34:55,650 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:34:55,721 DEBUG   SenderThread:3891595 [sender.py:send():379] send: stats
+2024-01-22 14:34:55,884 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:34:55,885 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:35:01,147 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:35:07,089 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:35:07,117 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:35:10,884 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:35:10,885 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:35:12,132 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:35:17,961 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:35:19,095 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:35:22,962 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:35:25,722 DEBUG   SenderThread:3891595 [sender.py:send():379] send: stats
+2024-01-22 14:35:25,884 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:35:25,885 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:35:27,964 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:35:29,100 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:35:32,965 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:35:38,807 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:35:39,104 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:35:40,885 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:35:40,885 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:35:44,218 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:35:49,792 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:35:51,109 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:35:54,793 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:35:55,724 DEBUG   SenderThread:3891595 [sender.py:send():379] send: stats
+2024-01-22 14:35:55,884 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:35:55,885 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:36:00,155 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:36:03,114 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:36:05,541 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:36:10,542 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:36:10,884 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:36:10,885 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:36:15,120 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:36:16,285 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:36:21,286 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:36:25,125 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:36:25,725 DEBUG   SenderThread:3891595 [sender.py:send():379] send: stats
+2024-01-22 14:36:25,885 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:36:25,885 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:36:27,199 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:36:32,200 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:36:35,129 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:36:38,193 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:36:40,940 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:36:40,940 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:36:43,251 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:36:47,134 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:36:49,030 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:36:54,031 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:36:55,728 DEBUG   SenderThread:3891595 [sender.py:send():379] send: stats
+2024-01-22 14:36:55,939 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:36:55,940 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:36:59,139 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:36:59,941 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:37:04,941 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:37:10,621 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:37:10,939 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:37:10,940 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:37:11,144 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:37:16,207 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:37:21,148 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:37:21,813 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:37:25,731 DEBUG   SenderThread:3891595 [sender.py:send():379] send: stats
+2024-01-22 14:37:25,940 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:37:25,941 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:37:27,239 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:37:33,153 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:37:33,197 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:37:38,198 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:37:40,939 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:37:40,940 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:37:43,204 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:37:47,158 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:37:48,869 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:37:53,869 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:37:55,731 DEBUG   SenderThread:3891595 [sender.py:send():379] send: stats
+2024-01-22 14:37:55,939 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:37:55,940 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:37:59,001 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:37:59,162 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:38:04,001 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:38:09,898 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:38:10,941 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:38:10,941 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:38:11,166 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:38:15,209 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:38:21,148 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:38:21,170 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:38:25,734 DEBUG   SenderThread:3891595 [sender.py:send():379] send: stats
+2024-01-22 14:38:25,940 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:38:25,941 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:38:26,221 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:38:31,222 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:38:33,176 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:38:37,193 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:38:40,940 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:38:40,941 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:38:42,199 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:38:45,182 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:38:47,889 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:38:52,890 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:38:55,735 DEBUG   SenderThread:3891595 [sender.py:send():379] send: stats
+2024-01-22 14:38:55,940 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:38:55,941 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:38:57,186 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:38:58,236 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:39:03,237 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:39:09,025 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:39:09,191 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:39:10,940 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:39:10,941 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:39:14,205 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:39:19,196 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:39:20,097 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:39:25,098 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:39:25,736 DEBUG   SenderThread:3891595 [sender.py:send():379] send: stats
+2024-01-22 14:39:25,940 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:39:25,941 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:39:30,377 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:39:31,201 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:39:35,378 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:39:40,379 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:39:40,941 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:39:40,941 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:39:43,206 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:39:45,941 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:39:50,942 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:39:55,211 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:39:55,739 DEBUG   SenderThread:3891595 [sender.py:send():379] send: stats
+2024-01-22 14:39:55,941 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:39:55,942 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:39:56,194 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:40:01,195 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:40:05,215 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:40:07,177 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:40:10,941 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:40:10,942 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:40:12,223 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:40:17,223 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:40:19,220 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:40:22,309 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:40:25,741 DEBUG   SenderThread:3891595 [sender.py:send():379] send: stats
+2024-01-22 14:40:25,951 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:40:25,951 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:40:28,266 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:40:31,226 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:40:34,061 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:40:39,062 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:40:40,949 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:40:40,950 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:40:41,230 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:40:44,271 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:40:49,272 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:40:53,234 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:40:54,773 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:40:55,744 DEBUG   SenderThread:3891595 [sender.py:send():379] send: stats
+2024-01-22 14:40:55,949 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:40:55,950 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:41:00,252 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:41:03,238 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:41:05,594 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:41:10,594 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:41:10,950 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:41:10,950 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:41:15,244 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:41:15,955 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:41:20,956 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:41:25,746 DEBUG   SenderThread:3891595 [sender.py:send():379] send: stats
+2024-01-22 14:41:25,958 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:41:25,958 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:41:26,219 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:41:27,248 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:41:31,220 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:41:36,221 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:41:37,252 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:41:40,950 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:41:40,950 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:41:41,258 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:41:46,259 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:41:49,256 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:41:51,826 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:41:55,748 DEBUG   SenderThread:3891595 [sender.py:send():379] send: stats
+2024-01-22 14:41:55,950 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:41:55,951 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:41:57,276 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:42:01,261 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:42:03,240 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:42:08,241 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:42:10,950 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:42:10,951 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:42:11,265 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:42:13,284 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:42:18,284 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:42:23,270 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:42:23,311 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:42:25,750 DEBUG   SenderThread:3891595 [sender.py:send():379] send: stats
+2024-01-22 14:42:26,030 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:42:26,030 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:42:28,313 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:42:33,918 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:42:35,276 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:42:38,919 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:42:41,030 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:42:41,030 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:42:44,349 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:42:45,281 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:42:49,585 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:42:54,586 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:42:55,752 DEBUG   SenderThread:3891595 [sender.py:send():379] send: stats
+2024-01-22 14:42:56,030 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:42:56,031 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:42:57,286 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:43:00,264 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:43:05,264 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:43:09,290 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:43:10,379 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:43:11,030 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:43:11,031 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:43:16,322 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:43:21,296 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:43:22,312 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:43:25,752 DEBUG   SenderThread:3891595 [sender.py:send():379] send: stats
+2024-01-22 14:43:26,030 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:43:26,031 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:43:27,345 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:43:33,039 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:43:33,301 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:43:38,040 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:43:41,031 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:43:41,032 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:43:43,305 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:43:43,532 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:43:48,533 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:43:54,523 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:43:55,309 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:43:55,755 DEBUG   SenderThread:3891595 [sender.py:send():379] send: stats
+2024-01-22 14:43:56,031 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:43:56,031 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:44:00,324 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:44:05,314 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:44:05,359 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:44:10,360 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:44:11,032 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:44:11,032 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:44:15,977 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:44:17,319 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:44:20,978 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:44:25,756 DEBUG   SenderThread:3891595 [sender.py:send():379] send: stats
+2024-01-22 14:44:26,047 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:44:26,049 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:44:26,049 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:44:27,324 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:44:31,821 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:44:36,822 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:44:39,328 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:44:41,047 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:44:41,048 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:44:42,297 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:44:47,298 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:44:51,333 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:44:52,301 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:44:55,758 DEBUG   SenderThread:3891595 [sender.py:send():379] send: stats
+2024-01-22 14:44:56,047 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:44:56,048 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:44:57,365 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:45:01,337 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:45:02,393 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:45:07,393 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:45:11,047 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:45:11,048 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:45:13,337 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:45:13,341 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:45:18,338 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:45:23,345 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:45:24,129 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:45:25,759 DEBUG   SenderThread:3891595 [sender.py:send():379] send: stats
+2024-01-22 14:45:26,047 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:45:26,048 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:45:29,303 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:45:34,961 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:45:35,350 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:45:39,962 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:45:41,048 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:45:41,049 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:45:45,355 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:45:45,906 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:45:50,907 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:45:55,761 DEBUG   SenderThread:3891595 [sender.py:send():379] send: stats
+2024-01-22 14:45:56,047 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:45:56,048 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:45:56,380 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:45:57,360 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:46:01,381 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:46:06,382 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:46:07,364 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:46:11,047 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:46:11,048 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:46:12,362 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:46:17,363 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:46:19,369 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:46:22,542 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:46:25,762 DEBUG   SenderThread:3891595 [sender.py:send():379] send: stats
+2024-01-22 14:46:26,047 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:46:26,048 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:46:28,367 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:46:29,373 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:46:33,461 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:46:38,462 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:46:41,048 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:46:41,049 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:46:41,378 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:46:44,348 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:46:49,349 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:46:51,381 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:46:55,145 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:46:55,763 DEBUG   SenderThread:3891595 [sender.py:send():379] send: stats
+2024-01-22 14:46:56,048 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:46:56,049 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:47:00,365 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:47:03,386 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:47:06,225 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:47:11,048 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:47:11,049 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:47:11,370 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:47:15,391 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:47:16,413 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:47:21,414 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:47:25,395 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:47:25,765 DEBUG   SenderThread:3891595 [sender.py:send():379] send: stats
+2024-01-22 14:47:26,050 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:47:26,050 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:47:27,341 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:47:32,342 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:47:37,400 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:47:37,550 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:47:41,050 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:47:41,051 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:47:43,337 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:47:48,633 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:47:49,404 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:47:53,634 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:47:55,768 DEBUG   SenderThread:3891595 [sender.py:send():379] send: stats
+2024-01-22 14:47:56,049 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:47:56,050 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:47:59,374 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:48:01,409 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:48:04,654 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:48:09,654 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:48:11,056 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:48:11,057 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:48:11,413 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:48:15,382 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:48:20,383 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:48:23,417 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:48:25,487 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:48:25,771 DEBUG   SenderThread:3891595 [sender.py:send():379] send: stats
+2024-01-22 14:48:26,053 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:48:26,054 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:48:31,301 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:48:35,422 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:48:36,315 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:48:41,053 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:48:41,053 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:48:41,347 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:48:46,348 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:48:47,427 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:48:51,755 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:48:55,772 DEBUG   SenderThread:3891595 [sender.py:send():379] send: stats
+2024-01-22 14:48:56,108 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:48:56,109 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:48:57,373 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:48:59,431 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:49:02,627 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:49:07,628 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:49:11,108 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:49:11,109 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:49:11,436 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:49:13,380 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:49:18,381 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:49:21,440 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:49:23,521 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:49:25,774 DEBUG   SenderThread:3891595 [sender.py:send():379] send: stats
+2024-01-22 14:49:26,108 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:49:26,109 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:49:29,398 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:49:31,443 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:49:35,329 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:49:40,330 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:49:41,109 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:49:41,109 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:49:44,448 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:49:46,233 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:49:51,234 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:49:54,451 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:49:55,775 DEBUG   SenderThread:3891595 [sender.py:send():379] send: stats
+2024-01-22 14:49:56,109 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:49:56,110 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:49:56,437 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:50:01,438 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:50:06,455 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:50:07,381 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:50:11,109 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:50:11,110 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:50:12,398 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:50:17,399 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:50:20,460 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:50:22,685 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:50:25,776 DEBUG   SenderThread:3891595 [sender.py:send():379] send: stats
+2024-01-22 14:50:26,109 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:50:26,110 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:50:28,438 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:50:30,464 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:50:33,481 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:50:38,482 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:50:41,109 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:50:41,110 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:50:42,469 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:50:44,339 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:50:49,341 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:50:54,474 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:50:54,517 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:50:55,780 DEBUG   SenderThread:3891595 [sender.py:send():379] send: stats
+2024-01-22 14:50:56,109 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:50:56,110 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:51:00,419 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:51:04,479 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:51:06,269 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:51:11,110 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:51:11,111 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:51:11,439 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:51:16,483 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:51:17,157 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:51:22,158 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:51:25,781 DEBUG   SenderThread:3891595 [sender.py:send():379] send: stats
+2024-01-22 14:51:26,110 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:51:26,110 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:51:26,488 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:51:27,365 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:51:32,367 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:51:37,837 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:51:38,493 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:51:41,119 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:51:41,119 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:51:43,418 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:51:48,497 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:51:48,625 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:51:53,625 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:51:55,783 DEBUG   SenderThread:3891595 [sender.py:send():379] send: stats
+2024-01-22 14:51:56,115 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:51:56,115 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:51:58,797 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:52:00,501 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:52:03,798 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:52:09,696 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:52:10,505 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:52:11,113 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:52:11,114 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:52:15,396 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:52:20,655 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:52:22,510 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:52:25,656 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:52:25,783 DEBUG   SenderThread:3891595 [sender.py:send():379] send: stats
+2024-01-22 14:52:26,127 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:52:26,127 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:52:30,985 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:52:32,515 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:52:35,986 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:52:40,987 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:52:41,127 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:52:41,128 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:52:44,520 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:52:46,981 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:52:51,982 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:52:54,524 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:52:55,785 DEBUG   SenderThread:3891595 [sender.py:send():379] send: stats
+2024-01-22 14:52:56,127 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:52:56,127 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:52:57,367 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:53:02,368 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:53:06,529 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:53:07,650 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:53:11,139 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:53:11,139 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:53:13,479 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:53:16,533 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:53:19,473 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:53:24,474 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:53:25,787 DEBUG   SenderThread:3891595 [sender.py:send():379] send: stats
+2024-01-22 14:53:26,130 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:53:26,131 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:53:28,538 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:53:29,572 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:53:34,573 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:53:39,713 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:53:40,543 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:53:41,130 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:53:41,131 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:53:45,448 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:53:50,547 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:53:50,725 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:53:55,725 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:53:55,789 DEBUG   SenderThread:3891595 [sender.py:send():379] send: stats
+2024-01-22 14:53:56,130 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:53:56,130 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:54:01,187 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:54:02,552 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:54:06,188 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:54:11,130 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:54:11,131 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:54:11,440 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:54:14,557 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:54:17,085 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:54:22,086 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:54:24,561 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:54:25,791 DEBUG   SenderThread:3891595 [sender.py:send():379] send: stats
+2024-01-22 14:54:26,130 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:54:26,131 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:54:27,441 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:54:32,442 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:54:34,565 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:54:36,566 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:54:37,823 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:54:38,567 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:54:40,568 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:54:41,142 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:54:41,143 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:54:42,569 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:54:43,123 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:54:44,570 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:54:46,571 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:54:48,572 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:54:48,939 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:54:50,574 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:54:52,574 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:54:54,575 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:54:54,611 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:54:55,792 DEBUG   SenderThread:3891595 [sender.py:send():379] send: stats
+2024-01-22 14:54:56,130 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:54:56,131 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:54:56,576 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:54:58,577 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:55:00,410 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:55:00,577 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:55:02,578 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:55:04,579 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:55:05,438 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:55:06,579 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:55:08,581 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:55:10,581 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:55:11,131 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: stop_status
+2024-01-22 14:55:11,131 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: stop_status
+2024-01-22 14:55:11,451 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:55:12,582 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:55:14,583 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:55:16,584 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:55:16,940 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:55:18,585 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:55:20,586 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:55:20,730 DEBUG   SenderThread:3891595 [sender.py:send():379] send: exit
+2024-01-22 14:55:20,731 INFO    SenderThread:3891595 [sender.py:send_exit():584] handling exit code: 1
+2024-01-22 14:55:20,731 INFO    SenderThread:3891595 [sender.py:send_exit():586] handling runtime: 1765
+2024-01-22 14:55:20,731 INFO    SenderThread:3891595 [sender.py:_save_file():1375] saving file wandb-summary.json with policy end
+2024-01-22 14:55:20,732 INFO    SenderThread:3891595 [sender.py:send_exit():592] send defer
+2024-01-22 14:55:20,732 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: defer
+2024-01-22 14:55:20,732 INFO    HandlerThread:3891595 [handler.py:handle_request_defer():170] handle defer: 0
+2024-01-22 14:55:20,732 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: defer
+2024-01-22 14:55:20,732 INFO    SenderThread:3891595 [sender.py:send_request_defer():608] handle sender defer: 0
+2024-01-22 14:55:20,733 INFO    SenderThread:3891595 [sender.py:transition_state():612] send defer: 1
+2024-01-22 14:55:20,733 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: defer
+2024-01-22 14:55:20,733 INFO    HandlerThread:3891595 [handler.py:handle_request_defer():170] handle defer: 1
+2024-01-22 14:55:20,733 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: defer
+2024-01-22 14:55:20,733 INFO    SenderThread:3891595 [sender.py:send_request_defer():608] handle sender defer: 1
+2024-01-22 14:55:20,733 INFO    SenderThread:3891595 [sender.py:transition_state():612] send defer: 2
+2024-01-22 14:55:20,733 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: defer
+2024-01-22 14:55:20,733 INFO    HandlerThread:3891595 [handler.py:handle_request_defer():170] handle defer: 2
+2024-01-22 14:55:20,733 INFO    HandlerThread:3891595 [system_monitor.py:finish():190] Stopping system monitor
+2024-01-22 14:55:20,734 DEBUG   SystemMonitor:3891595 [system_monitor.py:_start():166] Finished system metrics aggregation loop
+2024-01-22 14:55:20,735 INFO    HandlerThread:3891595 [interfaces.py:finish():202] Joined cpu monitor
+2024-01-22 14:55:20,735 DEBUG   SystemMonitor:3891595 [system_monitor.py:_start():170] Publishing last batch of metrics
+2024-01-22 14:55:20,735 INFO    HandlerThread:3891595 [interfaces.py:finish():202] Joined disk monitor
+2024-01-22 14:55:20,769 INFO    HandlerThread:3891595 [interfaces.py:finish():202] Joined gpu monitor
+2024-01-22 14:55:20,770 INFO    HandlerThread:3891595 [interfaces.py:finish():202] Joined memory monitor
+2024-01-22 14:55:20,770 INFO    HandlerThread:3891595 [interfaces.py:finish():202] Joined network monitor
+2024-01-22 14:55:20,771 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: defer
+2024-01-22 14:55:20,771 INFO    SenderThread:3891595 [sender.py:send_request_defer():608] handle sender defer: 2
+2024-01-22 14:55:20,771 INFO    SenderThread:3891595 [sender.py:transition_state():612] send defer: 3
+2024-01-22 14:55:20,772 DEBUG   SenderThread:3891595 [sender.py:send():379] send: stats
+2024-01-22 14:55:20,772 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: defer
+2024-01-22 14:55:20,773 INFO    HandlerThread:3891595 [handler.py:handle_request_defer():170] handle defer: 3
+2024-01-22 14:55:20,773 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: defer
+2024-01-22 14:55:20,773 INFO    SenderThread:3891595 [sender.py:send_request_defer():608] handle sender defer: 3
+2024-01-22 14:55:20,773 INFO    SenderThread:3891595 [sender.py:transition_state():612] send defer: 4
+2024-01-22 14:55:20,773 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: defer
+2024-01-22 14:55:20,773 INFO    HandlerThread:3891595 [handler.py:handle_request_defer():170] handle defer: 4
+2024-01-22 14:55:20,774 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: defer
+2024-01-22 14:55:20,774 INFO    SenderThread:3891595 [sender.py:send_request_defer():608] handle sender defer: 4
+2024-01-22 14:55:20,774 INFO    SenderThread:3891595 [sender.py:transition_state():612] send defer: 5
+2024-01-22 14:55:20,774 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: defer
+2024-01-22 14:55:20,774 INFO    HandlerThread:3891595 [handler.py:handle_request_defer():170] handle defer: 5
+2024-01-22 14:55:20,774 DEBUG   SenderThread:3891595 [sender.py:send():379] send: summary
+2024-01-22 14:55:20,775 INFO    SenderThread:3891595 [sender.py:_save_file():1375] saving file wandb-summary.json with policy end
+2024-01-22 14:55:20,775 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: defer
+2024-01-22 14:55:20,775 INFO    SenderThread:3891595 [sender.py:send_request_defer():608] handle sender defer: 5
+2024-01-22 14:55:20,775 INFO    SenderThread:3891595 [sender.py:transition_state():612] send defer: 6
+2024-01-22 14:55:20,776 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: defer
+2024-01-22 14:55:20,776 INFO    HandlerThread:3891595 [handler.py:handle_request_defer():170] handle defer: 6
+2024-01-22 14:55:20,776 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: defer
+2024-01-22 14:55:20,776 INFO    SenderThread:3891595 [sender.py:send_request_defer():608] handle sender defer: 6
+2024-01-22 14:55:20,776 INFO    SenderThread:3891595 [sender.py:transition_state():612] send defer: 7
+2024-01-22 14:55:20,776 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:55:20,776 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: defer
+2024-01-22 14:55:20,776 INFO    HandlerThread:3891595 [handler.py:handle_request_defer():170] handle defer: 7
+2024-01-22 14:55:20,777 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: defer
+2024-01-22 14:55:20,777 INFO    SenderThread:3891595 [sender.py:send_request_defer():608] handle sender defer: 7
+2024-01-22 14:55:21,586 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/wandb-summary.json
+2024-01-22 14:55:21,731 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: poll_exit
+2024-01-22 14:55:22,587 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:55:23,867 INFO    SenderThread:3891595 [sender.py:transition_state():612] send defer: 8
+2024-01-22 14:55:23,867 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: poll_exit
+2024-01-22 14:55:23,867 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: defer
+2024-01-22 14:55:23,868 INFO    HandlerThread:3891595 [handler.py:handle_request_defer():170] handle defer: 8
+2024-01-22 14:55:23,869 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: defer
+2024-01-22 14:55:23,869 INFO    SenderThread:3891595 [sender.py:send_request_defer():608] handle sender defer: 8
+2024-01-22 14:55:23,869 INFO    SenderThread:3891595 [job_builder.py:build():281] Attempting to build job artifact
+2024-01-22 14:55:23,870 INFO    SenderThread:3891595 [job_builder.py:_get_source_type():411] no source found
+2024-01-22 14:55:23,870 INFO    SenderThread:3891595 [sender.py:transition_state():612] send defer: 9
+2024-01-22 14:55:23,871 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: defer
+2024-01-22 14:55:23,871 INFO    HandlerThread:3891595 [handler.py:handle_request_defer():170] handle defer: 9
+2024-01-22 14:55:23,871 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: defer
+2024-01-22 14:55:23,871 INFO    SenderThread:3891595 [sender.py:send_request_defer():608] handle sender defer: 9
+2024-01-22 14:55:23,872 INFO    SenderThread:3891595 [dir_watcher.py:finish():358] shutting down directory watcher
+2024-01-22 14:55:24,588 INFO    Thread-12 :3891595 [dir_watcher.py:_on_file_modified():288] file/dir modified: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:55:24,590 INFO    SenderThread:3891595 [dir_watcher.py:finish():388] scan: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files
+2024-01-22 14:55:24,590 INFO    SenderThread:3891595 [dir_watcher.py:finish():402] scan save: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log output.log
+2024-01-22 14:55:24,591 INFO    SenderThread:3891595 [dir_watcher.py:finish():402] scan save: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/wandb-summary.json wandb-summary.json
+2024-01-22 14:55:24,591 INFO    SenderThread:3891595 [dir_watcher.py:finish():402] scan save: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/requirements.txt requirements.txt
+2024-01-22 14:55:24,591 INFO    SenderThread:3891595 [dir_watcher.py:finish():402] scan save: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/config.yaml config.yaml
+2024-01-22 14:55:24,592 INFO    SenderThread:3891595 [dir_watcher.py:finish():402] scan save: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/wandb-metadata.json wandb-metadata.json
+2024-01-22 14:55:24,592 INFO    SenderThread:3891595 [sender.py:transition_state():612] send defer: 10
+2024-01-22 14:55:24,593 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: defer
+2024-01-22 14:55:24,600 INFO    HandlerThread:3891595 [handler.py:handle_request_defer():170] handle defer: 10
+2024-01-22 14:55:24,606 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: defer
+2024-01-22 14:55:24,606 INFO    SenderThread:3891595 [sender.py:send_request_defer():608] handle sender defer: 10
+2024-01-22 14:55:24,606 INFO    SenderThread:3891595 [file_pusher.py:finish():159] shutting down file pusher
+2024-01-22 14:55:25,311 ERROR   wandb-upload_0:3891595 [internal_api.py:upload_file():2496] upload_file exception https://storage.googleapis.com/wandb-production.appspot.com/zjylab/UPRTH/qpba432n/output.log?Expires=1706021724&GoogleAccessId=gorilla-files-url-signer-man%40wandb-production.iam.gserviceaccount.com&Signature=Rzcuw4eQjz9ys%2FOfckgynuLm0FATWqoKsDMY2xwZVgTwGP4oCAMwJuYSEZsfBgv%2Bon%2FSY7e8QcKBdBDtG23kPIeBJEIvrXwB9D81nQqrzL%2FfzRSBlt%2FDUJXpTm7qfy3%2FJfHtabky%2FTDR0zkKSPGTXZ4rjJTs8V7GfIsIGB5SsE1NYIqBwPJ4Mhs1ryl8KorUNZ7fhafM2FI%2FFAZgVULcDz5NAxsCc9Ll%2BeMyCCVYzEfh4igEXUfS%2FgdZiGadWyMjrERquICtgIRgTyWufwPRbIhSMGAaTjnUcRhjruNRytNTyC4rEoM4z7RS1bf4tDs%2BpS6AhWoLZ27JAbFsJxPEAQ%3D%3D: ('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))
+2024-01-22 14:55:25,311 ERROR   wandb-upload_0:3891595 [internal_api.py:upload_file():2498] upload_file request headers: {'User-Agent': 'python-requests/2.28.1', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Length': '15654'}
+2024-01-22 14:55:25,311 ERROR   wandb-upload_0:3891595 [internal_api.py:upload_file():2500] upload_file response body: 
+2024-01-22 14:55:26,050 ERROR   wandb-upload_1:3891595 [internal_api.py:upload_file():2496] upload_file exception https://storage.googleapis.com/wandb-production.appspot.com/zjylab/UPRTH/qpba432n/wandb-summary.json?Expires=1706021725&GoogleAccessId=gorilla-files-url-signer-man%40wandb-production.iam.gserviceaccount.com&Signature=OGzTOAoVDbIVRySCVHPlTCT%2Ba3va4oGUbTxTJvOPZkfFnYE%2Fo4mFMgFzyoFE3qO7tYYZsTzfAmIb6UMM75X724d23gr1RPKGbgulfe1%2B0LaAzf5SVI8s5U1UDejyF%2Fw9XfdOF5pZU8eTSn87R41fH2mKEORQVnkWlJcQ3I%2BdhYCvK1utiSKpja4XaIahraFAN235yfCYAUOk14Pk0swPw1pre78XR9Xm7fGFP0k4Gl4UQtsg9pu6LhJnLsZqw5Ey89kG3mgA1iiU%2BSMcDW%2FuGwhBJHrPerNfDHxvtxOOYmRvuOeRTl3rMaabQe%2F2AAzOiNcbBa%2B3sLTazCEyaja5KA%3D%3D: ('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))
+2024-01-22 14:55:26,050 ERROR   wandb-upload_1:3891595 [internal_api.py:upload_file():2498] upload_file request headers: {'User-Agent': 'python-requests/2.28.1', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Length': '29'}
+2024-01-22 14:55:26,050 ERROR   wandb-upload_1:3891595 [internal_api.py:upload_file():2500] upload_file response body: 
+2024-01-22 14:55:26,083 ERROR   wandb-upload_3:3891595 [internal_api.py:upload_file():2496] upload_file exception https://storage.googleapis.com/wandb-production.appspot.com/zjylab/UPRTH/qpba432n/config.yaml?Expires=1706021725&GoogleAccessId=gorilla-files-url-signer-man%40wandb-production.iam.gserviceaccount.com&Signature=ayIsLOHgrUnxK3RCd9DYemmGOAJ97T3A3k3XJREr6%2B5AN%2Bd9k6P5D9%2BfRT0D7LOJEDaCX7Xn6uFp5rnkNLSpCbkCW0MxCXh64QnC1xlimvcknMzhHlZrECFk219GqShP1%2BB8EpikuFDeSxAmPzUskuCY9ylU4DswSsaaKhzihnyZjv17U2j3iEKEVKWW5vu1ZP5kcy2H%2BFpA91NYJ1dcnP4B8z2ZH3HlrOU1AiNV5SEPtTn3VTPcSQWPpJuJcdw1zth91S2pognppUH6s5gLXZAqA29CogwsJUt%2FizLXOx6NuoKeTX%2Bza8k%2FYbitjt9qtKvnKeEOCgAEkQMDajzESg%3D%3D: ('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))
+2024-01-22 14:55:26,083 ERROR   wandb-upload_3:3891595 [internal_api.py:upload_file():2498] upload_file request headers: {'User-Agent': 'python-requests/2.28.1', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Length': '727'}
+2024-01-22 14:55:26,083 ERROR   wandb-upload_3:3891595 [internal_api.py:upload_file():2500] upload_file response body: 
+2024-01-22 14:55:26,515 INFO    wandb-upload_2:3891595 [upload_job.py:push():131] Uploaded file /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/requirements.txt
+2024-01-22 14:55:26,733 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: keepalive
+2024-01-22 14:55:27,091 INFO    wandb-upload_0:3891595 [upload_job.py:push():131] Uploaded file /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/output.log
+2024-01-22 14:55:27,476 INFO    wandb-upload_1:3891595 [upload_job.py:push():131] Uploaded file /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/wandb-summary.json
+2024-01-22 14:55:27,558 INFO    wandb-upload_3:3891595 [upload_job.py:push():131] Uploaded file /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/files/config.yaml
+2024-01-22 14:55:27,759 INFO    Thread-11 (_thread_body):3891595 [sender.py:transition_state():612] send defer: 11
+2024-01-22 14:55:27,760 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: defer
+2024-01-22 14:55:27,760 INFO    HandlerThread:3891595 [handler.py:handle_request_defer():170] handle defer: 11
+2024-01-22 14:55:27,760 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: defer
+2024-01-22 14:55:27,761 INFO    SenderThread:3891595 [sender.py:send_request_defer():608] handle sender defer: 11
+2024-01-22 14:55:27,761 INFO    SenderThread:3891595 [file_pusher.py:join():164] waiting for file pusher
+2024-01-22 14:55:27,761 INFO    SenderThread:3891595 [sender.py:transition_state():612] send defer: 12
+2024-01-22 14:55:27,761 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: defer
+2024-01-22 14:55:27,761 INFO    HandlerThread:3891595 [handler.py:handle_request_defer():170] handle defer: 12
+2024-01-22 14:55:27,762 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: defer
+2024-01-22 14:55:27,762 INFO    SenderThread:3891595 [sender.py:send_request_defer():608] handle sender defer: 12
+2024-01-22 14:55:27,762 INFO    SenderThread:3891595 [file_stream.py:finish():593] file stream finish called
+2024-01-22 14:55:28,806 INFO    SenderThread:3891595 [file_stream.py:finish():597] file stream finish is done
+2024-01-22 14:55:28,807 INFO    SenderThread:3891595 [sender.py:transition_state():612] send defer: 13
+2024-01-22 14:55:28,807 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: defer
+2024-01-22 14:55:28,807 INFO    HandlerThread:3891595 [handler.py:handle_request_defer():170] handle defer: 13
+2024-01-22 14:55:28,808 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: defer
+2024-01-22 14:55:28,808 INFO    SenderThread:3891595 [sender.py:send_request_defer():608] handle sender defer: 13
+2024-01-22 14:55:28,808 INFO    SenderThread:3891595 [sender.py:transition_state():612] send defer: 14
+2024-01-22 14:55:28,809 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: defer
+2024-01-22 14:55:28,810 INFO    HandlerThread:3891595 [handler.py:handle_request_defer():170] handle defer: 14
+2024-01-22 14:55:28,810 DEBUG   SenderThread:3891595 [sender.py:send():379] send: final
+2024-01-22 14:55:28,810 DEBUG   SenderThread:3891595 [sender.py:send():379] send: footer
+2024-01-22 14:55:28,811 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: defer
+2024-01-22 14:55:28,811 INFO    SenderThread:3891595 [sender.py:send_request_defer():608] handle sender defer: 14
+2024-01-22 14:55:28,812 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: poll_exit
+2024-01-22 14:55:28,813 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: server_info
+2024-01-22 14:55:28,813 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: poll_exit
+2024-01-22 14:55:28,814 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: server_info
+2024-01-22 14:55:28,817 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: get_summary
+2024-01-22 14:55:28,818 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: sampled_history
+2024-01-22 14:55:28,818 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: job_info
+2024-01-22 14:55:29,040 DEBUG   SenderThread:3891595 [sender.py:send_request():406] send_request: job_info
+2024-01-22 14:55:29,041 INFO    MainThread:3891595 [wandb_run.py:_footer_history_summary_info():3481] rendering history
+2024-01-22 14:55:29,041 INFO    MainThread:3891595 [wandb_run.py:_footer_history_summary_info():3513] rendering summary
+2024-01-22 14:55:29,042 INFO    MainThread:3891595 [wandb_run.py:_footer_sync_info():3440] logging synced files
+2024-01-22 14:55:29,042 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: status_report
+2024-01-22 14:55:29,044 DEBUG   HandlerThread:3891595 [handler.py:handle_request():144] handle_request: shutdown
+2024-01-22 14:55:29,044 INFO    HandlerThread:3891595 [handler.py:finish():861] shutting down handler
+2024-01-22 14:55:30,041 INFO    SenderThread:3891595 [sender.py:finish():1552] shutting down sender
+2024-01-22 14:55:30,041 INFO    SenderThread:3891595 [file_pusher.py:finish():159] shutting down file pusher
+2024-01-22 14:55:30,041 INFO    SenderThread:3891595 [file_pusher.py:join():164] waiting for file pusher
+2024-01-22 14:55:30,043 INFO    WriterThread:3891595 [datastore.py:close():294] close: /workspace/UPRTH/wandb/run-20240122_142553-qpba432n/run-qpba432n.wandb

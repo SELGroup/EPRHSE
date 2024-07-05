@@ -1,0 +1,9 @@
+se=0, pool_beta=0.35, top_k=[10,20], lr=0.1000, pre_lr=0.0500, layer_num=3, batch_size=16384, norm=-0.5, pre_train=1, gat=0, loss=align, finetune_loss=bpr, lightgcn=0, num_neg=1, hgcn=1, multitask_train=0, pre_train_task=1, user_pretrain=1, item_pretrain=1, classify_as_edge=1, 
+	hgcn_u_hyperedge=1, pre_gcn=0, user_hpedge_ig=0, att_conv=1, hgcn_mix=[10, 1e-1], regs=[0.8, 1e-4]
+	--Best Iter=[2]@[205.7]	recall=[0.03101	0.03961], ndcg=[0.01698	0.01928]
+se=0, pool_beta=0.35, top_k=[10,20], lr=0.1000, pre_lr=0.0500, layer_num=3, batch_size=16384, norm=-0.5, pre_train=1, gat=0, loss=align, finetune_loss=bpr, lightgcn=0, num_neg=1, hgcn=1, multitask_train=0, pre_train_task=1, user_pretrain=1, item_pretrain=1, classify_as_edge=1, 
+	hgcn_u_hyperedge=1, pre_gcn=0, user_hpedge_ig=0, att_conv=1, hgcn_mix=[10, 1e-1], regs=[0.8, 1e-4]
+	--Best Iter=[4]@[199.5]	recall=[0.01944	0.03303], ndcg=[0.01222	0.01597]
+se=0, pool_beta=0.35, top_k=[10,20], lr=0.1000, pre_lr=0.0500, layer_num=3, batch_size=16384, norm=-1.0, pre_train=1, gat=0, loss=align, finetune_loss=bpr, lightgcn=0, num_neg=1, hgcn=1, multitask_train=0, pre_train_task=1, user_pretrain=1, item_pretrain=1, classify_as_edge=1, 
+	hgcn_u_hyperedge=1, pre_gcn=0, user_hpedge_ig=0, att_conv=1, hgcn_mix=[10, 1e-1], regs=[0.8, 1e-4]
+	--Best Iter=[12]@[308.2]	recall=[0.01011	0.01058], ndcg=[0.00885	0.00898]

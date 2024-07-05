@@ -1,0 +1,28 @@
+2024-01-22 09:12:00,064 INFO    Thread-2 (_run_job):3635280 [wandb_setup.py:_flush():76] Current SDK version is 0.15.9
+2024-01-22 09:12:00,064 INFO    Thread-2 (_run_job):3635280 [wandb_setup.py:_flush():76] Configure stats pid to 3635280
+2024-01-22 09:12:00,064 INFO    Thread-2 (_run_job):3635280 [wandb_setup.py:_flush():76] Loading settings from /root/.config/wandb/settings
+2024-01-22 09:12:00,064 INFO    Thread-2 (_run_job):3635280 [wandb_setup.py:_flush():76] Loading settings from /workspace/UPRTH/wandb/settings
+2024-01-22 09:12:00,064 INFO    Thread-2 (_run_job):3635280 [wandb_setup.py:_flush():76] Loading settings from environment variables: {'project': 'UPRTH', 'entity': 'zjylab', 'root_dir': '/workspace/UPRTH', 'sweep_id': '1r2r8nek', 'run_id': 'ke2nwbty', 'sweep_param_path': '/workspace/UPRTH/wandb/sweep-1r2r8nek/config-ke2nwbty.yaml'}
+2024-01-22 09:12:00,064 INFO    Thread-2 (_run_job):3635280 [wandb_setup.py:_flush():76] Applying setup settings: {'_disable_service': False}
+2024-01-22 09:12:00,064 INFO    Thread-2 (_run_job):3635280 [wandb_setup.py:_flush():76] Inferring run settings from compute environment: {'program_relpath': 'sweep.py', 'program': '/workspace/UPRTH/sweep.py'}
+2024-01-22 09:12:00,064 INFO    Thread-2 (_run_job):3635280 [wandb_init.py:_log_setup():524] Logging user logs to /workspace/UPRTH/wandb/run-20240122_091200-ke2nwbty/logs/debug.log
+2024-01-22 09:12:00,065 INFO    Thread-2 (_run_job):3635280 [wandb_init.py:_log_setup():525] Logging internal logs to /workspace/UPRTH/wandb/run-20240122_091200-ke2nwbty/logs/debug-internal.log
+2024-01-22 09:12:00,065 INFO    Thread-2 (_run_job):3635280 [wandb_init.py:init():564] calling init triggers
+2024-01-22 09:12:00,065 INFO    Thread-2 (_run_job):3635280 [wandb_init.py:init():571] wandb.init called with sweep_config: {'beta_pool': 0.17866897049560077, 'hgcn_mix1': 1, 'hgcn_mix2': 0.001, 'lr': 0.1, 'pre_lr': 0.005, 'regs1': 0.3}
+config: {}
+2024-01-22 09:12:00,065 INFO    Thread-2 (_run_job):3635280 [wandb_init.py:init():613] starting backend
+2024-01-22 09:12:00,065 INFO    Thread-2 (_run_job):3635280 [wandb_init.py:init():617] setting up manager
+2024-01-22 09:12:00,069 INFO    Thread-2 (_run_job):3635280 [backend.py:_multiprocessing_setup():106] multiprocessing start_methods=fork,spawn,forkserver, using: spawn
+2024-01-22 09:12:00,070 INFO    Thread-2 (_run_job):3635280 [wandb_init.py:init():623] backend started and connected
+2024-01-22 09:12:00,078 INFO    Thread-2 (_run_job):3635280 [wandb_run.py:_config_callback():1282] config_cb None None {'beta_pool': 0.17866897049560077, 'hgcn_mix1': 1, 'hgcn_mix2': 0.001, 'lr': 0.1, 'pre_lr': 0.005, 'regs1': 0.3}
+2024-01-22 09:12:00,078 INFO    Thread-2 (_run_job):3635280 [wandb_init.py:init():714] updated telemetry
+2024-01-22 09:12:00,079 INFO    Thread-2 (_run_job):3635280 [wandb_init.py:init():747] communicating run to backend with 60.0 second timeout
+2024-01-22 09:12:01,055 INFO    Thread-2 (_run_job):3635280 [wandb_run.py:_on_init():2180] communicating current version
+2024-01-22 09:12:01,802 INFO    Thread-2 (_run_job):3635280 [wandb_run.py:_on_init():2189] got version response upgrade_message: "wandb version 0.16.2 is available!  To upgrade, please run:\n $ pip install wandb --upgrade"
+
+2024-01-22 09:12:01,802 INFO    Thread-2 (_run_job):3635280 [wandb_init.py:init():798] starting run threads in backend
+2024-01-22 09:12:01,932 INFO    Thread-2 (_run_job):3635280 [wandb_run.py:_console_start():2159] atexit reg
+2024-01-22 09:12:01,933 INFO    Thread-2 (_run_job):3635280 [wandb_run.py:_redirect():2014] redirect: wrap_raw
+2024-01-22 09:12:01,933 INFO    Thread-2 (_run_job):3635280 [wandb_run.py:_redirect():2079] Wrapping output streams.
+2024-01-22 09:12:01,933 INFO    Thread-2 (_run_job):3635280 [wandb_run.py:_redirect():2104] Redirects installed.
+2024-01-22 09:12:01,934 INFO    Thread-2 (_run_job):3635280 [wandb_init.py:init():839] run started, returning control to user process

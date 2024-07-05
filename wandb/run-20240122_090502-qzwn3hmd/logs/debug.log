@@ -1,0 +1,35 @@
+2024-01-22 09:05:02,143 INFO    Thread-2 (_run_job):3630129 [wandb_setup.py:_flush():76] Current SDK version is 0.15.9
+2024-01-22 09:05:02,143 INFO    Thread-2 (_run_job):3630129 [wandb_setup.py:_flush():76] Configure stats pid to 3630129
+2024-01-22 09:05:02,143 INFO    Thread-2 (_run_job):3630129 [wandb_setup.py:_flush():76] Loading settings from /root/.config/wandb/settings
+2024-01-22 09:05:02,143 INFO    Thread-2 (_run_job):3630129 [wandb_setup.py:_flush():76] Loading settings from /workspace/UPRTH/wandb/settings
+2024-01-22 09:05:02,143 INFO    Thread-2 (_run_job):3630129 [wandb_setup.py:_flush():76] Loading settings from environment variables: {'project': 'UPRTH', 'entity': 'zjylab', 'root_dir': '/workspace/UPRTH', 'sweep_id': 'bcyttr2u', 'run_id': 'qzwn3hmd', 'sweep_param_path': '/workspace/UPRTH/wandb/sweep-bcyttr2u/config-qzwn3hmd.yaml'}
+2024-01-22 09:05:02,143 INFO    Thread-2 (_run_job):3630129 [wandb_setup.py:_flush():76] Applying setup settings: {'_disable_service': False}
+2024-01-22 09:05:02,143 INFO    Thread-2 (_run_job):3630129 [wandb_setup.py:_flush():76] Inferring run settings from compute environment: {'program_relpath': 'sweep.py', 'program': '/workspace/UPRTH/sweep.py'}
+2024-01-22 09:05:02,143 INFO    Thread-2 (_run_job):3630129 [wandb_init.py:_log_setup():524] Logging user logs to /workspace/UPRTH/wandb/run-20240122_090502-qzwn3hmd/logs/debug.log
+2024-01-22 09:05:02,143 INFO    Thread-2 (_run_job):3630129 [wandb_init.py:_log_setup():525] Logging internal logs to /workspace/UPRTH/wandb/run-20240122_090502-qzwn3hmd/logs/debug-internal.log
+2024-01-22 09:05:02,144 INFO    Thread-2 (_run_job):3630129 [wandb_init.py:init():564] calling init triggers
+2024-01-22 09:05:02,144 INFO    Thread-2 (_run_job):3630129 [wandb_init.py:init():571] wandb.init called with sweep_config: {'beta_pool': 0.7837076016133068, 'hgcn_mix1': 5, 'hgcn_mix2': 0.01, 'lr': 0.01, 'pre_lr': 0.001, 'regs1': 0.4}
+config: {}
+2024-01-22 09:05:02,144 INFO    Thread-2 (_run_job):3630129 [wandb_init.py:init():613] starting backend
+2024-01-22 09:05:02,144 INFO    Thread-2 (_run_job):3630129 [wandb_init.py:init():617] setting up manager
+2024-01-22 09:05:02,150 INFO    Thread-2 (_run_job):3630129 [backend.py:_multiprocessing_setup():106] multiprocessing start_methods=fork,spawn,forkserver, using: spawn
+2024-01-22 09:05:02,151 INFO    Thread-2 (_run_job):3630129 [wandb_init.py:init():623] backend started and connected
+2024-01-22 09:05:02,162 INFO    Thread-2 (_run_job):3630129 [wandb_run.py:_config_callback():1282] config_cb None None {'beta_pool': 0.7837076016133068, 'hgcn_mix1': 5, 'hgcn_mix2': 0.01, 'lr': 0.01, 'pre_lr': 0.001, 'regs1': 0.4}
+2024-01-22 09:05:02,164 INFO    Thread-2 (_run_job):3630129 [wandb_init.py:init():714] updated telemetry
+2024-01-22 09:05:02,164 INFO    Thread-2 (_run_job):3630129 [wandb_init.py:init():747] communicating run to backend with 60.0 second timeout
+2024-01-22 09:05:03,056 INFO    Thread-2 (_run_job):3630129 [wandb_run.py:_on_init():2180] communicating current version
+2024-01-22 09:05:03,815 INFO    Thread-2 (_run_job):3630129 [wandb_run.py:_on_init():2189] got version response upgrade_message: "wandb version 0.16.2 is available!  To upgrade, please run:\n $ pip install wandb --upgrade"
+
+2024-01-22 09:05:03,816 INFO    Thread-2 (_run_job):3630129 [wandb_init.py:init():798] starting run threads in backend
+2024-01-22 09:05:03,933 INFO    Thread-2 (_run_job):3630129 [wandb_run.py:_console_start():2159] atexit reg
+2024-01-22 09:05:03,934 INFO    Thread-2 (_run_job):3630129 [wandb_run.py:_redirect():2014] redirect: wrap_raw
+2024-01-22 09:05:03,934 INFO    Thread-2 (_run_job):3630129 [wandb_run.py:_redirect():2079] Wrapping output streams.
+2024-01-22 09:05:03,934 INFO    Thread-2 (_run_job):3630129 [wandb_run.py:_redirect():2104] Redirects installed.
+2024-01-22 09:05:03,935 INFO    Thread-2 (_run_job):3630129 [wandb_init.py:init():839] run started, returning control to user process
+2024-01-22 09:05:03,937 INFO    Thread-2 (_run_job):3630129 [wandb_run.py:_finish():1894] finishing run zjylab/UPRTH/qzwn3hmd
+2024-01-22 09:05:03,937 INFO    Thread-2 (_run_job):3630129 [wandb_run.py:_atexit_cleanup():2128] got exitcode: 1
+2024-01-22 09:05:03,937 INFO    Thread-2 (_run_job):3630129 [wandb_run.py:_restore():2111] restore
+2024-01-22 09:05:03,937 INFO    Thread-2 (_run_job):3630129 [wandb_run.py:_restore():2117] restore done
+2024-01-22 09:05:08,049 INFO    Thread-2 (_run_job):3630129 [wandb_run.py:_footer_history_summary_info():3481] rendering history
+2024-01-22 09:05:08,049 INFO    Thread-2 (_run_job):3630129 [wandb_run.py:_footer_history_summary_info():3513] rendering summary
+2024-01-22 09:05:08,052 INFO    Thread-2 (_run_job):3630129 [wandb_run.py:_footer_sync_info():3440] logging synced files

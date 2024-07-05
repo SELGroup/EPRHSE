@@ -1,0 +1,15 @@
+'method': 'random'
+'name': 'xmrec_cn'
+'metric': {'goal': 'maximize', 'name': 'score'}
+'parameters':
+  "random_seed": {"values": [1]}
+  "beta_pool": {"max":0.60,"min":0.20}
+  "pre_lr": {"values":[0.001,0.005,0.01,0.05,0.1]}
+  "lr": {"values":[0.001,0.005,0.01,0.05,0.1]}
+  "regs1": {"values":[0.3,0.4,0.5,0.6,0.7,0.8,0.9]}
+  "hgcn_mix1": {"values":[1,2,5,8,10]}
+  "hgcn_mix2": {"values":[1,1e-1,1e-2,1e-3]}
+    
+program: sweep.py
+project: UPRTH
+count: 100

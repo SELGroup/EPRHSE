@@ -1,0 +1,35 @@
+2024-01-23 10:56:22,664 INFO    MainThread:163954 [wandb_setup.py:_flush():76] Current SDK version is 0.15.9
+2024-01-23 10:56:22,664 INFO    MainThread:163954 [wandb_setup.py:_flush():76] Configure stats pid to 163954
+2024-01-23 10:56:22,665 INFO    MainThread:163954 [wandb_setup.py:_flush():76] Loading settings from /root/.config/wandb/settings
+2024-01-23 10:56:22,665 INFO    MainThread:163954 [wandb_setup.py:_flush():76] Loading settings from /workspace/UPRTH/wandb/settings
+2024-01-23 10:56:22,665 INFO    MainThread:163954 [wandb_setup.py:_flush():76] Loading settings from environment variables: {'entity': 'zjylab', 'project': 'UPRTH', 'sweep_id': '68w44z6w', 'root_dir': '/workspace/UPRTH', 'run_id': 'e5qlv0yt', 'sweep_param_path': '/workspace/UPRTH/wandb/sweep-68w44z6w/config-e5qlv0yt.yaml'}
+2024-01-23 10:56:22,665 INFO    MainThread:163954 [wandb_setup.py:_flush():76] Applying setup settings: {'_disable_service': False}
+2024-01-23 10:56:22,665 INFO    MainThread:163954 [wandb_setup.py:_flush():76] Inferring run settings from compute environment: {'program_relpath': 'sweep.py', 'program': '/workspace/UPRTH/sweep.py'}
+2024-01-23 10:56:22,665 INFO    MainThread:163954 [wandb_init.py:_log_setup():524] Logging user logs to /workspace/UPRTH/wandb/run-20240123_105622-e5qlv0yt/logs/debug.log
+2024-01-23 10:56:22,665 INFO    MainThread:163954 [wandb_init.py:_log_setup():525] Logging internal logs to /workspace/UPRTH/wandb/run-20240123_105622-e5qlv0yt/logs/debug-internal.log
+2024-01-23 10:56:22,666 INFO    MainThread:163954 [wandb_init.py:init():564] calling init triggers
+2024-01-23 10:56:22,666 INFO    MainThread:163954 [wandb_init.py:init():571] wandb.init called with sweep_config: {'beta_pool': 0.3405704760678603, 'hgcn_mix1': 10, 'hgcn_mix2': 0.1, 'lr': 0.05, 'pre_lr': 0.1, 'random_seed': 1, 'regs1': 0.8}
+config: {}
+2024-01-23 10:56:22,666 INFO    MainThread:163954 [wandb_init.py:init():613] starting backend
+2024-01-23 10:56:22,666 INFO    MainThread:163954 [wandb_init.py:init():617] setting up manager
+2024-01-23 10:56:22,674 INFO    MainThread:163954 [backend.py:_multiprocessing_setup():106] multiprocessing start_methods=fork,spawn,forkserver, using: spawn
+2024-01-23 10:56:22,675 INFO    MainThread:163954 [wandb_init.py:init():623] backend started and connected
+2024-01-23 10:56:22,688 INFO    MainThread:163954 [wandb_run.py:_config_callback():1282] config_cb None None {'beta_pool': 0.3405704760678603, 'hgcn_mix1': 10, 'hgcn_mix2': 0.1, 'lr': 0.05, 'pre_lr': 0.1, 'random_seed': 1, 'regs1': 0.8}
+2024-01-23 10:56:22,689 INFO    MainThread:163954 [wandb_init.py:init():714] updated telemetry
+2024-01-23 10:56:22,690 INFO    MainThread:163954 [wandb_init.py:init():747] communicating run to backend with 60.0 second timeout
+2024-01-23 10:56:23,566 INFO    MainThread:163954 [wandb_run.py:_on_init():2180] communicating current version
+2024-01-23 10:56:24,317 INFO    MainThread:163954 [wandb_run.py:_on_init():2189] got version response upgrade_message: "wandb version 0.16.2 is available!  To upgrade, please run:\n $ pip install wandb --upgrade"
+
+2024-01-23 10:56:24,317 INFO    MainThread:163954 [wandb_init.py:init():798] starting run threads in backend
+2024-01-23 10:56:24,434 INFO    MainThread:163954 [wandb_run.py:_console_start():2159] atexit reg
+2024-01-23 10:56:24,434 INFO    MainThread:163954 [wandb_run.py:_redirect():2014] redirect: wrap_raw
+2024-01-23 10:56:24,434 INFO    MainThread:163954 [wandb_run.py:_redirect():2079] Wrapping output streams.
+2024-01-23 10:56:24,434 INFO    MainThread:163954 [wandb_run.py:_redirect():2104] Redirects installed.
+2024-01-23 10:56:24,435 INFO    MainThread:163954 [wandb_init.py:init():839] run started, returning control to user process
+2024-01-23 11:03:42,735 INFO    MainThread:163954 [wandb_run.py:_finish():1894] finishing run zjylab/UPRTH/e5qlv0yt
+2024-01-23 11:03:42,736 INFO    MainThread:163954 [wandb_run.py:_atexit_cleanup():2128] got exitcode: 0
+2024-01-23 11:03:42,736 INFO    MainThread:163954 [wandb_run.py:_restore():2111] restore
+2024-01-23 11:03:42,736 INFO    MainThread:163954 [wandb_run.py:_restore():2117] restore done
+2024-01-23 11:03:56,822 INFO    MainThread:163954 [wandb_run.py:_footer_history_summary_info():3481] rendering history
+2024-01-23 11:03:56,822 INFO    MainThread:163954 [wandb_run.py:_footer_history_summary_info():3513] rendering summary
+2024-01-23 11:03:56,824 INFO    MainThread:163954 [wandb_run.py:_footer_sync_info():3440] logging synced files

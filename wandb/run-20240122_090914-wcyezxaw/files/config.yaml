@@ -1,0 +1,54 @@
+wandb_version: 1
+
+beta_pool:
+  desc: null
+  value: 0.23225672297074143
+hgcn_mix1:
+  desc: null
+  value: 8
+hgcn_mix2:
+  desc: null
+  value: 0.01
+lr:
+  desc: null
+  value: 0.1
+pre_lr:
+  desc: null
+  value: 0.05
+regs1:
+  desc: null
+  value: 0.5
+_wandb:
+  desc: null
+  value:
+    python_version: 3.10.12
+    cli_version: 0.15.9
+    framework: torch
+    is_jupyter_run: false
+    is_kaggle_kernel: false
+    start_time: 1705914555.010098
+    t:
+      1:
+      - 1
+      - 5
+      - 49
+      - 53
+      - 55
+      - 76
+      - 77
+      2:
+      - 1
+      - 5
+      - 49
+      - 53
+      - 55
+      - 76
+      - 77
+      3:
+      - 2
+      - 23
+      - 37
+      4: 3.10.12
+      5: 0.15.9
+      8:
+      - 5
