@@ -26,6 +26,14 @@ def get_edges_induct(g, users_induct):
     return idx.nonzero()[0]  #返回 超图中边‘ui’用户节点 存在于 users_induct 中的用户索引
 
 def partition_todevice(partition, device):
+    new_partition=[]
+    for i in range(len(partition)):
+        S = torch.LongTensor(partition[i][0]).to(device)
+        src = torch.LongTensor(partition[i][1]).to(device)
+        dst = torch.LongTensor(partition[i][2]).to(device)
+        new_partition.append([S,src,dst])
+    return tuple(partition)
+
     S1=torch.LongTensor(partition[0][0]).to(device)
     src1=torch.LongTensor(partition[0][1]).to(device)
     dst1=torch.LongTensor(partition[0][2]).to(device)
@@ -88,14 +96,22 @@ def train(args):
                         'iu':partition_todevice(data_generator.partition_iu, device),
                         'ic':partition_todevice(data_generator.partition_ic, device),
                         'ir':partition_todevice(data_generator.partition_ir, device),
-                        'i':partition_todevice(data_generator.partition_i, device),
-                        'u':partition_todevice(data_generator.partition_u, device),
                         }
         if args.dataset=='steam':
             partition_dict.update({'ua': partition_todevice(data_generator.partition_ua, device), 'uj': partition_todevice(data_generator.partition_uj, device)})
         else:
             partition_dict.update({'ib': partition_todevice(data_generator.partition_ib, device), 'ip': partition_todevice(data_generator.partition_ip, device)})
-    
+    print('partition_ui:',len(partition_dict['ui'][0][0]),len(partition_dict['ui'][1][0]),len(partition_dict['ui'][2][0]),len(partition_dict['ui'][3][0]),len(partition_dict['ui'][4][0]),max(partition_dict['ui'][4][0])+1)
+    print('partition_iu:',len(partition_dict['iu'][0][0]),len(partition_dict['iu'][1][0]),len(partition_dict['iu'][2][0]),len(partition_dict['iu'][3][0]),len(partition_dict['iu'][4][0]),max(partition_dict['iu'][4][0])+1)
+    print('partition_ic:',len(partition_dict['ic'][0][0]),len(partition_dict['ic'][1][0]),len(partition_dict['ic'][2][0]),len(partition_dict['ic'][3][0]),len(partition_dict['ic'][4][0]),max(partition_dict['ic'][4][0])+1)
+    print('partition_ir:',len(partition_dict['ir'][0][0]),len(partition_dict['ir'][1][0]),len(partition_dict['ir'][2][0]),len(partition_dict['ir'][3][0]),len(partition_dict['ir'][4][0]),max(partition_dict['ir'][4][0])+1)
+    if "xmrec" in args.dataset:
+        print('partition_ib:',len(partition_dict['ib'][0][0]),len(partition_dict['ib'][1][0]),len(partition_dict['ib'][2][0]),len(partition_dict['ib'][3][0]),len(partition_dict['ib'][4][0]),max(partition_dict['ib'][4][0])+1)
+        print('partition_ip:',len(partition_dict['ip'][0][0]),len(partition_dict['ip'][1][0]),len(partition_dict['ip'][2][0]),len(partition_dict['ip'][3][0]),len(partition_dict['ip'][4][0]),max(partition_dict['ip'][4][0])+1)
+    elif "steam" in args.dataset:
+        print('partition_ua:',len(partition_dict['ua'][0][0]),len(partition_dict['ua'][1][0]),len(partition_dict['ua'][2][0]),len(partition_dict['ua'][3][0]),len(partition_dict['ua'][4][0]),max(partition_dict['ua'][4][0])+1)
+        print('partition_uj:',len(partition_dict['uj'][0][0]),len(partition_dict['uj'][1][0]),len(partition_dict['uj'][2][0]),len(partition_dict['uj'][3][0]),len(partition_dict['uj'][4][0]),max(partition_dict['uj'][4][0])+1)
+    exit()
     if args.gat != 0:
         model = GAT(args, g, args.embed_size, 8, args.embed_size, device).to(device)
     else:  #args.gat default=0

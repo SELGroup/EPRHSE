@@ -10,6 +10,7 @@ from torch_scatter import scatter_sum
 import torch
 import pickle
 import os
+import scipy.sparse as sp
 
 
 class Data(object):
@@ -192,6 +193,7 @@ class Data(object):
             }
             self.g = dgl.heterograph(data_dict, num_nodes_dict=num_dict)
             if se==1:
+                '''
                 if os.path.exists(path+'/partition_3D.pickle'):
                     self.partition_ui,self.partition_iu,self.partition_ic,self.partition_ir,self.partition_ib,self.partition_ip=pickle.load(open(path+'/partition_3D.pickle',"rb+"))
                 else:
@@ -205,6 +207,21 @@ class Data(object):
                     with open(path+'/partition_3D.pickle',"wb")as f:
                         pickle.dump((self.partition_ui,self.partition_iu,self.partition_ic,self.partition_ir,self.partition_ib,self.partition_ip),f)
                     print('partition down.')
+                '''
+                if os.path.exists(path+'/partition_5D.pickle'):
+                    self.partition_ui,self.partition_iu,self.partition_ic,self.partition_ir,self.partition_ib,self.partition_ip=pickle.load(open(path+'/partition_5D.pickle',"rb+"))
+                else:
+                    #partition为一个元组（[S1,src,dst],[S2,src,dst])，S1是个list，S1[i]为用户i对应社区，src,dst表示聚合后的二部图源社区，目标节点对
+                    self.partition_ui=self.partition_high(self.n_users,self.n_items,user_item_src,user_item_dst)
+                    self.partition_iu=self.partition_high(self.n_items,self.n_users,user_item_dst,user_item_src)
+                    self.partition_ic=self.partition_high(self.n_items,self.n_cate,item_cate_src, item_cate_dst)
+                    self.partition_ir=self.partition_high(self.n_items,self.n_rate,item_rate_src, item_rate_dst)
+                    self.partition_ib=self.partition_high(self.n_items,self.n_cluster_bT,item_bT_src, item_bT_dst)
+                    self.partition_ip=self.partition_high(self.n_items,self.n_cluster_cpr,item_cpr_src, item_cpr_dst)
+                    with open(path+'/partition_5D.pickle',"wb")as f:
+                        pickle.dump((self.partition_ui,self.partition_iu,self.partition_ic,self.partition_ir,self.partition_ib,self.partition_ip),f)
+                    print('partition down.')
+                '''
                 if os.path.exists(path+'/partition_multi_ui.pickle'):
                     self.partition_i, self.partition_u=pickle.load(open(path+'/partition_multi_ui.pickle',"rb+"))
                 else:
@@ -212,6 +229,7 @@ class Data(object):
                     with open(path+'/partition_multi_ui.pickle',"wb")as f:
                         pickle.dump((self.partition_i,self.partition_ui),f)
                     print('partition multi-i and multi-u down.')
+                '''
 
         elif 'steam' == dataset:
             data_dict = {
@@ -236,19 +254,20 @@ class Data(object):
             self.job_label = user_job_dst
 
             if se==1:
-                if os.path.exists(path+'/partition_3D.pickle'):
-                    self.partition_ui,self.partition_iu,self.partition_ic,self.partition_ir,self.partition_ua,self.partition_uj=pickle.load(open(path+'/partition_3D.pickle',"rb+"))
+                if os.path.exists(path+'/partition_5D.pickle'):
+                    self.partition_ui,self.partition_iu,self.partition_ic,self.partition_ir,self.partition_ua,self.partition_uj=pickle.load(open(path+'/partition_5D.pickle',"rb+"))
                 else:
-                    #partition为一个元组（[S1,src,dst],[S2,src,dst])，S1是个list，S1[i]为用户i对应社区，src,dst表示聚合后的二部图源社区，目标节点对
-                    self.partition_ui=self.partition(self.n_users,self.n_items,user_item_src,user_item_dst)
-                    self.partition_iu=self.partition(self.n_items,self.n_users,user_item_dst,user_item_src)
-                    self.partition_ic=self.partition(self.n_items,self.n_cate,item_cate_src, item_cate_dst)
-                    self.partition_ir=self.partition(self.n_items,self.n_rate,item_rate_src, item_rate_dst)
-                    self.partition_ua=self.partition(self.n_users,self.n_age,user_age_src, user_age_dst)
-                    self.partition_uj=self.partition(self.n_users,self.n_job,user_job_src, user_job_dst)
-                    with open(path+'/partition_3D.pickle',"wb")as f:
+                    #partition为一个元组（[S1,src,dst],[S2,src,dst],...)，S1是个list，S1[i]为用户i对应社区，src,dst表示聚合后的二部图源社区，目标节点对
+                    self.partition_ui=self.partition_high(self.n_users,self.n_items,user_item_src,user_item_dst)
+                    self.partition_iu=self.partition_high(self.n_items,self.n_users,user_item_dst,user_item_src)
+                    self.partition_ic=self.partition_high(self.n_items,self.n_cate,item_cate_src, item_cate_dst)
+                    self.partition_ir=self.partition_high(self.n_items,self.n_rate,item_rate_src, item_rate_dst)
+                    self.partition_ua=self.partition_high(self.n_users,self.n_age,user_age_src, user_age_dst)
+                    self.partition_uj=self.partition_high(self.n_users,self.n_job,user_job_src, user_job_dst)
+                    with open(path+'/partition_5D.pickle',"wb")as f:
                         pickle.dump((self.partition_ui,self.partition_iu,self.partition_ic,self.partition_ir,self.partition_ua,self.partition_uj),f)
                     print('partition down.')
+                '''
                 if os.path.exists(path+'/partition_multi_ui.pickle'):
                     self.partition_i, self.partition_u=pickle.load(open(path+'/partition_multi_ui.pickle',"rb+"))
                 else:
@@ -257,6 +276,7 @@ class Data(object):
                     with open(path+'/partition_multi_ui.pickle',"wb")as f:
                         pickle.dump((self.partition_i,self.partition_u),f)
                     print('partition multi-i and multi-u down.')
+                '''
         
         
     def partition(self, src_num, dst_num, src, dst):
@@ -328,6 +348,73 @@ class Data(object):
             edge_index_A=np.array(adj_matrix_A.nonzero())
             src_new2,dst_new2=edge_index_A[0].tolist(),edge_index_A[1].tolist()
             return ([division1.tolist(),src_new1,dst_new1],[division2.tolist(),src_new2,dst_new2])
+
+    def partition_high(self, src_num, dst_num, src, dst, num_layer=5):
+
+        def encoding2tree(adj_matrix):
+            #encoding tree
+            num=adj_matrix.shape[0]
+            #edges = np.array(adj_matrix.nonzero()) # [2, E]
+            #ew = adj_matrix[edges[0, :], edges[1, :]]
+            edges = np.vstack(adj_matrix.nonzero())
+            ew = np.array([adj_matrix[edges[0, i], edges[1, i]] for i in range(edges.shape[1])]).flatten()
+            devices = self.device
+            ew, edges = torch.tensor(ew, device=devices), torch.tensor(edges, device=devices, dtype=torch.int64).t()
+            dist = scatter_sum(ew, edges[:, 1]) + scatter_sum(ew, edges[:, 0])
+            dist = dist / (2 * ew.sum())
+            print('construct encoding tree with num:{}...'.format(num))
+            g = GraphSparse(edges, ew, dist)
+            optim = OperatorPropagation(Partitioning(g, None))
+            optim.perform(p=0.2)
+            division = optim.enc.node_id
+            totol_comm = torch.max(division) + 1
+            print('construct encoding tree done with comm:{}'.format(totol_comm))
+            return division, totol_comm
+    
+        #adj_matrix_A=np.zeros((src_num, dst_num))
+        #adj_matrix_A[src,dst]=1  #二部图邻接矩阵
+        adj_matrix_A = sp.lil_matrix((src_num, dst_num))
+        adj_matrix_A[src, dst] = 1  # 二部图邻接矩阵
+        #D_A_r=np.sum(adj_matrix_A,axis=0)
+        D_A_r = np.array(adj_matrix_A.sum(axis=0)).flatten()
+        nonzero_mask = D_A_r != 0
+        D_A_r[nonzero_mask]=1.0/np.log2(D_A_r[nonzero_mask]+1) #np.sqrt() np.log2()
+        D_A_r=np.diag(D_A_r)#二部图邻接矩阵中dst节点的度矩阵
+        D_A_r = sp.lil_matrix(D_A_r)
+
+        out=[]
+        old_num=src_num
+        for layer in range(num_layer):
+            #adj_matrix=np.dot(np.dot(adj_matrix_A,D_A_r),adj_matrix_A.T)
+            #adj_matrix -= np.diag(np.diag(adj_matrix))
+            #index=np.where(np.sum(adj_matrix,axis=1)==0)
+            adj_matrix = adj_matrix_A.tocsr().dot( D_A_r.tocsr()).dot(adj_matrix_A.transpose().tocsr())
+            adj_matrix=adj_matrix.tolil()
+            adj_matrix.setdiag(0)  # 去除对角元素
+            index = np.where(adj_matrix.sum(axis=1) == 0)[0]
+            for i in index:
+                adj_matrix[i,i]=0.001  #处理孤立节点
+            #print(np.count_nonzero(adj_matrix))
+            print(adj_matrix.nnz)
+            division, totol_comm= encoding2tree(adj_matrix)
+
+            #comm_matrix_S=np.zeros((old_num, totol_comm)) #社区聚合矩阵,每个用户去了哪个社区
+            #comm_matrix_S[list(range(old_num)),division.tolist()]=1
+            comm_matrix_S = sp.lil_matrix((old_num, totol_comm))
+            comm_matrix_S[list(range(old_num)), division.tolist()] = 1
+            #adj_matrix_A=np.dot(comm_matrix_S.T,adj_matrix_A)  #新的二部图邻接矩阵
+            adj_matrix_A = comm_matrix_S.T @ adj_matrix_A
+            edge_index_A=np.array(adj_matrix_A.nonzero())
+            src_new1,dst_new1=edge_index_A[0].tolist(),edge_index_A[1].tolist()
+            if totol_comm==old_num:
+                print('early stop at layer:',layer)
+                for _ in range(num_layer-layer):
+                    out.extend([[division.tolist(),src_new1,dst_new1]])
+                return tuple(out)
+            else:
+                old_num=totol_comm
+                out.extend([[division.tolist(),src_new1,dst_new1]])
+        return tuple(out)
         
     def print_statistics(self, dataset):
         print('n_users=%d, n_items=%d, n_cate=%d, n_rate=%d' % (

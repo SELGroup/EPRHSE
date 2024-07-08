@@ -9,7 +9,7 @@ def parse_args():
                         help='Input data path.')
     parser.add_argument('--model_name', type=str, default='LightGCN',
                         help='Saved model name.')
-    parser.add_argument('--dataset', nargs='?', default='xmrec_cn',
+    parser.add_argument('--dataset', nargs='?', default='xmrec_br',
                         help='Choose a dataset from {steam, xmrec_cn, xmrec_mx}')
     parser.add_argument('--verbose', type=int, default=2,
                         help='Interval of evaluation. 2 for cn/mx. 1 for steam')

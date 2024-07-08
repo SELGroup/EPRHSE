@@ -318,37 +318,37 @@ class SEP_U(torch.nn.Module):
         #创建节点与超边的二部图
         g0=graph.node_type_subgraph([src_type, dst_type]) #创建子图
         data_dict = {
-            etype_forward: (partition[0][1].cpu(), partition[0][2].cpu()), #partition[][1] partition[][2]是新的二部图的src dst对
-            etype_back: (partition[0][2].cpu(), partition[0][1].cpu()),
+            etype_forward: (partition[0][1], partition[0][2]), #partition[][1] partition[][2]是新的二部图的src dst对
+            etype_back: (partition[0][2], partition[0][1]),
         }
         num_dict = {
-            src_type: max(partition[0][0].cpu())+1, dst_type: max(partition[0][2].cpu())+1,
+            src_type: max(partition[0][0])+1, dst_type: max(partition[0][2])+1,
         }
         g1=dgl.heterograph(data_dict, num_nodes_dict=num_dict).to(self.device)
         data_dict = {
-            etype_forward: (partition[1][1].cpu(), partition[1][2].cpu()), #partition[][1] partition[][2]是新的二部图的src dst对
-            etype_back: (partition[1][2].cpu(), partition[1][1].cpu()),
+            etype_forward: (partition[1][1], partition[1][2]), #partition[][1] partition[][2]是新的二部图的src dst对
+            etype_back: (partition[1][2], partition[1][1]),
         }
         num_dict = {
-            src_type: max(partition[1][0].cpu())+1, dst_type: max(partition[1][2].cpu())+1,
+            src_type: max(partition[1][0])+1, dst_type: max(partition[1][2])+1,
         }
         g2=dgl.heterograph(data_dict, num_nodes_dict=num_dict).to(self.device)
         g_list=[g0,g1,g2]  
         #创建节点和社区的二部图
         data_dict = {
-            ('node', 'nc', 'comm'): (list(range(len(partition[0][0]))), partition[0][0].cpu()),
-            ('comm', 'cn', 'node'): (partition[0][0].cpu(), list(range(len(partition[0][0])))),  #partition[][0]为社区分配list
+            ('node', 'nc', 'comm'): (list(range(len(partition[0][0]))), partition[0][0]),
+            ('comm', 'cn', 'node'): (partition[0][0], list(range(len(partition[0][0])))),  #partition[][0]为社区分配list
         }
         num_dict = {
-            'node': len(partition[0][0]), 'comm': max(partition[0][0].cpu())+1,
+            'node': len(partition[0][0]), 'comm': max(partition[0][0])+1,
         }
         g1_comm=dgl.heterograph(data_dict, num_nodes_dict=num_dict).to(self.device)
         data_dict = {
-            ('node', 'nc', 'comm'): (list(range(len(partition[1][0]))), partition[1][0].cpu()),
-            ('comm', 'cn', 'node'): (partition[1][0].cpu(), list(range(len(partition[1][0])))),
+            ('node', 'nc', 'comm'): (list(range(len(partition[1][0]))), partition[1][0]),
+            ('comm', 'cn', 'node'): (partition[1][0], list(range(len(partition[1][0])))),
         }
         num_dict = {
-            'node': len(partition[1][0]), 'comm': max(partition[1][0].cpu())+1,
+            'node': len(partition[1][0]), 'comm': max(partition[1][0])+1,
         }
         g2_comm=dgl.heterograph(data_dict, num_nodes_dict=num_dict).to(self.device)
         g_comm_list=[g1_comm, g2_comm]
