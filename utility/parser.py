@@ -9,7 +9,7 @@ def parse_args():
                         help='Input data path.')
     parser.add_argument('--model_name', type=str, default='LightGCN',
                         help='Saved model name.')
-    parser.add_argument('--dataset', nargs='?', default='xmrec_br',
+    parser.add_argument('--dataset', nargs='?', default='steam',
                         help='Choose a dataset from {steam, xmrec_cn, xmrec_mx}')
     parser.add_argument('--verbose', type=int, default=2,
                         help='Interval of evaluation. 2 for cn/mx. 1 for steam')
@@ -65,6 +65,8 @@ def parse_args():
     parser.add_argument('--regs', nargs='?', default='[0.5, 1e-7]',
                         help='Regularizations.[user-item loss coeffecient, embedding regularization]')
     parser.add_argument('--regs1', type=float, default=0.5,
+                        help='Regularizations.[user-item loss coeffecient, embedding regularization]')
+    parser.add_argument('--regs2', type=float, default=0.5,
                         help='Regularizations.[user-item loss coeffecient, embedding regularization]')
 
     parser.add_argument('--hgcn_u_hyperedge', type=int, default=1,

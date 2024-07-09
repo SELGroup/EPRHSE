@@ -44,6 +44,37 @@ def partition_todevice(partition, device):
 
     return ([S1,src1,dst1],[S2,src2,dst2])
 
+#create bigraph list of node and hyperedge for pooling
+def create_g_hyperedge_list(graph, etype_forward, etype_back, partition, device):
+    src_type, _, dst_type = etype_forward
+    g0=graph.node_type_subgraph([src_type, dst_type]) #create a subgraph with src_type and dst_type nodes
+    g_list=[g0]
+    for i in range(len(partition)):
+        data_dict={
+            etype_forward: (partition[i][1], partition[i][2]), #partition[][1] partition[][2]是新的二部图的src dst对
+            etype_back: (partition[i][2], partition[i][1]),
+        }
+        num_dict = {
+            src_type: max(partition[i][0])+1, dst_type: max(partition[i][2])+1,
+        }
+        g1=dgl.heterograph(data_dict, num_nodes_dict=num_dict).to(device)
+        g_list.append(g1)
+    return g_list
+#create bigraph list of node and comm for pooling
+def create_g_comm_list(partition, device):
+    g_list=[]
+    for i in range(len(partition)):
+        data_dict = {
+            ('node', 'nc', 'comm'): (list(range(len(partition[i][0]))), partition[i][0]),
+            ('comm', 'cn', 'node'): (partition[i][0], list(range(len(partition[i][0])))),  #partition[][0]为社区分配list
+        }
+        num_dict = {
+            'node': len(partition[i][0]), 'comm': max(partition[i][0])+1,
+        }
+        g_comm=dgl.heterograph(data_dict, num_nodes_dict=num_dict).to(device)
+        g_list.append(g_comm)
+    return g_list
+
 def train(args):
     # Step 1: Prepare graph data and device ================================================================= #
     if args.gpu >= 0 and torch.cuda.is_available():
@@ -97,21 +128,28 @@ def train(args):
                         'ic':partition_todevice(data_generator.partition_ic, device),
                         'ir':partition_todevice(data_generator.partition_ir, device),
                         }
+        print('partition_ui:',len(partition_dict['ui'][0][0]),len(partition_dict['ui'][1][0]),len(partition_dict['ui'][2][0]),len(partition_dict['ui'][3][0]),len(partition_dict['ui'][4][0]),max(partition_dict['ui'][4][0])+1)
+        print('partition_iu:',len(partition_dict['iu'][0][0]),len(partition_dict['iu'][1][0]),len(partition_dict['iu'][2][0]),len(partition_dict['iu'][3][0]),len(partition_dict['iu'][4][0]),max(partition_dict['iu'][4][0])+1)
+        print('partition_ic:',len(partition_dict['ic'][0][0]),len(partition_dict['ic'][1][0]),len(partition_dict['ic'][2][0]),len(partition_dict['ic'][3][0]),len(partition_dict['ic'][4][0]),max(partition_dict['ic'][4][0])+1)
+        print('partition_ir:',len(partition_dict['ir'][0][0]),len(partition_dict['ir'][1][0]),len(partition_dict['ir'][2][0]),len(partition_dict['ir'][3][0]),len(partition_dict['ir'][4][0]),max(partition_dict['ir'][4][0])+1)
         if args.dataset=='steam':
             partition_dict.update({'ua': partition_todevice(data_generator.partition_ua, device), 'uj': partition_todevice(data_generator.partition_uj, device)})
+            print('partition_ua:',len(partition_dict['ua'][0][0]),len(partition_dict['ua'][1][0]),len(partition_dict['ua'][2][0]),len(partition_dict['ua'][3][0]),len(partition_dict['ua'][4][0]),max(partition_dict['ua'][4][0])+1)
+            print('partition_uj:',len(partition_dict['uj'][0][0]),len(partition_dict['uj'][1][0]),len(partition_dict['uj'][2][0]),len(partition_dict['uj'][3][0]),len(partition_dict['uj'][4][0]),max(partition_dict['uj'][4][0])+1)
         else:
             partition_dict.update({'ib': partition_todevice(data_generator.partition_ib, device), 'ip': partition_todevice(data_generator.partition_ip, device)})
-    print('partition_ui:',len(partition_dict['ui'][0][0]),len(partition_dict['ui'][1][0]),len(partition_dict['ui'][2][0]),len(partition_dict['ui'][3][0]),len(partition_dict['ui'][4][0]),max(partition_dict['ui'][4][0])+1)
-    print('partition_iu:',len(partition_dict['iu'][0][0]),len(partition_dict['iu'][1][0]),len(partition_dict['iu'][2][0]),len(partition_dict['iu'][3][0]),len(partition_dict['iu'][4][0]),max(partition_dict['iu'][4][0])+1)
-    print('partition_ic:',len(partition_dict['ic'][0][0]),len(partition_dict['ic'][1][0]),len(partition_dict['ic'][2][0]),len(partition_dict['ic'][3][0]),len(partition_dict['ic'][4][0]),max(partition_dict['ic'][4][0])+1)
-    print('partition_ir:',len(partition_dict['ir'][0][0]),len(partition_dict['ir'][1][0]),len(partition_dict['ir'][2][0]),len(partition_dict['ir'][3][0]),len(partition_dict['ir'][4][0]),max(partition_dict['ir'][4][0])+1)
-    if "xmrec" in args.dataset:
-        print('partition_ib:',len(partition_dict['ib'][0][0]),len(partition_dict['ib'][1][0]),len(partition_dict['ib'][2][0]),len(partition_dict['ib'][3][0]),len(partition_dict['ib'][4][0]),max(partition_dict['ib'][4][0])+1)
-        print('partition_ip:',len(partition_dict['ip'][0][0]),len(partition_dict['ip'][1][0]),len(partition_dict['ip'][2][0]),len(partition_dict['ip'][3][0]),len(partition_dict['ip'][4][0]),max(partition_dict['ip'][4][0])+1)
-    elif "steam" in args.dataset:
-        print('partition_ua:',len(partition_dict['ua'][0][0]),len(partition_dict['ua'][1][0]),len(partition_dict['ua'][2][0]),len(partition_dict['ua'][3][0]),len(partition_dict['ua'][4][0]),max(partition_dict['ua'][4][0])+1)
-        print('partition_uj:',len(partition_dict['uj'][0][0]),len(partition_dict['uj'][1][0]),len(partition_dict['uj'][2][0]),len(partition_dict['uj'][3][0]),len(partition_dict['uj'][4][0]),max(partition_dict['uj'][4][0])+1)
-    exit()
+            print('partition_ib:',len(partition_dict['ib'][0][0]),len(partition_dict['ib'][1][0]),len(partition_dict['ib'][2][0]),len(partition_dict['ib'][3][0]),len(partition_dict['ib'][4][0]),max(partition_dict['ib'][4][0])+1)
+            print('partition_ip:',len(partition_dict['ip'][0][0]),len(partition_dict['ip'][1][0]),len(partition_dict['ip'][2][0]),len(partition_dict['ip'][3][0]),len(partition_dict['ip'][4][0]),max(partition_dict['ip'][4][0])+1)
+        
+        g_list_dict={'ui': create_g_hyperedge_list(g, ('user', 'ui', 'item'), ('item', 'iu', 'user'), partition_dict['ui'], device),
+                     'ic': create_g_hyperedge_list(g, ('item', 'ic', 'cate'), ('cate', 'ci', 'item'), partition_dict['ic'], device),
+                     'ir': create_g_hyperedge_list(g, ('item', 'ir', 'rate'), ('rate', 'ri', 'item'), partition_dict['ir'], device),
+        }
+        g_comm_list_dict={'ui': create_g_comm_list(partition_dict['ui'], device),
+                          'ic': create_g_comm_list(partition_dict['ic'], device),
+                          'ir': create_g_comm_list(partition_dict['ir'], device),
+        }
+            
     if args.gat != 0:
         model = GAT(args, g, args.embed_size, 8, args.embed_size, device).to(device)
     else:  #args.gat default=0
@@ -138,7 +176,7 @@ def train(args):
             t_pre = time()
             neg_g = construct_negative_graph(g, args.neg_samples, device=device)  #随机噪声生成的neg 'ui''iu' graph，二部图的边量是原始的neg_samples倍
             if args.se==1:
-                embedding_h = model(g, partition_dict)  #根据g从初始的h中经过一轮训练到embedding_h
+                embedding_h = model(g, g_list_dict, g_comm_list_dict)  #根据g从初始的h中经过一轮训练到embedding_h
             else:
                 embedding_h = model(g)
             bpr_loss = 0  #user-item的预测损失，bpr_loss=mf_loss+emb_loss(后者为正则化项)
@@ -297,7 +335,7 @@ def train(args):
                 embedding_h = model.lightgcn_forward(g)
             else:
                 if args.se==1:
-                    embedding_h = model(g, partition_dict, pre_train=False)
+                    embedding_h = model(g, g_list_dict, g_comm_list_dict, pre_train=False)
                 else:
                     embedding_h = model(g, pre_train=False)
             if args.inductive:
@@ -523,11 +561,24 @@ def train(args):
 
 if __name__ == '__main__':
     args = parse_args()
-    torch.cuda.manual_seed(args.random_seed)
-    torch.backends.cudnn.benchmark = False
-    torch.backends.cudnn.deterministic = True #使得网络相同输入下每次运行的输出固定
     random.seed(args.random_seed)
     np.random.seed(args.random_seed)
+    torch.manual_seed(args.random_seed)
+    torch.cuda.manual_seed(args.random_seed)
+    torch.cuda.manual_seed_all(args.random_seed)
+    torch.backends.cudnn.benchmark = False
+    torch.backends.cudnn.deterministic = True #使得网络相同输入下每次运行的输出固定
     dgl.seed(args.random_seed)
+    
+    args.model_name = 'UPRHSE'
+    args.random_seed=132
+    args.beta_pool=0.03
+    args.hgcn_mix='[14, 1e-1]'
+    args.pre_lr=0.01
+    args.lr=0.05
+    args.regs='[0.7, 1e-4]'
+    args.verbose=1
+    args.layer_num=2
+
     print(args)
     train(args)

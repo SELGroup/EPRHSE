@@ -249,7 +249,6 @@ class SEP(nn.Module):
             nn.ReLU(),
             #nn.BatchNorm1d(dim),
         )
-
     
     def forward(self, graph, h, etype_forward, norm_2=-1):
         with graph.local_scope():
@@ -276,9 +275,9 @@ class SEP(nn.Module):
 
 
     
-class SEP_U(torch.nn.Module):
+class SEP_U1(torch.nn.Module):
     def __init__(self, embed_size, beta, device, num_blocks=2):
-        super(SEP_U, self).__init__()
+        super(SEP_U1, self).__init__()
         self.dim = embed_size  
         self.num_blocks=num_blocks
         self.HGCN = HGCNLayer()
@@ -379,6 +378,66 @@ class SEP_U(torch.nn.Module):
             h={src_type: h_src, dst_type + '_edge': h_dst}
         #last HGCN
         #h_src, h_dst=self.HGCNLayers[-1](g_list[0], h, etype_forward, etype_back, norm_2)
+        h_src, h_dst=self.HGCN(g_list[0], h, etype_forward, etype_back, norm_2)
+
+        return h_src, h_dst
+
+class SEP_U(torch.nn.Module):
+    def __init__(self, embed_size, beta, device, num_blocks=2):
+        super(SEP_U, self).__init__()
+        self.dim = embed_size  
+        self.num_blocks=num_blocks
+        self.HGCN = HGCNLayer()
+        self.HGCNLayers = self.get_HGCNs()  #一个还是多个HGCNLayer？
+        self.sep = SEP(self.dim)
+        self.sepools = self.get_sepool()  #一个还是多个SEP？
+        self.device=device
+        self.fc = nn.Linear(2*embed_size,embed_size)
+        self.beta = beta
+
+    def get_HGCNs(self):
+        HGCNs = nn.ModuleList()  #管理模型层的容器
+        for _ in range(self.num_blocks*2 + 1):
+            hgcn = HGCNLayer()
+            HGCNs.append(hgcn)
+        return HGCNs
+    
+    def get_sepool(self):
+        pools = nn.ModuleList()  #管理模型层的容器
+        for _ in range(self.num_blocks*2):
+            '''
+            pool = SEPooling(
+                nn.Sequential(
+                    #nn.Linear(self.dim, self.dim),
+                    nn.ReLU(),
+                    #nn.BatchNorm1d(self.dim),
+                ))
+            '''
+            pool = SEP(self.dim)
+            pools.append(pool)
+        return pools
+
+    def forward(self, g_list, g_comm_list, h0, etype_forward, etype_back, norm_2):
+        h_save=[]
+        src_type, _, dst_type = etype_forward
+        h=h0
+        #down sampling
+        for _ in range(self.num_blocks): #_取0,1
+            #HGCN
+            h_src, h_dst = self.HGCN(g_list[_], h, etype_forward, etype_back, norm_2)
+            h_save.append(h_src)
+            #SEP
+            h_src = self.sep(g_comm_list[_], h_src, ('node', 'nc', 'comm'))
+            h={src_type: h_src, dst_type + '_edge': h_dst}
+        #up sampling
+        for _ in range(self.num_blocks,0,-1): #_取2，1
+            #HGCN
+            h_src, h_dst=self.HGCN(g_list[_], h, etype_forward, etype_back, norm_2)
+            #SEP-U
+            h_src = self.sep(g_comm_list[_-1], h_src, ('comm', 'cn', 'node'))
+            h_src=h_src+self.beta*h_save[_-1]
+            h={src_type: h_src, dst_type + '_edge': h_dst}
+        #last HGCN
         h_src, h_dst=self.HGCN(g_list[0], h, etype_forward, etype_back, norm_2)
 
         return h_src, h_dst
@@ -1147,7 +1206,7 @@ class LightGCNP(nn.Module):
 
     def build_model(self):
         self.HGCNlayer = HGCNLayer()
-        self.SEP_U = SEP_U(embed_size=self.hid_dim, beta=self.pool_beta , device=self.device)  #一个SEP_U还是多个SEP_U？？？
+        self.SEP_U = SEP_U(embed_size=self.hid_dim, beta=self.pool_beta, device=self.device, num_blocks=self.layer_num)  #一个SEP_U层
         self.HGCNlayer_general = HGCNLayer_general()
         self.layers = nn.ModuleList()
         self.LGCNlayer = LightGCNLayer()
@@ -1176,25 +1235,25 @@ class LightGCNP(nn.Module):
         h = {'user': user_embed, 'item': item_embed}
         return h
 
-    def forward(self, graph, partition, pre_train=True):
+    def forward(self, graph, g_list, g_comm_list, pre_train=True):
         h = self.node_features
         norm = self.norm_2
         if self.hgcn:
             #没有pretrain信息融入的HGCNlayer变为SEP_U(graph, h0, etype_forward, etype_back, norm_2)
             #h_user, _ = self.HGCNlayer(graph, h, ('user', 'ui', 'item'), ('item', 'iu', 'user'), norm)
-            h_user, _ = self.SEP_U(partition['ui'], graph, h, ('user', 'ui', 'item'), ('item', 'iu', 'user'), norm)
+            h_user, _ = self.SEP_U(g_list['ui'], g_comm_list['ui'], h, ('user', 'ui', 'item'), ('item', 'iu', 'user'), norm)
             h_item, _ = self.HGCNlayer(graph, h, ('item', 'iu', 'user'), ('user', 'ui', 'item'), norm)
             #h_item, _ = self.SEP_U(partition['i'], graph, h, ('item', 'iu', 'user'), ('user', 'ui', 'item'), norm)
 
             if pre_train:
                 if self.classify_as_edge:
-                    h_item_cate, h_cate_idx = self.SEP_U(partition['ic'], graph, h, ('item', 'ic', 'cate'), ('cate', 'ci', 'item'),
+                    h_item_cate, h_cate_idx = self.SEP_U(g_list['ic'], g_comm_list['ic'], h, ('item', 'ic', 'cate'), ('cate', 'ci', 'item'),
                                                              norm)
-                    h_item_rate, h_rate_idx = self.SEP_U(partition['ir'], graph, h, ('item', 'ir', 'rate'), ('rate', 'ri', 'item'),
+                    h_item_rate, h_rate_idx = self.SEP_U(g_list['ir'], g_comm_list['ir'], h, ('item', 'ir', 'rate'), ('rate', 'ri', 'item'),
                                                              norm)
                 else:
-                    h_item_cate, _ = self.SEP_U(partition['ic'], graph, h, ('item', 'ic', 'cate'), ('cate', 'ci', 'item'), norm)
-                    h_item_rate, _ = self.SEP_U(partition['ir'], graph, h, ('item', 'ir', 'rate'), ('rate', 'ri', 'item'), norm)
+                    h_item_cate, _ = self.SEP_U(g_list['ic'], g_comm_list['ic'], h, ('item', 'ic', 'cate'), ('cate', 'ci', 'item'), norm)
+                    h_item_rate, _ = self.SEP_U(g_list['ir'], g_comm_list['ir'], h, ('item', 'ir', 'rate'), ('rate', 'ri', 'item'), norm)
                     h_item_cate = F.softmax(self.cate_fc(h_item_cate), dim=1)
                     h_item_rate = F.softmax(self.rate_fc(h_item_rate), dim=1)
                 if 'xmrec' in self.dataset:
@@ -1259,7 +1318,6 @@ class LightGCNP(nn.Module):
                                                   self.trans_alpha, torch.cat((h_item_cate,h_item_rate),dim=1), detach=True,att=self.att_conv)
                     h_item_v2, _ = self.HGCNlayer(graph, h, ('item', 'iu', 'user'), ('user', 'ui', 'item'), -1,
                                                   self.trans_alpha, torch.cat((h_user_age,h_user_job),dim=1), detach=True,att=self.att_conv)
-
                 else:
                     h_user_v2, _ = self.HGCNlayer(graph, h, ('user', 'ui', 'item'), ('item', 'iu', 'user'), -1,
                                                   self.trans_alpha,

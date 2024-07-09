@@ -9,11 +9,9 @@ from utility.parser import *
 def main():
     wandb.init(project="UPRTH")
     args = parse_args()
-    # args.beta_pool=wandb.config.beta_pool
-    # args.pre_lr=wandb.config.pre_lr
-    # args.lr=wandb.config.lr
-    args.regs= f'[{wandb.config.regs1}, 1e-7]'
+    args.regs= f'[{wandb.config.regs1}, {wandb.config.regs2}]'
     args.hgcn_mix = f'[{wandb.config.hgcn_mix1}, {wandb.config.hgcn_mix2}]'
+    args.beta_pool=args.beta_pool*1.0/100
     torch.cuda.manual_seed(args.random_seed)
     torch.backends.cudnn.benchmark = False
     torch.backends.cudnn.deterministic = True #使得网络相同输入下每次运行的输出固定
@@ -32,20 +30,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-# sweep_config={
-#     "method":"random",
-#     "name":"xmrec_cn",
-#     "metric":{"goal":"maximize","name":"score"},
-#     "parameters":{
-#         "beta_pool":{"max":0.95,"min":0.01},
-#         "pre_lr":{"values":[0.001,0.005,0.01,0.05,0.1,0.5]},
-#         "lr":{"values":[0.001,0.005,0.01,0.05,0.1,0.5]},
-#         "regs1":{"values":[0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9]},
-#         "hgcn_mix1":{"values":[1,2,5,8,10]},
-#         "hgcn_mix2":{"values":[1,1e-1,1e-2,1e-3]},
-#         }
-#     }
-
-# sweep_id=wandb.sweep(sweep=sweep_config,project="UPRTH")
-# wandb.agent(sweep_id, function=main, count=100)
