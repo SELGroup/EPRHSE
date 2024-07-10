@@ -518,27 +518,12 @@ def train(args):
     f = open(save_path, 'a')
 
     f.write(
-        'se=%s, beta_pool=%.2f, top_k=%s, lr=%.4f, pre_lr=%.4f, layer_num=%s, batch_size=%d, norm=%.1f, pre_train=%d, gat=%d, loss=%s, finetune_loss=%s, lightgcn=%d, num_neg=%d, hgcn=%d, multitask_train=%d, '
-        'pre_train_task=%d, user_pretrain=%d, item_pretrain=%d, classify_as_edge=%d, \n'
-        '\thgcn_u_hyperedge=%d, pre_gcn=%d, user_hpedge_ig=%d, att_conv=%d, hgcn_mix=%s, regs=%s\n\t--%s\n'
-        % (args.se, args.beta_pool,
-           args.Ks, args.lr, args.pre_lr, args.layer_num, args.batch_size, args.norm_2, args.pre_train, args.gat,
-           args.loss,
-           args.finetune_loss,
-           args.lightgcn,
-           args.neg_samples,
-           args.hgcn,
-           args.multitask_train,
-           args.pre_train_task,
-           args.user_pretrain,
-           args.item_pretrain,
-           args.classify_as_edge,
-           args.hgcn_u_hyperedge,
-           args.pre_gcn,
-           args.user_hpedge_ig,
-           args.att_conv,
-           args.hgcn_mix,
-           args.regs, final_perf))
+        'se=%d, beta_pool=%.2f, random_seed=%d, inductive=%d, inductive_ratio=%.2f, top_k=%s, layer_num=%s, batch_size=%d, norm=%.1f, multitask_train=%d, \n'
+        '\tpre_train=%d, loss=%s, finetune_loss=%s, hgcn=%d, lightgcn=%d, pre_train_task=%d, user_pretrain=%d, item_pretrain=%d, classify_as_edge=%d, \n'
+        '\tlr=%.4f, pre_lr=%.4f, att_conv=%d, hgcn_mix=%s, regs=%s\n\t--%s\n'
+        % (args.se, args.beta_pool, args.random_seed, args.inductive, args.induct_ratio, args.Ks, args.layer_num, args.batch_size, args.norm_2, args.multitask_train,
+           args.pre_train, args.loss, args.finetune_loss, args.hgcn, args.lightgcn, args.pre_train_task, args.user_pretrain, args.item_pretrain, args.classify_as_edge,
+           args.lr, args.pre_lr, args.att_conv, args.hgcn_mix, args.regs, final_perf))
     f.close()
     if args.user_split == 1:
         final_perf = "Best Iter=[%d]@[%.1f]\trecall=[%s], ndcg=[%s]" % \
