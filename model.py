@@ -1141,6 +1141,7 @@ class LightGCNP(nn.Module):
         self.pool_beta = args.beta_pool
         self.hid_dim = args.embed_size  #default=128
         self.layer_num = args.layer_num #Output sizes of every layer, default=3
+        self.layer_pool = args.layer_pool  #default=2
         self.device = device
         self.n_cate = graph.nodes('cate').shape[0]
         self.n_rate = graph.nodes('rate').shape[0]
@@ -1206,7 +1207,7 @@ class LightGCNP(nn.Module):
 
     def build_model(self):
         self.HGCNlayer = HGCNLayer()
-        self.SEP_U = SEP_U(embed_size=self.hid_dim, beta=self.pool_beta, device=self.device, num_blocks=self.layer_num)  #一个SEP_U层
+        self.SEP_U = SEP_U(embed_size=self.hid_dim, beta=self.pool_beta, device=self.device, num_blocks=self.layer_pool)  #一个SEP_U层
         self.HGCNlayer_general = HGCNLayer_general()
         self.layers = nn.ModuleList()
         self.LGCNlayer = LightGCNLayer()

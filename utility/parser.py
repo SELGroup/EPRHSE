@@ -97,6 +97,8 @@ def parse_args():
                         help='Embedding size.')
     parser.add_argument('--layer_num', type=int, default=3,
                         help='Output sizes of every layer')
+    parser.add_argument('--layer_pool', type=int, default=2,
+                        help="pooling and unpooling layers")
 
     # parser.add_argument('--batch_size', type=int, default=32768,
                         # help='Batch size.')

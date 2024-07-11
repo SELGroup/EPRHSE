@@ -164,10 +164,10 @@ class ScorePredictor(nn.Module):
 class HGCNLayer(nn.Module):
     def __init__(self,linear=False):
         super().__init__()
-        self.fc = nn.Linear(64, 64)
-        self.linear = nn.Linear(64, 64, bias=False)
-        self.linear_2 = nn.Linear(64, 64, bias=False)
-        self.fc_2 = nn.LazyLinear(64)
+        self.fc = nn.Linear(128, 128)
+        self.linear = nn.Linear(128, 128, bias=False)
+        self.linear_2 = nn.Linear(128, 128, bias=False)
+        self.fc_2 = nn.LazyLinear(128)
         self.d_sqrt = 8
         self.edgedrop = dgl.transforms.DropEdge(0.2)
         self.leakyrelu = nn.LeakyReLU(0.1)
@@ -546,13 +546,41 @@ class LightGCN(nn.Module):
         item_embed = torch.mean(torch.stack(item_embed, dim=0), dim=0)
         h = {'user': user_embed, 'item': item_embed}
         return h
+    
+    def dhcf_forward(self, graph):
+        h = self.node_features
 
-    def forward(self, graph, pre_train=True, trans_conv=True):
+        user_embed = self.user_embedding
+        H_user = graph.adj(etype='ui').to_dense()
+        H_user2 = torch.matmul(H_user, torch.matmul(H_user.t(),H_user))
+        H_edges_user2 = H_user2.nonzero(as_tuple=True)
+        H_u, H_v = H_edges_user2[0], H_edges_user2[1]
+        H_v = H_v+graph.num_nodes('item')
+        g_u=dgl.add_edges(graph, H_u, H_v,etype='ui')
+        g_u=dgl.add_edges(g_u, H_v, H_u,etype='iu')
+        h_user, _ = self.HGCNlayer(g_u, h, ('user', 'ui', 'item'), ('item', 'iu', 'user'))
+        user_embed=self.linear(h_user+user_embed)
+
+        item_embed = self.item_embedding
+        H_item = graph.adj(etype='iu').to_dense()
+        H_item2 = torch.matmul(H_item, torch.matmul(H_item.t(),H_item))
+        H_edges_item2 = H_item2.nonzero(as_tuple=True)
+        H_i, H_j = H_edges_item2[0], H_edges_item2[1]
+        H_j = H_j+graph.num_nodes('user')
+        g_i=dgl.add_edges(graph, H_i, H_j,etype='iu')
+        g_i=dgl.add_edges(g_i, H_j, H_i,etype='ui')
+        h_item, _ = self.HGCNlayer(g_i, h, ('item', 'iu', 'user'), ('user', 'ui', 'item'))
+        item_embed=self.linear(h_item+item_embed)
+        h = {'user': user_embed, 'item': item_embed}
+        return h
+
+
+    def forward(self, graph, pre_train=True, trans_conv=True,linear_transform=False):
         h = self.node_features
         norm = self.norm_2
         if self.hgcn:
-            h_user, _ = self.HGCNlayer(graph, h, ('user', 'ui', 'item'), ('item', 'iu', 'user'), norm)
-            h_item, _ = self.HGCNlayer(graph, h, ('item', 'iu', 'user'), ('user', 'ui', 'item'), norm)
+            h_user, _ = self.HGCNlayer(graph, h, ('user', 'ui', 'item'), ('item', 'iu', 'user'), norm, linear_transform=True)
+            h_item, _ = self.HGCNlayer(graph, h, ('item', 'iu', 'user'), ('user', 'ui', 'item'), norm, linear_transform=True)
             if pre_train:
                 if self.classify_as_edge:
                     h_item_cate, h_cate_idx = self.HGCNlayer(graph, h, ('item', 'ic', 'cate'), ('cate', 'ci', 'item'),
@@ -745,7 +773,7 @@ class LightGCN(nn.Module):
         return 0.005 * result
 
     def create_bpr_loss(self, pos_g, neg_g, h, users_non_induct=None, loss_type='bpr'):
-        if loss_type == 'align':
+        if loss_type == 'align' or loss_type == 'auloss':
             # h['user'] = F.normalize(h['user'], dim=-1)
             # h['item'] = F.normalize(h['item'], dim=-1)
             sub_fig_feature = {'user': h['user'], 'item': h['item']}

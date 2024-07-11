@@ -313,20 +313,18 @@ def main(args):
             elif args.lightgcn == 2:
                 embedding_h = {}
                 embedding_h1 = model.lightgcn_forward(g)
-                embedding_h2 = model(g, pre_train=False)
+                embedding_h2 = model(g, pre_train=False, linear_transform=True)
                 embedding_h['user'] = embedding_h1['user'] + embedding_h2['user']
                 embedding_h['item'] = embedding_h1['item'] + embedding_h2['item']
             elif args.lightgcn == 3:
-                embedding_h = model.dhcf_forward(g, pre_train=False)
+                embedding_h = model.dhcf_forward(g)
             elif args.lightgcn == 4:
                 embedding_h = model.ultragcn_forward()
                 args.finetune_loss = 'ultragcn'
-            elif args.lightgcn == 5:
-                embedding_h = model.hgnn_forward(g)
             else:
                 embedding_h = model(g, pre_train=False)
-            # print(embedding_h['user'], embedding_h['item'])
-            # sys.exit()
+            #print(embedding_h['user'].shape, embedding_h['item'].shape)
+            #sys.exit()
             if args.inductive:
                 bpr_loss, mf_loss, emb_loss = model.create_bpr_loss(pos_g, neg_g, embedding_h, users_non_induct,
                                                                     loss_type='bpr')
@@ -369,10 +367,12 @@ def main(args):
             if args.dataset == 'xmrec_mx':
                 k=1
                 test_users = users_to_test[k*16384-8192:(k+1)*16384-8192]
-                test_users_transduct = test_users_transduct[k*16384-8192:(k+1)*16384-8192]
+                if args.inductive:
+                    test_users_transduct = test_users_transduct[k*16384-8192:(k+1)*16384-8192]
             else:
                 test_users = users_to_test
-                test_users_transduct = users_transduct
+                if args.inductive:
+                    test_users_transduct = users_transduct
             # test_users = users_to_test
             '''Inference process'''
             if args.inductive:
@@ -520,10 +520,10 @@ def main(args):
     f = open(save_path, 'a')
 
     f.write(
-        'se=%d, beta_pool=%.2f, random_seed=%d, inductive=%d, inductive_ratio=%.2f, top_k=%s, layer_num=%s, batch_size=%d, norm=%.1f, multitask_train=%d, \n'
+        'se=%d, beta_pool=%.2f, random_seed=%d, inductive=%d, inductive_ratio=%.2f, top_k=%s, layer_pool=%s, batch_size=%d, norm=%.1f, multitask_train=%d, \n'
         '\tpre_train=%d, loss=%s, finetune_loss=%s, hgcn=%d, lightgcn=%d, pre_train_task=%d, user_pretrain=%d, item_pretrain=%d, classify_as_edge=%d, \n'
         '\tlr=%.4f, pre_lr=%.4f, att_conv=%d, hgcn_mix=%s, regs=%s\n\t--%s\n'
-        % (args.se, args.beta_pool, args.random_seed, args.inductive, args.induct_ratio, args.Ks, args.layer_num, args.batch_size, args.norm_2, args.multitask_train,
+        % (args.se, args.beta_pool, args.random_seed, args.inductive, args.induct_ratio, args.Ks, args.layer_pool, args.batch_size, args.norm_2, args.multitask_train,
            args.pre_train, args.loss, args.finetune_loss, args.hgcn, args.lightgcn, args.pre_train_task, args.user_pretrain, args.item_pretrain, args.classify_as_edge,
            args.lr, args.pre_lr, args.att_conv, args.hgcn_mix, args.regs, final_perf))
     f.close()
@@ -558,7 +558,7 @@ if __name__ == '__main__':
     torch.backends.cudnn.deterministic = True #使得网络相同输入下每次运行的输出固定
     dgl.seed(args.random_seed)
 
-    args.model_name = 'UPRHSE'
+    args.model_name = 'AttriMask' #
     args.random_seed=132
     args.pre_lr=0.01
     args.lr=0.05
@@ -566,10 +566,13 @@ if __name__ == '__main__':
     args.verbose=1
     args.layer_num=2
     args.se=0
-    args.lightgcn=1
-    args.hgcn=0
-    args.pre_train=0
-    args.finetune_loss='bpr'
+    args.lightgcn=0 #LightGCN/DirectAU/SGL:1; HCCF:2; DHCF:3; UltraGCN:4; HGNN/GCC/AttriMask:0
+    args.hgcn=1 #LightGCN/DirectAU/UltraGCN:0; HGNN/HCCF:1
+    args.pre_train=1 #LightGCN/DirectAU/UltraGCN/HGNN/HCCF/DHCF:0; GCC/SGL/AttriMask:1
+    args.finetune_loss='bpr' #LightGCN/HGNN/HCCF/DHCF:bpr; DirectAU:auloss; UltraGCN:ultragcn
+    args.attrimask=1
+    args.sgl=0
+    args.gcc=0
 
     print(args)
     main(args)
