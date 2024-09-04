@@ -1,8 +1,0 @@
-2024-01-22 09:09:27,872 INFO    StreamThr :3633882 [internal.py:wandb_internal():86] W&B internal server running at pid: 3633882, started at: 2024-01-22 09:09:27.871973
-2024-01-22 09:09:27,874 DEBUG   HandlerThread:3633882 [handler.py:handle_request():144] handle_request: status
-2024-01-22 09:09:27,879 INFO    WriterThread:3633882 [datastore.py:open_for_write():85] open: /workspace/UPRTH/wandb/run-20240122_090927-cdgr37fr/run-cdgr37fr.wandb
-2024-01-22 09:09:27,880 DEBUG   SenderThread:3633882 [sender.py:send():379] send: header
-2024-01-22 09:09:27,880 DEBUG   SenderThread:3633882 [sender.py:send():379] send: run
-2024-01-22 09:09:28,874 INFO    SenderThread:3633882 [dir_watcher.py:__init__():211] watching files in: /workspace/UPRTH/wandb/run-20240122_090927-cdgr37fr/files
-2024-01-22 09:09:28,874 INFO    SenderThread:3633882 [sender.py:_start_run_threads():1121] run started: cdgr37fr with start time 1705914567.871059
-2024-01-22 09:09:30,875 INFO    MainThread:3633882 [internal.py:handle_exit():76] Internal process exited

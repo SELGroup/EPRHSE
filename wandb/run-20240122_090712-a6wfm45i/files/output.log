@@ -1,5 +1,0 @@
-/usr/local/lib/python3.10/dist-packages/torch/nn/modules/lazy.py:180: UserWarning: Lazy modules are a new feature under heavy development so changes to the API or functionality can happen at any moment.
-  warnings.warn('Lazy modules are a new feature under heavy development '
-Epoch 0 [1.0s]: train==[4.01816=2.18601 + 0.69012 +0.69104 + 0.00000]
-Epoch 20 [0.5s]: train==[0.12096=0.11276 + 0.00400 +0.00376 + 0.00000]
-[34m[1mwandb[39m[22m: Ctrl + C detected. Stopping sweep.

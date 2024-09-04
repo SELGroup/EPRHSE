@@ -1,7 +1,0 @@
-/usr/local/lib/python3.10/dist-packages/torch/nn/modules/lazy.py:180: UserWarning: Lazy modules are a new feature under heavy development so changes to the API or functionality can happen at any moment.
-  warnings.warn('Lazy modules are a new feature under heavy development '
-[2, 0.1]
-Epoch 0 [1.1s]: train==[3.50538=1.73250 + 0.69190 +0.69224 + 0.00000]
-Epoch 20 [0.6s]: train==[0.75190=0.10261 + 0.67913 +0.68107 + 0.00000]
-Epoch 40 [0.5s]: train==[0.51526=0.01813 + 0.59843 +0.59600 + 0.00000]
-Epoch 60 [0.7s]: train==[0.32784=0.00792 + 0.38742 +0.39338 + 0.00000]
