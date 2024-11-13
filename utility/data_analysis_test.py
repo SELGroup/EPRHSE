@@ -5,7 +5,7 @@ import multiprocessing
 import heapq
 import torch
 
-cores = multiprocessing.cpu_count()  #返回CPU数量
+cores = multiprocessing.cpu_count()
 print(cores)
 args = parse_args()
 Ks = eval(args.Ks)  #'Output sizes of every layer', default='[10,20]'
@@ -128,14 +128,14 @@ def test(users_to_test, rate_mat):
 
     test_users = users_to_test
     n_test_users = len(test_users)
-    n_user_batchs = n_test_users // u_batch_size + 1 if n_test_users % u_batch_size != 0 else n_test_users // u_batch_size #batch的数目
+    n_user_batchs = n_test_users // u_batch_size + 1 if n_test_users % u_batch_size != 0 else n_test_users // u_batch_size 
     count = 0
 
     for u_batch_id in range(n_user_batchs):
         start = u_batch_id * u_batch_size
         end = (u_batch_id + 1) * u_batch_size
 
-        user_batch = test_users[start: end]  #这个batch的user
+        user_batch = test_users[start: end]  
         print('test batch %d'%u_batch_id)
         rate_batch = rate_mat[user_batch]
         # print(rate_mat.shape)
