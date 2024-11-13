@@ -34,13 +34,13 @@ class Data(object):
         self.n_train, self.n_test, self.ic_interactions, self.ir_interactions = 0, 0, 0, 0
         self.exist_users = []
 
-        user_item_src, user_item_dst = [],[]  #存放train的uid和item id（即user-item对）
-        item_cate_src, item_cate_dst = [],[]  #存放item和cate（即item-cate/类别对）
-        item_rate_src,item_rate_dst = [],[]  #存放item和rate（即item-rate/等级对）
+        user_item_src, user_item_dst = [],[]
+        item_cate_src, item_cate_dst = [],[] 
+        item_rate_src,item_rate_dst = [],[]  
         item_bT_src,item_bT_dst = [],[]
         item_cpr_src,item_cpr_dst = [],[]
-        user_age_src,user_age_dst = [],[]  #存放uid和friend_idx（即uid-friend_idx对）
-        user_job_src,user_job_dst = [],[]  #存放uid和group（即uid-group群组对）
+        user_age_src,user_age_dst = [],[]  
+        user_job_src,user_job_dst = [],[]  
 
         self.train_items, self.test_set = {}, {}
         with open(train_file, 'r') as f:
@@ -53,7 +53,7 @@ class Data(object):
                 self.train_items[uid] = items
                 self.n_users = max(self.n_users, uid)
                 self.n_items = max(self.n_items, max(items))
-                self.n_train += len(items)  #train的user-item对数目
+                self.n_train += len(items)  
                 for g in line[1:]:
                     user_item_src.append(uid)
                     user_item_dst.append(int(g))
@@ -66,11 +66,11 @@ class Data(object):
                 uid = int(line[0])
                 items_test = [int(g) for g in line[1:]]
                 self.test_set[uid] = items_test
-                self.n_items = max(self.n_items, max(items_test))  #更新item的数目，test里的item也算进来
-                self.n_test += len(items_test)  #test的user-item对数目
+                self.n_items = max(self.n_items, max(items_test))
+                self.n_test += len(items_test) 
                 line = f.readline().strip()
         self.n_users += 1
-        self.n_items += 1  #因为id都是从0开始的，算总数时编号+1
+        self.n_items += 1  
 
         with open(ic_file, 'r') as f:
             line = f.readline().strip()
@@ -90,7 +90,7 @@ class Data(object):
                         item_cate_src.append(iid)
                         item_cate_dst.append(cate)
                 line = f.readline().strip()
-        self.n_cate += 1 #item的类别cate数目
+        self.n_cate += 1 
 
         with open(ir_file, 'r') as f:
             line = f.readline().strip()
@@ -112,7 +112,7 @@ class Data(object):
             if 'xmrec' in dataset:
                 self.n_rate = 9
             else:
-                self.n_rate += 1  #item的等级rate数目
+                self.n_rate += 1  
 
         if 'xmrec' in dataset:
             bT_idx = 0
@@ -146,10 +146,10 @@ class Data(object):
                     line = line.strip('\n').split(' ')
                     for uid in line:
                         user_age_src.append(int(uid))
-                        user_age_dst.append(friend_idx)  #这一line中的uid有共同朋友friend_idx/处于相同年龄段
+                        user_age_dst.append(friend_idx)  
                     friend_idx += 1
                     line = f.readline().strip()
-            self.n_age = friend_idx  #朋友类别数
+            self.n_age = friend_idx 
 
             with open(uo_file, 'r') as f:
                 line = f.readline().strip()
@@ -160,11 +160,11 @@ class Data(object):
                     groups = line[1:]
                     for g in groups:
                         g = int(g)
-                        self.n_job = max(self.n_job, g)  #更新最大group编号
+                        self.n_job = max(self.n_job, g) 
                         user_job_src.append(uid)
                         user_job_dst.append(g)
                     line = f.readline().strip()
-            self.n_job += 1  #uid的group总数
+            self.n_job += 1 
 
         self.print_statistics(dataset)
 
@@ -197,7 +197,6 @@ class Data(object):
                 if os.path.exists(path+'/partition_3D.pickle'):
                     self.partition_ui,self.partition_iu,self.partition_ic,self.partition_ir,self.partition_ib,self.partition_ip=pickle.load(open(path+'/partition_3D.pickle',"rb+"))
                 else:
-                    #partition为一个元组（[S1,src,dst],[S2,src,dst])，S1是个list，S1[i]为用户i对应社区，src,dst表示聚合后的二部图源社区，目标节点对
                     self.partition_ui=self.partition(self.n_users,self.n_items,user_item_src,user_item_dst)
                     self.partition_iu=self.partition(self.n_items,self.n_users,user_item_dst,user_item_src)
                     self.partition_ic=self.partition(self.n_items,self.n_cate,item_cate_src, item_cate_dst)
@@ -211,7 +210,6 @@ class Data(object):
                 if os.path.exists(path+'/partition_5D.pickle'):
                     self.partition_ui,self.partition_iu,self.partition_ic,self.partition_ir,self.partition_ib,self.partition_ip=pickle.load(open(path+'/partition_5D.pickle',"rb+"))
                 else:
-                    #partition为一个元组（[S1,src,dst],[S2,src,dst])，S1是个list，S1[i]为用户i对应社区，src,dst表示聚合后的二部图源社区，目标节点对
                     self.partition_ui=self.partition_high(self.n_users,self.n_items,user_item_src,user_item_dst)
                     self.partition_iu=self.partition_high(self.n_items,self.n_users,user_item_dst,user_item_src)
                     self.partition_ic=self.partition_high(self.n_items,self.n_cate,item_cate_src, item_cate_dst)
@@ -257,7 +255,6 @@ class Data(object):
                 if os.path.exists(path+'/partition_5D.pickle'):
                     self.partition_ui,self.partition_iu,self.partition_ic,self.partition_ir,self.partition_ua,self.partition_uj=pickle.load(open(path+'/partition_5D.pickle',"rb+"))
                 else:
-                    #partition为一个元组（[S1,src,dst],[S2,src,dst],...)，S1是个list，S1[i]为用户i对应社区，src,dst表示聚合后的二部图源社区，目标节点对
                     self.partition_ui=self.partition_high(self.n_users,self.n_items,user_item_src,user_item_dst)
                     self.partition_iu=self.partition_high(self.n_items,self.n_users,user_item_dst,user_item_src)
                     self.partition_ic=self.partition_high(self.n_items,self.n_cate,item_cate_src, item_cate_dst)
@@ -300,28 +297,28 @@ class Data(object):
             return division, totol_comm
     
         adj_matrix_A=np.zeros((src_num, dst_num))
-        adj_matrix_A[src,dst]=1  #二部图邻接矩阵
+        adj_matrix_A[src,dst]=1
         #adj_matrix=np.dot(adj_matrix_A,adj_matrix_A.T) 
         D_A_r=np.sum(adj_matrix_A,axis=0)
         nonzero_mask = D_A_r != 0
         D_A_r[nonzero_mask]=1.0/np.log2(D_A_r[nonzero_mask]+1) #np.sqrt() np.log2()
-        D_A_r=np.diag(D_A_r)#二部图邻接矩阵中dst节点的度矩阵
+        D_A_r=np.diag(D_A_r)
         adj_matrix=np.dot(np.dot(adj_matrix_A,D_A_r),adj_matrix_A.T)
         adj_matrix -= np.diag(np.diag(adj_matrix))
-        #D_v=np.sum(adj_matrix,axis=0) #adj_matrix中节点的度矩阵
+        #D_v=np.sum(adj_matrix,axis=0)
         #nonzero_mask = D_v != 0
         #D_v[nonzero_mask]=1.0/np.sqrt(D_v[nonzero_mask])
         #D_v=np.diag(D_v)
         #adj_matrix=np.dot(np.dot(D_v,adj_matrix),D_v)
         index=np.where(np.sum(adj_matrix,axis=1)==0)
         for i in index:
-            adj_matrix[i,i]=0.001  #处理孤立节点
+            adj_matrix[i,i]=0.001 
         print(np.count_nonzero(adj_matrix))
         division1, totol_comm1= encoding2tree(adj_matrix)
 
-        comm_matrix_S=np.zeros((src_num, totol_comm1)) #社区聚合矩阵,每个用户去了哪个社区
+        comm_matrix_S=np.zeros((src_num, totol_comm1)) 
         comm_matrix_S[list(range(src_num)),division1.tolist()]=1
-        adj_matrix_A=np.dot(comm_matrix_S.T,adj_matrix_A)  #新的二部图邻接矩阵
+        adj_matrix_A=np.dot(comm_matrix_S.T,adj_matrix_A)
         edge_index_A=np.array(adj_matrix_A.nonzero())
         src_new1,dst_new1=edge_index_A[0].tolist(),edge_index_A[1].tolist()
 
@@ -331,20 +328,20 @@ class Data(object):
             #adj_matrix = np.dot(adj_matrix_A,adj_matrix_A.T) 
             adj_matrix = np.dot(np.dot(adj_matrix_A,D_A_r),adj_matrix_A.T)
             adj_matrix -= np.diag(np.diag(adj_matrix))
-            #D_v=np.sum(adj_matrix,axis=0) #adj_matrix中节点的度矩阵
+            #D_v=np.sum(adj_matrix,axis=0)
             #nonzero_mask = D_v != 0
             #D_v[nonzero_mask]=1.0/np.sqrt(D_v[nonzero_mask])
             #D_v=np.diag(D_v)
             #adj_matrix=np.dot(np.dot(D_v,adj_matrix),D_v)
             index=np.where(np.sum(adj_matrix,axis=1)==0)
             for i in index:
-                adj_matrix[i,i]=0.001  #处理孤立社区
+                adj_matrix[i,i]=0.001 
             print(np.count_nonzero(adj_matrix))
             division2, totol_comm2= encoding2tree(adj_matrix)
 
-            comm_matrix_S=np.zeros((totol_comm1, totol_comm2)) #社区聚合矩阵,每个用户去了哪个社区
+            comm_matrix_S=np.zeros((totol_comm1, totol_comm2)) 
             comm_matrix_S[list(range(totol_comm1)),division2.tolist()]=1
-            adj_matrix_A=np.dot(comm_matrix_S.T,adj_matrix_A)  #新的二部图邻接矩阵
+            adj_matrix_A=np.dot(comm_matrix_S.T,adj_matrix_A) 
             edge_index_A=np.array(adj_matrix_A.nonzero())
             src_new2,dst_new2=edge_index_A[0].tolist(),edge_index_A[1].tolist()
             return ([division1.tolist(),src_new1,dst_new1],[division2.tolist(),src_new2,dst_new2])
@@ -372,14 +369,14 @@ class Data(object):
             return division, totol_comm
     
         #adj_matrix_A=np.zeros((src_num, dst_num))
-        #adj_matrix_A[src,dst]=1  #二部图邻接矩阵
+        #adj_matrix_A[src,dst]=1 
         adj_matrix_A = sp.lil_matrix((src_num, dst_num))
-        adj_matrix_A[src, dst] = 1  # 二部图邻接矩阵
+        adj_matrix_A[src, dst] = 1 
         #D_A_r=np.sum(adj_matrix_A,axis=0)
         D_A_r = np.array(adj_matrix_A.sum(axis=0)).flatten()
         nonzero_mask = D_A_r != 0
         D_A_r[nonzero_mask]=1.0/np.log2(D_A_r[nonzero_mask]+1) #np.sqrt() np.log2()
-        D_A_r=np.diag(D_A_r)#二部图邻接矩阵中dst节点的度矩阵
+        D_A_r=np.diag(D_A_r)
         D_A_r = sp.lil_matrix(D_A_r)
 
         out=[]
@@ -390,19 +387,19 @@ class Data(object):
             #index=np.where(np.sum(adj_matrix,axis=1)==0)
             adj_matrix = adj_matrix_A.tocsr().dot( D_A_r.tocsr()).dot(adj_matrix_A.transpose().tocsr())
             adj_matrix=adj_matrix.tolil()
-            adj_matrix.setdiag(0)  # 去除对角元素
+            adj_matrix.setdiag(0) 
             index = np.where(adj_matrix.sum(axis=1) == 0)[0]
             for i in index:
-                adj_matrix[i,i]=0.001  #处理孤立节点
+                adj_matrix[i,i]=0.001 
             #print(np.count_nonzero(adj_matrix))
             print(adj_matrix.nnz)
             division, totol_comm= encoding2tree(adj_matrix)
 
-            #comm_matrix_S=np.zeros((old_num, totol_comm)) #社区聚合矩阵,每个用户去了哪个社区
+            #comm_matrix_S=np.zeros((old_num, totol_comm)) 
             #comm_matrix_S[list(range(old_num)),division.tolist()]=1
             comm_matrix_S = sp.lil_matrix((old_num, totol_comm))
             comm_matrix_S[list(range(old_num)), division.tolist()] = 1
-            #adj_matrix_A=np.dot(comm_matrix_S.T,adj_matrix_A)  #新的二部图邻接矩阵
+            #adj_matrix_A=np.dot(comm_matrix_S.T,adj_matrix_A) 
             adj_matrix_A = comm_matrix_S.T @ adj_matrix_A
             edge_index_A=np.array(adj_matrix_A.nonzero())
             src_new1,dst_new1=edge_index_A[0].tolist(),edge_index_A[1].tolist()
@@ -430,20 +427,20 @@ class Data(object):
 
     def sample(self):
         if self.batch_size <= self.n_users:
-            users = rd.sample(self.exist_users, self.batch_size)  #从训练的userid中随机采样batch_size个用户id
+            users = rd.sample(self.exist_users, self.batch_size) 
         else:
-            users = [rd.choice(self.exist_users) for _ in range(self.batch_size)]  #有放回的采样batch_size个用户id
+            users = [rd.choice(self.exist_users) for _ in range(self.batch_size)]  
 
         def sample_pos_items_for_u(u, num):
             # sample num pos items for u-th user
-            pos_items = self.train_items[u]  #u的历史交互item
-            n_pos_items = len(pos_items)  #u的历史交互item数
+            pos_items = self.train_items[u]
+            n_pos_items = len(pos_items) 
             pos_batch = []
             while True:
                 if len(pos_batch) == num:
                     break
                 pos_id = np.random.randint(low=0, high=n_pos_items, size=1)[0]
-                pos_i_id = pos_items[pos_id]  #随机抽样一个u的历史交互item
+                pos_i_id = pos_items[pos_id]
 
                 if pos_i_id not in pos_batch:
                     pos_batch.append(pos_i_id)
@@ -457,7 +454,7 @@ class Data(object):
                     break
                 neg_id = np.random.randint(low=0, high=self.n_items, size=1)[0]
                 if neg_id not in self.train_items[u] and neg_id not in neg_items:
-                    neg_items.append(neg_id)  #从所有item中随机抽样未交互过的item
+                    neg_items.append(neg_id) 
             return neg_items
 
         pos_items, neg_items = [], []
@@ -465,13 +462,13 @@ class Data(object):
             pos_items += sample_pos_items_for_u(u, 1)
             neg_items += sample_neg_items_for_u(u, 1)
 
-        return users, pos_items, neg_items  #batch_size下的用户id列表，对user随机抽样的正负交互item列表，每个user一个item（正：有历史交互、负：无历史交互）
+        return users, pos_items, neg_items  
 
     def sample_test(self):
         if self.batch_size <= self.n_users:
-            users = rd.sample(self.test_set.keys(), self.batch_size)  #随机抽样batch_size个test中的uid
+            users = rd.sample(self.test_set.keys(), self.batch_size) 
         else:
-            users = [rd.choice(self.exist_users) for _ in range(self.batch_size)]  #在现有/train中有放回的抽样batch_size个uid
+            users = [rd.choice(self.exist_users) for _ in range(self.batch_size)] 
 
         def sample_pos_items_for_u(u, num):
             pos_items = self.test_set[u]
@@ -492,7 +489,7 @@ class Data(object):
                 if len(neg_items) == num: break
                 neg_id = np.random.randint(low=0, high=self.n_items, size=1)[0]
                 if neg_id not in (self.test_set[u] + self.train_items[u]) and neg_id not in neg_items:
-                    neg_items.append(neg_id) ##从所有item中随机抽样train和test中均未交互过的item
+                    neg_items.append(neg_id) 
             return neg_items
 
         def sample_neg_items_for_u_from_pools(u, num):
