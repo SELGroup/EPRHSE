@@ -13,7 +13,7 @@ from utility.split_dataset import load_test_dict
 cores = multiprocessing.cpu_count()
 print(cores)
 args = parse_args()
-Ks = eval(args.Ks) #str变list[10,20]
+Ks = eval(args.Ks) 
 #print('Ks',type(Ks),type(args.Ks))
 
 if args.gpu >= 0 and torch.cuda.is_available():
@@ -120,7 +120,7 @@ def test_one_user(x):
     # except Exception:
     #     training_items = []
     # user u's items in the test set
-    user_pos_test = data_generator.test_set[u]  #test_set里的都是pos的？
+    user_pos_test = data_generator.test_set[u] 
 
     all_items = set(range(ITEM_NUM))
 
@@ -243,16 +243,16 @@ def test_cpp(users_to_test, embedding_h, device = None):
         print('test batch %d' % u_batch_id)
         test_users_embedding = embedding_h['user'][user_batch]
         full_items_embedding = embedding_h['item']
-        rate_batch = torch.matmul(test_users_embedding, full_items_embedding.t()).detach().cpu()  #user-item对应分数
+        rate_batch = torch.matmul(test_users_embedding, full_items_embedding.t()).detach().cpu()  
         test_items = []
         for user in user_batch:
-            test_items.append(data_generator.test_set[user])  # (B, #test_items) 是ground truth
+            test_items.append(data_generator.test_set[user]) 
 
         # set the ranking scores of training items to -inf,
         # then the training items will be sorted at the end of the ranking list.
         for idx, user in enumerate(user_batch):
-            train_items_off = data_generator.train_items[user]  #每个用户train的item
-            rate_batch[idx][train_items_off] = -np.inf  #已训练的user-item设为负无穷，即不参与评价指标计算
+            train_items_off = data_generator.train_items[user] 
+            rate_batch[idx][train_items_off] = -np.inf 
         batch_result = eval_score_matrix_foldout(rate_batch, test_items, max_top)  # (B,k*metric_num), max_top= 20
         # print(batch_result.shape)
         # sys.exit()
@@ -260,11 +260,11 @@ def test_cpp(users_to_test, embedding_h, device = None):
         all_result.append(batch_result)
         # print(all_result)
     assert count == n_test_users
-    all_result = np.concatenate(all_result, axis=0)  #按行把batch的result拼接起来
-    final_result = np.mean(all_result, axis=0)  # mean 按列取
+    all_result = np.concatenate(all_result, axis=0) 
+    final_result = np.mean(all_result, axis=0)  
 
     final_result = np.reshape(final_result, newshape=[5, max_top])
-    final_result = final_result[:, top_show - 1] #取top10和top20
+    final_result = final_result[:, top_show - 1] 
     final_result = np.reshape(final_result, newshape=[5, len(top_show)])
     # result['precision'] += final_result[0]
     result['recall'] += final_result[1]
