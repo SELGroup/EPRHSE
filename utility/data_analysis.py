@@ -12,8 +12,8 @@ create_mat = 1
 print(args.dataset)
 if create_mat:
     print('create adjacency matrix')
-    ug_mat = sp.dok_matrix((data.n_users,data.n_groups), dtype=np.int8)  #基于字典的稀疏矩阵，用户-群组
-    ui_mat = sp.dok_matrix((data.n_users,data.n_items), dtype=np.int8)   #基于字典的稀疏矩阵，用户-项目
+    ug_mat = sp.dok_matrix((data.n_users,data.n_groups), dtype=np.int8) 
+    ui_mat = sp.dok_matrix((data.n_users,data.n_items), dtype=np.int8) 
 
     for idx in range(len(data.user_group_src)):
         ug_mat[data.user_group_src[idx], data.user_group_dst[idx]] = 1
@@ -24,10 +24,10 @@ if create_mat:
 
     # print(np.dot(ug_mat , ug_mat.T)[2])
     # print(ug_mat.sum(axis = 1)[2])
-    user_similarity_group_side = np.dot(ug_mat , ug_mat.T) / (ug_mat.sum(axis = 1))  #用户之间的邻接矩阵（关于群组的）/概率
+    user_similarity_group_side = np.dot(ug_mat , ug_mat.T) / (ug_mat.sum(axis = 1))  
     # print(user_similarity_group_side[2].tolist())
     # sp.save_npz(args.dataset+'_user_similarity_group_side', user_similarity_group_side)
-    user_similarity_item_side = np.dot(ui_mat , ui_mat.T) / (ui_mat.sum(axis = 1))  #用户之间的邻接矩阵（关于项目的）/概率
+    user_similarity_item_side = np.dot(ui_mat , ui_mat.T) / (ui_mat.sum(axis = 1))
     # sp.save_npz(args.dataset+'_user_similarity_item_side', user_similarity_item_side)
 else:
     print('load saved adjacency matrix')
@@ -48,12 +48,12 @@ print(user_similarity_item_side)
 
 def predict(matrix, similarity, type='group'):
     if type == 'group':
-        mean_user_rating = matrix.mean(axis=1)  #按行求平均（用户的平均群组数/平均项目数）
-        ratings_diff = (matrix - mean_user_rating)  #用户-群组/用户-项目的分布状态（正：有交互，负：无交互））
+        mean_user_rating = matrix.mean(axis=1)  
+        ratings_diff = (matrix - mean_user_rating)
         print(mean_user_rating.shape)
         print(ratings_diff.shape)
         print(np.array(np.abs(similarity).sum(axis=1)).shape)
-        pred = mean_user_rating + similarity.dot(ratings_diff)/ np.array(np.abs(similarity).sum(axis=1))   #聚合？？？
+        pred = mean_user_rating + similarity.dot(ratings_diff)/ np.array(np.abs(similarity).sum(axis=1))  
     return pred
 
 user_prediction = predict(ug_mat, user_similarity_group_side)
