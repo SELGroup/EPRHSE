@@ -42,9 +42,9 @@ class GATLayer(nn.Module):
         # equation (1)
         # print(in_dim, out_dim)
         self.fc_src = nn.Linear(in_dim, out_dim, bias=False)
-        self.fc_dst = nn.Linear(in_dim, out_dim, bias=False)  #线性变化
+        self.fc_dst = nn.Linear(in_dim, out_dim, bias=False) 
         # equation (2)
-        self.attn_fc = nn.Linear(2 * out_dim, 1, bias=False)  #注意力层，计算注意力系数
+        self.attn_fc = nn.Linear(2 * out_dim, 1, bias=False) 
         self.reset_parameters()
 
     def reset_parameters(self):
@@ -54,17 +54,17 @@ class GATLayer(nn.Module):
         nn.init.xavier_normal_(self.fc_dst.weight, gain=gain)
         nn.init.xavier_normal_(self.attn_fc.weight, gain=gain)
 
-    def edge_attention(self, edges):  #计算注意力系数
+    def edge_attention(self, edges):  
         # edge UDF for equation (2)
         z2 = torch.cat([edges.src['z'], edges.dst['z']], dim=1)
         a = self.attn_fc(z2)
         return {'e': F.leaky_relu(a)}
 
-    def message_func(self, edges):  #消息传递函数
+    def message_func(self, edges): 
         # message UDF for equation (3) & (4)
         return {'z': edges.src['z'], 'e': edges.data['e']}
 
-    def reduce_func(self, nodes):  #聚合函数
+    def reduce_func(self, nodes): 
         # reduce UDF for equation (3) & (4)
         # equation (3)
         alpha = F.softmax(nodes.mailbox['e'], dim=1)
@@ -88,7 +88,7 @@ class GATLayer(nn.Module):
                 h_src = src
                 h_dst = dst
             z_src = self.fc_src(h[h_src])
-            z_dst = self.fc_dst(h[h_dst])  #维度转化
+            z_dst = self.fc_dst(h[h_dst])  
             graph.nodes[src].data['z'] = z_src
             graph.nodes[dst].data['z'] = z_dst
             # equation (2)
