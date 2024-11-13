@@ -20,10 +20,10 @@ import os
 def get_edges_induct(g, users_induct):
     # print(g.edges(etype = 'ui'))
     # print(g.edges(etype = 'iu'))
-    idx = np.in1d(g.edges(etype='ui')[0], users_induct)  #测试 超图中的user 是否在 users_induct 中
+    idx = np.in1d(g.edges(etype='ui')[0], users_induct) 
     # print(idx.nonzero()[0])
     #sys.exit()
-    return idx.nonzero()[0]  #返回 超图中边‘ui’用户节点 存在于 users_induct 中的用户索引
+    return idx.nonzero()[0]  
 
 def partition_todevice(partition, device):
     new_partition=[]
@@ -51,7 +51,7 @@ def create_g_hyperedge_list(graph, etype_forward, etype_back, partition, device)
     g_list=[g0]
     for i in range(len(partition)):
         data_dict={
-            etype_forward: (partition[i][1], partition[i][2]), #partition[][1] partition[][2]是新的二部图的src dst对
+            etype_forward: (partition[i][1], partition[i][2]),
             etype_back: (partition[i][2], partition[i][1]),
         }
         num_dict = {
@@ -66,7 +66,7 @@ def create_g_comm_list(partition, device):
     for i in range(len(partition)):
         data_dict = {
             ('node', 'nc', 'comm'): (list(range(len(partition[i][0]))), partition[i][0]),
-            ('comm', 'cn', 'node'): (partition[i][0], list(range(len(partition[i][0])))),  #partition[][0]为社区分配list
+            ('comm', 'cn', 'node'): (partition[i][0], list(range(len(partition[i][0])))), 
         }
         num_dict = {
             'node': len(partition[i][0]), 'comm': max(partition[i][0])+1,
@@ -81,20 +81,20 @@ def train(args):
         device = 'cuda:{}'.format(args.gpu)
     else:
         device = 'cpu'
-    users_to_test = list(data_generator.test_set.keys())  #测试集的users
+    users_to_test = list(data_generator.test_set.keys()) 
     g = data_generator.g  #heterograph
-    r = 1/args.induct_ratio  #1/ratio of inductive users???  default=1/0.5=2
+    r = 1/args.induct_ratio  
     if args.inductive:
         original_g = g.to(device)
-        users_induct = users_to_test[len(users_to_test) - math.ceil(len(users_to_test) // r):]  #取test中后induct_ratio比例的用户作为users_induct
-        users_non_induct = [u for u in list(range(data_generator.n_users)) if u not in users_induct]  #取出g中不在users_induct中的user编号
+        users_induct = users_to_test[len(users_to_test) - math.ceil(len(users_to_test) // r):] 
+        users_non_induct = [u for u in list(range(data_generator.n_users)) if u not in users_induct]  
         # print(len(users_non_induct))
-        users_transduct = users_to_test[:len(users_to_test) - math.ceil(len(users_to_test) // r)] #取test中前1-induct_ratio比例的用户
-        edges_induct = get_edges_induct(g, users_induct)  #存在于users_induct中的训练集中用户索引
+        users_transduct = users_to_test[:len(users_to_test) - math.ceil(len(users_to_test) // r)]
+        edges_induct = get_edges_induct(g, users_induct) 
         # print(g.num_edges(etype = 'ui'),g.num_edges(etype = 'iu'))
         g_inductive = dgl.remove_edges(g, edges_induct, etype='ui')
         # print(g_inductive.num_edges(etype = 'ui'))
-        g_inductive = dgl.remove_edges(g_inductive, edges_induct, etype='iu')  #删除在users_induct中的用户节点的‘ui'/'iu'边
+        g_inductive = dgl.remove_edges(g_inductive, edges_induct, etype='iu')  
         # print(g_inductive.num_edges(etype = 'iu'))
         # print(g_inductive.nodes(ntype='user'))
         # print(g_inductive.ndata[dgl.NID]['user'])
@@ -112,7 +112,7 @@ def train(args):
         age_label = torch.LongTensor(data_generator.age_label).to(device)
         job_label = torch.LongTensor(data_generator.job_label).to(device)
     g = g.to(device)
-    pos_g = construct_user_item_bigraph(g)  #创建train数据中的user-item子图作为pos
+    pos_g = construct_user_item_bigraph(g)  
     if args.item_pretrain and 'xmrec' in args.dataset:
         pos_g_bT = construct_item_related_bigraph(g, 'bT_idx')
         pos_g_cpr = construct_item_related_bigraph(g, 'cpr_idx')
@@ -161,7 +161,7 @@ def train(args):
     t0 = time()
     cur_best_pre_0, stopping_step = 0, 0
     bpr_loss_bT, bpr_loss_cpr, bpr_loss_age, bpr_loss_job = 0, 0, 0, 0
-    pre_train_best = float('inf') #正无穷大
+    pre_train_best = float('inf') 
     loss_loger, pre_loger, rec_loger, ndcg_loger, hit_loger = [], [], [], [], []
     rec_loger_induct, ndcg_loger_induct = [], []
     rec_loger_transduct, ndcg_loger_transduct = [], []
@@ -174,12 +174,12 @@ def train(args):
         for epoch in range(args.epoch):
             t1 = time()
             t_pre = time()
-            neg_g = construct_negative_graph(g, args.neg_samples, device=device)  #随机噪声生成的neg 'ui''iu' graph，二部图的边量是原始的neg_samples倍
+            neg_g = construct_negative_graph(g, args.neg_samples, device=device)  
             if args.se==1:
-                embedding_h = model(g, g_list_dict, g_comm_list_dict)  #根据g从初始的h中经过一轮训练到embedding_h
+                embedding_h = model(g, g_list_dict, g_comm_list_dict)  
             else:
                 embedding_h = model(g)
-            bpr_loss = 0  #user-item的预测损失，bpr_loss=mf_loss+emb_loss(后者为正则化项)
+            bpr_loss = 0  
             if args.pre_train_task not in [0, 5]:
                 if args.inductive:
                     bpr_loss, mf_loss, emb_loss = model.create_bpr_loss(pos_g, neg_g, embedding_h, users_non_induct,
@@ -187,11 +187,10 @@ def train(args):
                 else:
                     bpr_loss, mf_loss, emb_loss = model.create_bpr_loss(pos_g, neg_g, embedding_h, loss_type=args.loss)
             if args.loss == 'auloss':
-                user_uniform_loss = model.uniformity_loss(embedding_h['user']) #user 的embedding的均匀性损失
+                user_uniform_loss = model.uniformity_loss(embedding_h['user']) 
             if args.classify_as_edge:
-                neg_g_c2e_cate = construct_negative_item_graph_c2ep(g, data_generator.n_cate, device, 'cate') #满图中除去train的二部图中的边，构成neg
+                neg_g_c2e_cate = construct_negative_item_graph_c2ep(g, data_generator.n_cate, device, 'cate') 
                 neg_g_c2e_rate = construct_negative_item_graph_c2ep(g, data_generator.n_rate, device, 'rate')
-                #item-cate/item-rate的预训练损失
                 if args.pre_train_task == 1 or args.pre_train_task == 5:
                     cate_loss, _, _ = model.create_item_bpr_loss(pos_g_c2e_cate, neg_g_c2e_cate, embedding_h, 'cate',
                                                                  data_generator.n_cate)
@@ -212,7 +211,7 @@ def train(args):
                     _, _, bpr_loss = model.create_bpr_loss(pos_g, neg_g, embedding_h, loss_type=args.loss)
             else:
                 if embedding_h['item_cate'].shape[0] != cate_label.shape:
-                    embedding_h['item_cate'] = torch.index_select(embedding_h['item_cate'], 0, item_cate_idx)  #选择embedding_h['item_cate']中索引为item_cate_idx的元素
+                    embedding_h['item_cate'] = torch.index_select(embedding_h['item_cate'], 0, item_cate_idx) 
                 if embedding_h['item_rate'].shape[0] != rate_label.shape:
                     embedding_h['item_rate'] = torch.index_select(embedding_h['item_rate'], 0, item_rate_idx)
                 if args.pre_train_task == 1:
@@ -245,9 +244,8 @@ def train(args):
                     bpr_loss_cpr, _, _ = model.create_item_bpr_loss(pos_g_cpr, neg_g_cpr, embedding_h, 'cpr_idx')
                     # bpr_loss += bpr_loss_cpr
             elif 'steam' in args.dataset:
-                #user-job/user-age的预训练损失
                 if args.user_pretrain in [1, 2]:
-                    neg_g_age = construct_negative_user_graph(g, args.neg_samples, device, 'age') #随机噪声生成的neg，二部图的边量是原始的neg_samples倍
+                    neg_g_age = construct_negative_user_graph(g, args.neg_samples, device, 'age') 
                     # print(embedding_h.keys())
                     bpr_loss_age, mf_loss_age, emb_loss_age = model.create_user_bpr_loss(pos_g_age, neg_g_age,
                                                                                          embedding_h)
@@ -271,8 +269,8 @@ def train(args):
             # ttl_loss = bpr_loss + cate_loss + rate_loss + bpr_loss_bT + bpr_loss_cpr + bpr_loss_age + bpr_loss_job + user_uniform_loss
             ttl_loss = 2 * (ui_loss_alpha * bpr_loss + (1 - ui_loss_alpha) * (
                     cate_loss + rate_loss + bpr_loss_bT + bpr_loss_cpr + bpr_loss_age + bpr_loss_job + user_uniform_loss))
-            optimizer.zero_grad() #梯度归零
-            ttl_loss.backward()  #计算梯度
+            optimizer.zero_grad() 
+            ttl_loss.backward() 
             optimizer.step()
             if args.multitask_train == 1:
                 if (epoch + 1) % (args.verbose * 10) != 0:
@@ -281,7 +279,6 @@ def train(args):
                             epoch, time() - t1, bpr_loss, mf_loss, emb_loss)
                         print(perf_str)
                     continue
-                #是10的倍数次epoch，开始测试,并用top10的recall判断提前结束训练
                 t2 = time()
                 test_users = users_to_test
                 ret, _, _ = test_cpp(test_users, embedding_h)
@@ -305,14 +302,13 @@ def train(args):
                 if should_stop == True:
                     break
             else:
-                if (epoch + 1) % (args.verbose * 10) != 0:  #评估间隔 default args.verbose=1，  不是10的倍数次epoch
-                    if args.verbose > 0 and epoch % (args.verbose * 10) == 0:#是第10的倍数+1个epoch，如0，10，20...
+                if (epoch + 1) % (args.verbose * 10) != 0: 
+                    if args.verbose > 0 and epoch % (args.verbose * 10) == 0:
                         perf_str = 'Epoch %d [%.1fs]: train==[%.5f=%.5f + %.5f +%.5f + %.5f]' % (
                             epoch, time() - t_pre, ttl_loss, bpr_loss, cate_loss, rate_loss, user_uniform_loss)
                         print(perf_str)
                         # print('user-item loss = %.5f, embedding loss = %.5f.'%(mf_loss,emb_loss))
                     continue
-                #是10的倍数次epoch，用ttl_loss判断是否提前结束训练
                 pre_train_best, stopping_step, should_stop = early_stopping(ttl_loss, pre_train_best,
                                                                             stopping_step, expected_order='dec',
                                                                             flag_step=args.flag_step)
@@ -552,7 +548,7 @@ if __name__ == '__main__':
     torch.cuda.manual_seed(args.random_seed)
     torch.cuda.manual_seed_all(args.random_seed)
     torch.backends.cudnn.benchmark = False
-    torch.backends.cudnn.deterministic = True #使得网络相同输入下每次运行的输出固定
+    torch.backends.cudnn.deterministic = True
     dgl.seed(args.random_seed)
     
     args.model_name = 'UPRHSE'
