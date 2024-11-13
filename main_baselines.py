@@ -555,7 +555,7 @@ if __name__ == '__main__':
     torch.cuda.manual_seed(args.random_seed)
     torch.cuda.manual_seed_all(args.random_seed)
     torch.backends.cudnn.benchmark = False
-    torch.backends.cudnn.deterministic = True #使得网络相同输入下每次运行的输出固定
+    torch.backends.cudnn.deterministic = True 
     dgl.seed(args.random_seed)
 
     args.model_name = 'AttriMask' #
