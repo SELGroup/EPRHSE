@@ -320,6 +320,7 @@ def train(args):
                     # if epoch == 99:
                     print('Pre-train stopped.')
                     break
+                
     optimizer = optim.Adam(model.parameters(), lr=args.lr)
     # print(embedding_h['user'],embedding_h['item'])
     # sys.exit()
@@ -358,20 +359,7 @@ def train(args):
                             epoch, time() - t1, bpr_loss, mf_loss, emb_loss)
                         print(perf_str)
                     continue
-            if args.dataset == 'xmrec_mx' and args.pre_train==0 and args.train_curve == 1:
-                if (epoch + 1) % (10) != 0:
-                    if args.verbose > 0 and epoch % 1 == 0:
-                        perf_str = 'Epoch %d [%.1fs]: train==[%.5f=%.5f + %.5f]' % (
-                            epoch, time() - t1, bpr_loss, mf_loss, emb_loss)
-                        print(perf_str)
-                    continue
-            if args.dataset == 'xmrec_cn' and args.train_curve == 1:
-                if (epoch + 1) % (20) != 0:
-                    if args.verbose > 0 and epoch % 2 == 0:
-                        perf_str = 'Epoch %d [%.1fs]: train==[%.5f=%.5f + %.5f]' % (
-                            epoch, time() - t1, bpr_loss, mf_loss, emb_loss)
-                        print(perf_str)
-                    continue
+            
             t2 = time()
             if args.dataset == 'xmrec_mx' and args.pre_train==0 and args.train_curve == 1:
                 test_users = users_to_test[:8192]
@@ -432,6 +420,7 @@ def train(args):
                 ret_recall_0 = (ret['recall'][0] + ret_inductive['recall'][0]) / 2
             else:
                 ret_recall_0 = ret['recall'][0]
+            
             cur_best_pre_0, stopping_step, should_stop = early_stopping(ret_recall_0, cur_best_pre_0,
                                                                         stopping_step, expected_order='acc',
                                                                         flag_step=args.flag_step)
@@ -439,6 +428,9 @@ def train(args):
             # early stop
             if should_stop == True:
                 break
+            
+
+    '''
     if args.train_curve:
         rec_10_data = json.dumps([i.tolist()[0] for i in rec_loger])
         ndcg_10_data = json.dumps([i.tolist()[0] for i in ndcg_loger])
@@ -462,6 +454,7 @@ def train(args):
             ndcg_10_file.write(ndcg_10_data)
         with open(ndcg_20_path, 'w') as ndcg_20_file:
             ndcg_20_file.write(ndcg_20_data)
+    '''
     # print(embedding_h['user'],embedding_h['item'])
     # sys.exit()
     if args.save_flag == 1:
@@ -486,6 +479,18 @@ def train(args):
     # hit = np.array(hit_loger)
     best_rec_0 = max(recs[:, 0])
     idx = list(recs[:, 0]).index(best_rec_0)
+
+    if args.train_curve:
+        recs10 = recs[:,0]
+        recs20 = recs[:,1]
+        ndcg10 = ndcgs[:,0]
+        ndcg20 = ndcgs[:,1]
+        data_curve = np.column_stack((recs10, recs20, ndcg10, ndcg20))
+        np.savetxt('./curve/%s_%s.txt' % (args.dataset, args.model_name), data_curve, fmt='%.5f', delimiter=',')
+
+
+
+
     if args.inductive:
         recs_induct = np.array(rec_loger_induct)
         ndcgs_induct = np.array(ndcg_loger_induct)
@@ -546,10 +551,11 @@ def train(args):
 
 if __name__ == '__main__':
     args = parse_args()
+    args.train_curve = 0
     if args.dataset == 'xmrec_br':  
-        args.model_name = 'UPRHSE_cat_TA'
+        args.model_name = 'EPRHSE'
         args.se = 1  #1:UPRHSE, 0:UPRTH
-        args.att_conv = 2  #-1: w/o TA; 1: TA; 0: sum; 2: cat
+        args.att_conv = -1  #-1: w/o TA; 1: TA; 0: sum; 2: cat
         args.random_seed=312
         args.beta_pool=0.79
         args.hgcn_mix='[5, 1e-3]'
@@ -559,9 +565,9 @@ if __name__ == '__main__':
         args.verbose=2
         args.layer_num=2
     elif args.dataset == 'xmrec_cn':
-        args.model_name = 'UPRHSE_sum_TA'
-        args.se = 1  #1:UPRHSE, 0:UPRTH
-        args.att_conv = 0  #-1: w/o TA; 1: TA; 0: sum; 2: cat
+        args.model_name = 'UPRTH'
+        args.se = 0  #1:UPRHSE, 0:UPRTH
+        args.att_conv = 1  #-1: w/o TA; 1: TA; 0: sum; 2: cat
         args.random_seed=440
         args.beta_pool=0.17
         args.hgcn_mix='[2, 1e-3]'
@@ -571,9 +577,9 @@ if __name__ == '__main__':
         args.verbose=2
         args.layer_num=2
     elif args.dataset == 'xmrec_au':
-        args.model_name = 'UPRHSE_cat_TA'
-        args.se = 1  #1:UPRHSE, 0:UPRTH
-        args.att_conv = 2  #-1: w/o TA; 1: TA; 0: sum; 2: cat
+        args.model_name = 'UPRTH'
+        args.se = 0  #1:UPRHSE, 0:UPRTH
+        args.att_conv = 1  #-1: w/o TA; 1: TA; 0: sum; 2: cat
         args.random_seed=323
         args.beta_pool=0.95
         args.hgcn_mix='[5, 1e-5]'
@@ -583,9 +589,9 @@ if __name__ == '__main__':
         args.verbose=2
         args.layer_num=2
     elif args.dataset == 'steam':
-        args.model_name = 'UPRHSE'
-        args.se = 1  #1:UPRHSE, 0:UPRTH
-        args.att_conv = -1  #-1: w/o TA; 1: TA; 0: sum; 2: cat
+        args.model_name = 'UPRTH'
+        args.se = 0  #1:UPRHSE, 0:UPRTH
+        args.att_conv = 1  #-1: w/o TA; 1: TA; 0: sum; 2: cat
         args.random_seed=188
         args.beta_pool=0.07
         args.hgcn_mix='[14, 1e-1]'
@@ -595,9 +601,9 @@ if __name__ == '__main__':
         args.verbose=1
         args.layer_num=2
     elif args.dataset == 'xmrec_mx':
-        args.model_name = 'UPRHSE'
-        args.se = 1  #1:UPRHSE, 0:UPRTH
-        args.att_conv = -1  #-1: w/o TA; 1: TA; 0: sum; 2: cat
+        args.model_name = 'UPRTH'
+        args.se = 0  #1:UPRHSE, 0:UPRTH
+        args.att_conv = 1  #-1: w/o TA; 1: TA; 0: sum; 2: cat
         args.random_seed=189
         args.beta_pool=0.19
         args.hgcn_mix='[1, 1e-1]'

@@ -183,7 +183,7 @@ def train(args):
     if args.pre_train:
         optimizer = optim.Adam(model.parameters(), lr=args.pre_lr)
         if args.attrimask==1:
-            args.epoch = 500
+            args.epoch = 800
         for epoch in range(args.epoch):
             t1 = time()
             t_pre = time()
@@ -237,6 +237,7 @@ def train(args):
                             epoch, time() - t_pre, ttl_loss)
                         print(perf_str)
                     continue
+
                 pre_train_best, stopping_step, should_stop = early_stopping(ttl_loss, pre_train_best,
                                                                             stopping_step, expected_order='dec',
                                                                             flag_step=args.flag_step)
@@ -360,13 +361,14 @@ def train(args):
                                 ret['recall'][-1],
                                 ret['ndcg'][0], ret['ndcg'][-1])
                     print(perf_str)
-
+                
                 cur_best_pre_0, stopping_step, should_stop = early_stopping(ret['recall'][0], cur_best_pre_0,
                                                                             stopping_step, expected_order='acc',
                                                                             flag_step=args.flag_step)
                 # if epoch == 99:
                 if should_stop == True:
                     break
+                
             else:
                 if (epoch + 1) % (args.verbose * 10) != 0:
                     if args.verbose > 0 and epoch % (args.verbose * 10) == 0:
@@ -375,6 +377,7 @@ def train(args):
                         print(perf_str)
                         # print('user-item loss = %.5f, embedding loss = %.5f.'%(mf_loss,emb_loss))
                     continue
+                
                 pre_train_best, stopping_step, should_stop = early_stopping(ttl_loss, pre_train_best,
                                                                             stopping_step, expected_order='dec',
                                                                             flag_step=args.flag_step)
@@ -382,19 +385,22 @@ def train(args):
                     # if epoch == 99:
                     print('Pre-train stopped.')
                     break
+                
     model = LightGCN(args, g, device).to(device)
     optimizer = optim.Adam(model.parameters(), lr=args.lr)
     # print(embedding_h['user'],embedding_h['item'])
     # sys.exit()
     loss_loger, pre_loger, rec_loger, ndcg_loger, hit_loger = [], [], [], [], []
     if args.pre_train == 0 or args.multitask_train == 0:
+        '''
         if args.train_curve:
-            '''1000/20 for cn, 500/10 for mx， 50/1 for steam'''
+            #1000/20 for cn, 500/10 for mx， 50/1 for steam
             args.flag_step = 500
             args.epoch = 500
+        '''
         user_uniform_loss = 0
         item_uniform_loss = 0
-        for epoch in range(args.epoch):
+        for epoch in range(400):
             t1 = time()
             neg_g = construct_negative_graph(g, args.neg_samples, device=device)
             if args.lightgcn == 1:
@@ -431,21 +437,13 @@ def train(args):
             bpr_loss.backward()
             optimizer.step()
             if args.train_curve != 1:
-                if (epoch + 1) % (args.verbose * 10) != 0:
+                if (epoch + 1) % (args.verbose * 50) != 0:
                     if args.verbose > 0 and epoch % args.verbose == 0:
                         perf_str = 'Epoch %d [%.1fs]: train==[%.5f=%.5f + %.5f]' % (
                             epoch, time() - t1, bpr_loss, mf_loss, emb_loss)
                         print(perf_str)
                     continue
-            if args.dataset == 'xmrec_mx' and args.train_curve == 1:
-                if epoch != 0:
-                    if (epoch + 1) % (10) != 0:
-                        if args.verbose > 0 and epoch % 1 == 0:
-                            perf_str = 'Epoch %d [%.1fs]: train==[%.5f=%.5f + %.5f]' % (
-                                epoch, time() - t1, bpr_loss, mf_loss, emb_loss)
-                            print(perf_str)
-                        continue
-            if args.dataset == 'xmrec_cn' and args.train_curve == 1:
+            
                 if (epoch + 1) % (20) != 0:
                     if args.verbose > 0 and epoch % 2 == 0:
                         perf_str = 'Epoch %d [%.1fs]: train==[%.5f=%.5f + %.5f]' % (
@@ -517,6 +515,7 @@ def train(args):
                 ret_recall_0 = (ret['recall'][0] + ret_inductive['recall'][0]) / 2
             else:
                 ret_recall_0 = ret['recall'][0]
+            '''
             cur_best_pre_0, stopping_step, should_stop = early_stopping(ret_recall_0, cur_best_pre_0,
                                                                         stopping_step, expected_order='acc',
                                                                         flag_step=args.flag_step)
@@ -524,6 +523,8 @@ def train(args):
             # early stop
             if should_stop == True:
                 break
+            '''
+    '''
     if args.train_curve:
         rec_10_data = json.dumps([i.tolist()[0] for i in rec_loger])
         ndcg_10_data = json.dumps([i.tolist()[0] for i in ndcg_loger])
@@ -554,6 +555,7 @@ def train(args):
             ndcg_10_file.write(ndcg_10_data)
         with open(ndcg_20_path, 'w') as ndcg_20_file:
             ndcg_20_file.write(ndcg_20_data)
+    '''
     # print(embedding_h['user'],embedding_h['item'])
     # sys.exit()
     if args.save_flag == 1:
@@ -578,6 +580,15 @@ def train(args):
     # hit = np.array(hit_loger)
     best_rec_0 = max(recs[:, 0])
     idx = list(recs[:, 0]).index(best_rec_0)
+
+    if args.train_curve:
+        recs10 = recs[:,0]
+        recs20 = recs[:,1]
+        ndcg10 = ndcgs[:,0]
+        ndcg20 = ndcgs[:,1]
+        data_curve = np.column_stack((recs10, recs20, ndcg10, ndcg20))
+        np.savetxt('./curve/%s_%s.txt' % (args.dataset, args.model_name), data_curve, fmt='%.5f', delimiter=',')
+        
     if args.inductive:
         recs_induct = np.array(rec_loger_induct)
         ndcgs_induct = np.array(ndcg_loger_induct)
@@ -640,23 +651,24 @@ if __name__ == '__main__':
     args = parse_args()
     args.inductive = 0
     args.induct_ratio = 0.1
+    args.train_curve = 1
 
-    args.model_name = 'UPRTH+LightGCN'
-    args.random_seed = 189 #steam:188,cn:470,au:323,br:312,mx:189
+    args.model_name = 'SGL'
+    args.random_seed = 312 #steam:188,cn:470,au:323,br:312,mx:189
     args.pre_lr = 0.01
-    args.lr = 0.01
-    args.regs = '[0.8, 1e-7]' #steam:[0.7,1e-4],cn:[0.7,1e-7],au:[0.2,1e-7],br:[0.4,1e-5],mx:[0.8, 1e-7]
+    args.lr = 0.1
+    args.regs = '[0.4, 1e-5]' #steam:[0.7,1e-4],cn:[0.7,1e-7],au:[0.2,1e-7],br:[0.4,1e-5],mx:[0.8, 1e-7]
     args.verbose = 2 #steam:1,xmrec:2
     args.layer_num = 2
-    args.se = -1 #UPRHSE:1,UPRTH:-1,other:0
+    args.se = 0 #UPRHSE:1,UPRTH:-1,other:0
     args.att_conv = 1 #UPRHSE:-1,other:1
-    args.beta_pool = 0.19  #steam:0.07,cn:0.25,br:0.79,au:0.95,mx:0.19
+    args.beta_pool = 0.79  #steam:0.07,cn:0.25,br:0.79,au:0.95,mx:0.19
     args.lightgcn = 1 #LightGCN/DirectAU/SGL:1; HCCF:2; DHCF:3; UltraGCN:4; HGNN/GCC/AttriMask:0
-    args.hgcn = 0 #LightGCN/DirectAU/UltraGCN/SGL:0; HGNN/HCCF/DHCF/Attrimask:1
-    args.pre_train = 0 #LightGCN/DirectAU/UltraGCN/HGNN/HCCF/DHCF:0; GCC/SGL/AttriMask:1
+    args.hgcn = 0 #LightGCN/DirectAU/UltraGCN/SGL:0; HGNN/HCCF/DHCF/GCC/AttriMask:1
+    args.pre_train = 1 #LightGCN/DirectAU/UltraGCN/HGNN/HCCF/DHCF:0; GCC/SGL/AttriMask:1
     args.finetune_loss = 'bpr' #LightGCN/HGNN/HCCF/DHCF:bpr; DirectAU:auloss; UltraGCN:ultragcn
     args.attrimask = 0
-    args.sgl = 0
+    args.sgl = 1
     args.gcc = 0
 
     random.seed(args.random_seed)
