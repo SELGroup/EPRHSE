@@ -24,7 +24,7 @@ from torch_sparse import SparseTensor, matmul
 
 
 def construct_user_item_bigraph(graph):
-    return graph.node_type_subgraph(['user', 'item'])
+    return graph.node_type_subgraph(['user', 'item'])  #创建user-item子图
 
 
 def construct_item_related_bigraph(graph, node_type='bT_idx'):
@@ -83,8 +83,8 @@ def construct_negative_item_graph_c2ep(graph, n_type, device, node_type='cate'):
     # print(user_item_src.type())
     # print(user_item_dst[:40])
     neg_src = user_item_src.repeat_interleave(range_list[node_type].shape[0] - 1)
-    neg_dst = np.array([range_list[node_type], ] * len(user_item_src))
-    neg_dst = torch.from_numpy(arr_remove_idx(neg_dst, np.array(user_item_dst.cpu()))).to(device)
+    neg_dst = np.array([range_list[node_type], ] * len(user_item_src))  #len(user_item_src) * n_type 大小的二维数组，所有src都与每个dst相连
+    neg_dst = torch.from_numpy(arr_remove_idx(neg_dst, np.array(user_item_dst.cpu()))).to(device)  #移除原始图中存在的dst，并转为tensor
     data_dict = {
         (node_type, edge_dict[node_type][0], 'item'): (neg_dst, neg_src),
         ('item', edge_dict[node_type][1], node_type): (neg_src, neg_dst)
@@ -116,9 +116,9 @@ def construct_negative_user_graph_c2ep(graph, n_type, device, node_type='age'): 
 
 def construct_negative_graph(graph, k, device):
     user_item_src, user_item_dst = graph.edges(etype='ui')
-    neg_src = user_item_src.repeat_interleave(k)
+    neg_src = user_item_src.repeat_interleave(k)  #将原始元素重复k次，二部图的噪声边是原始k倍
     n_neg_src = len(user_item_src)
-    neg_dst = torch.randint(0, graph.num_nodes(ntype='item'), (n_neg_src * k,)).to(device)
+    neg_dst = torch.randint(0, graph.num_nodes(ntype='item'), (n_neg_src * k,)).to(device)  #随机噪声
     data_dict = {
         ('user', 'ui', 'item'): (neg_src, neg_dst),
         ('item', 'iu', 'user'): (neg_dst, neg_src),
@@ -141,7 +141,7 @@ class ScorePredictor(nn.Module):
                     dgl.function.u_dot_v('x', 'x', 'score'), etype=etype)
             return edge_subgraph.edata['score']
 
-    def alignment_forward(self, edge_subgraph, x):
+    def alignment_forward(self, edge_subgraph, x):  #用两端节点向量差表示边的score（特征向量形式），对齐得分
         with edge_subgraph.local_scope():
             edge_subgraph.ndata['x'] = x
             for etype in edge_subgraph.canonical_etypes:
@@ -154,10 +154,10 @@ class HGCNLayer(nn.Module):
     def __init__(self):
         super().__init__()
         self.fc = nn.Linear(64, 64)
-        self.fc_2 = nn.LazyLinear(64)
+        self.fc_2 = nn.LazyLinear(128)
         self.d_sqrt = 8
-        self.edgedrop = dgl.transforms.DropEdge(0.2)
-        self.leakyrelu = nn.LeakyReLU(0.1)
+        self.edgedrop = dgl.transforms.DropEdge(0.2) #随机删除20%的边（减少过拟合风险）或模拟数据缺失
+        self.leakyrelu = nn.LeakyReLU(0.1) #激活函数
         # self.dropout = nn.Dropout(p=0.01)
 
     def forward(self, graph, h, etype_forward, etype_back, norm_2=-1, alpha=0, pretrained_feature=None, detach=False,
@@ -166,54 +166,54 @@ class HGCNLayer(nn.Module):
             src, _, dst = etype_forward
             feat_src = h[src]
             feat_dst = h[dst + '_edge']
-            aggregate_fn = fn.copy_u('h', 'm')
+            aggregate_fn = fn.copy_u('h', 'm')#从源节点复制特征'h'到消息'm'中
             aggregate_fn_back = fn.copy_u('h_b', 'm_b')
             # aggregate_fn = fn.copy_src('h', 'm')
             # aggregate_fn_back = fn.copy_src('h_b', 'm_b')
 
             graph.nodes[src].data['h'] = feat_src
             # graph.nodes[src].data['h'] = self.dropout(feat_src)
-            graph.update_all(aggregate_fn, fn.sum(msg='m', out='h'), etype=etype_forward)
+            graph.update_all(aggregate_fn, fn.sum(msg='m', out='h'), etype=etype_forward)  #消息聚合函数，消息求和，消息传递的边类型
 
-            rst = graph.nodes[dst].data['h']
-            in_degrees = graph.in_degrees(etype=etype_forward).float().clamp(min=1)
+            rst = graph.nodes[dst].data['h'] #聚合后目标节点的消息/特征
+            in_degrees = graph.in_degrees(etype=etype_forward).float().clamp(min=1) #etype_forward边类型下节点入度
             norm_dst = torch.pow(in_degrees, -1)
             shp_dst = norm_dst.shape + (1,) * (feat_dst.dim() - 1)
             norm = torch.reshape(norm_dst, shp_dst)
             if alpha != 0:
                 if pretrained_feature != None:
                     if detach == True:
-                        pretrained_feature = pretrained_feature.detach().requires_grad_(False)
+                        pretrained_feature = pretrained_feature.detach().requires_grad_(False)  #分离张量，梯度设置不可导
                     if att != 0:
                         if att == 1:
                             '''attention calculation by DGL'''
-                            graph.nodes[dst].data['q'] = torch.unsqueeze(rst, dim=1)
-                            graph.nodes[dst].data['k'] = torch.transpose(pretrained_feature, 1, 2)
+                            graph.nodes[dst].data['q'] = torch.unsqueeze(rst, dim=1)  #原先的n*d变成了n*1*d，每一行变成了一个单独的矩阵
+                            graph.nodes[dst].data['k'] = torch.transpose(pretrained_feature, 1, 2)  #第一维和第二维转置n*t*d->n*d*t
                             graph.apply_nodes(lambda nodes: {'a': torch.matmul(
-                                F.softmax(torch.matmul(nodes.data['q'], nodes.data['k']) / self.d_sqrt, dim=2),  
-                                pretrained_feature).squeeze()}, ntype=dst)  
+                                F.softmax(torch.matmul(nodes.data['q'], nodes.data['k']) / self.d_sqrt, dim=2),  #预训练feature的权重  n*1*t
+                                pretrained_feature).squeeze()}, ntype=dst)  #(n*1*t)*(n*t*d)->(n*1*d)   对目标节点的操作
                             # print(graph.nodes[dst].data['a'] .shape)
                             pretrained_feature = graph.nodes[dst].data['a']
                         elif att == 2:
                             pretrained_feature = self.fc_2(pretrained_feature)
-                    rst = rst + alpha * torch.tanh(pretrained_feature)  
+                    rst = rst + alpha * torch.tanh(pretrained_feature)  #目标节点聚合特征+加权的预训练目标节点特征
                     # rst = alpha * torch.tanh(pretrained_feature)
                     # rst = rst + torch.softmax(pretrained_feature,dim=1)
                     # rst = rst + self.leakyrelu(pretrained_feature)
                 else:
-                    rst = rst + alpha * feat_dst  
+                    rst = rst + alpha * feat_dst  #没有预训练的feature则加自身
 
-            rst = rst * norm 
+            rst = rst * norm #消息聚合后，目标节点特征归一化
             graph.nodes[dst].data['h_b'] = rst
-            graph.update_all(aggregate_fn_back, fn.sum(msg='m_b', out='h_b'), etype=etype_back)  
+            graph.update_all(aggregate_fn_back, fn.sum(msg='m_b', out='h_b'), etype=etype_back)  #从目标节点反向聚合消息到源节点
             bsrc = graph.nodes[src].data['h_b']
 
-            in_degrees_b = graph.in_degrees(etype=etype_back).float().clamp(min=1)  
+            in_degrees_b = graph.in_degrees(etype=etype_back).float().clamp(min=1)  #etype_back类型边下节点的入度, clamp设置最小为1
             norm_src = torch.pow(in_degrees_b, norm_2)  #(n,)
             shp_src = norm_src.shape + (1,) * (feat_src.dim() - 1)  #(n,) + (1,) = (n,1)
             norm_src = torch.reshape(norm_src, shp_src)  #(n,1)
-            bsrc = bsrc * norm_src  
-           
+            bsrc = bsrc * norm_src  #源节点特征归一化  #(n,d) 与 (n,1)-广播对应元素相乘
+            #这一步实质将聚合的取平均norm_2=-1
 
             return bsrc, rst
 
@@ -252,22 +252,26 @@ class SEP(nn.Module):
     
     def forward(self, graph, h, etype_forward, norm_2=-1):
         with graph.local_scope():
-            src, _, dst = etype_forward 
+            src, _, dst = etype_forward  #节点类型
             feat_src = h
             feat_dst = torch.empty((graph.nodes(dst).shape[0], self.dim), requires_grad=False)
+            #消息函数
             aggregate_fn = fn.copy_u('h', 'm')
             graph.nodes[src].data['h'] = feat_src
+            #聚合函数
             reduce_fn = fn.sum(msg='m', out='h')
+            #更新函数
             graph.update_all(aggregate_fn,reduce_fn,etype=etype_forward)
 
             rst = graph.nodes[dst].data['h']
-            in_degrees = graph.in_degrees(etype=etype_forward).float().clamp(min=1)
+            #归一化
+            in_degrees = graph.in_degrees(etype=etype_forward).float().clamp(min=1) #etype_forward边类型下节点入度
             norm_dst = torch.pow(in_degrees, norm_2)
             shp_dst = norm_dst.shape + (1,) * (feat_dst.dim() - 1)
             norm = torch.reshape(norm_dst, shp_dst)
             rst = rst * norm
 
-            return self.nn(rst)
+            return self.nn(rst)  #是否需要激活函数？
 
 
     
@@ -277,22 +281,22 @@ class SEP_U1(torch.nn.Module):
         self.dim = embed_size  
         self.num_blocks=num_blocks
         self.HGCN = HGCNLayer()
-        self.HGCNLayers = self.get_HGCNs()
+        self.HGCNLayers = self.get_HGCNs()  #一个还是多个HGCNLayer？
         self.sep = SEP(self.dim)
-        self.sepools = self.get_sepool()
+        self.sepools = self.get_sepool()  #一个还是多个SEP？
         self.device=device
         self.fc = nn.Linear(2*embed_size,embed_size)
         self.beta = beta
 
     def get_HGCNs(self):
-        HGCNs = nn.ModuleList()
+        HGCNs = nn.ModuleList()  #管理模型层的容器
         for _ in range(self.num_blocks*2 + 1):
             hgcn = HGCNLayer()
             HGCNs.append(hgcn)
         return HGCNs
     
     def get_sepool(self):
-        pools = nn.ModuleList()
+        pools = nn.ModuleList()  #管理模型层的容器
         for _ in range(self.num_blocks*2):
             '''
             pool = SEPooling(
@@ -310,9 +314,10 @@ class SEP_U1(torch.nn.Module):
         h_save=[]
         src_type, _, dst_type = etype_forward
         h=h0
-        g0=graph.node_type_subgraph([src_type, dst_type])
+        #创建节点与超边的二部图
+        g0=graph.node_type_subgraph([src_type, dst_type]) #创建子图
         data_dict = {
-            etype_forward: (partition[0][1], partition[0][2]), 
+            etype_forward: (partition[0][1], partition[0][2]), #partition[][1] partition[][2]是新的二部图的src dst对
             etype_back: (partition[0][2], partition[0][1]),
         }
         num_dict = {
@@ -320,7 +325,7 @@ class SEP_U1(torch.nn.Module):
         }
         g1=dgl.heterograph(data_dict, num_nodes_dict=num_dict).to(self.device)
         data_dict = {
-            etype_forward: (partition[1][1], partition[1][2]), 
+            etype_forward: (partition[1][1], partition[1][2]), #partition[][1] partition[][2]是新的二部图的src dst对
             etype_back: (partition[1][2], partition[1][1]),
         }
         num_dict = {
@@ -328,9 +333,10 @@ class SEP_U1(torch.nn.Module):
         }
         g2=dgl.heterograph(data_dict, num_nodes_dict=num_dict).to(self.device)
         g_list=[g0,g1,g2]  
+        #创建节点和社区的二部图
         data_dict = {
             ('node', 'nc', 'comm'): (list(range(len(partition[0][0]))), partition[0][0]),
-            ('comm', 'cn', 'node'): (partition[0][0], list(range(len(partition[0][0])))),  
+            ('comm', 'cn', 'node'): (partition[0][0], list(range(len(partition[0][0])))),  #partition[][0]为社区分配list
         }
         num_dict = {
             'node': len(partition[0][0]), 'comm': max(partition[0][0])+1,
@@ -345,7 +351,7 @@ class SEP_U1(torch.nn.Module):
         }
         g2_comm=dgl.heterograph(data_dict, num_nodes_dict=num_dict).to(self.device)
         g_comm_list=[g1_comm, g2_comm]
-        #edge_index0=torch.tensor([list(range(len(partition[0][0]))), partition[0][0]]).to(self.device) 
+        #edge_index0=torch.tensor([list(range(len(partition[0][0]))), partition[0][0]]).to(self.device) #第一行节点，第二行社区。partition[_][0]是list S,S[i]为用户i分到的社区
         #edge_index1=torch.tensor([list(range(len(partition[1][0]))), partition[1][0]]).to(self.device)
         #edge_index_list=[edge_index0,edge_index1]
 
@@ -382,22 +388,22 @@ class SEP_U(torch.nn.Module):
         self.dim = embed_size  
         self.num_blocks=num_blocks
         self.HGCN = HGCNLayer()
-        self.HGCNLayers = self.get_HGCNs()  
+        self.HGCNLayers = self.get_HGCNs()  #一个还是多个HGCNLayer？
         self.sep = SEP(self.dim)
-        self.sepools = self.get_sepool()  
+        self.sepools = self.get_sepool()  #一个还是多个SEP？
         self.device=device
         self.fc = nn.Linear(2*embed_size,embed_size)
         self.beta = beta
 
     def get_HGCNs(self):
-        HGCNs = nn.ModuleList() 
+        HGCNs = nn.ModuleList()  #管理模型层的容器
         for _ in range(self.num_blocks*2 + 1):
             hgcn = HGCNLayer()
             HGCNs.append(hgcn)
         return HGCNs
     
     def get_sepool(self):
-        pools = nn.ModuleList() 
+        pools = nn.ModuleList()  #管理模型层的容器
         for _ in range(self.num_blocks*2):
             '''
             pool = SEPooling(
@@ -416,7 +422,7 @@ class SEP_U(torch.nn.Module):
         src_type, _, dst_type = etype_forward
         h=h0
         #down sampling
-        for _ in range(self.num_blocks):
+        for _ in range(self.num_blocks): #_取0,1
             #HGCN
             h_src, h_dst = self.HGCN(g_list[_], h, etype_forward, etype_back, norm_2)
             h_save.append(h_src)
@@ -424,7 +430,7 @@ class SEP_U(torch.nn.Module):
             h_src = self.sep(g_comm_list[_], h_src, ('node', 'nc', 'comm'))
             h={src_type: h_src, dst_type + '_edge': h_dst}
         #up sampling
-        for _ in range(self.num_blocks,0,-1):
+        for _ in range(self.num_blocks,0,-1): #_取2，1
             #HGCN
             h_src, h_dst=self.HGCN(g_list[_], h, etype_forward, etype_back, norm_2)
             #SEP-U
@@ -472,14 +478,14 @@ class HGCNLayer_general(nn.Module):
                 if in_degrees_b == None:
                     in_degrees_b = graph.in_degrees(etype=etype_back).float().clamp(min=1)
                 else:
-                    in_degrees_b += graph.in_degrees(etype=etype_back).float().clamp(min=1)
-            graph.multi_update_all(update_dict, 'sum')
+                    in_degrees_b += graph.in_degrees(etype=etype_back).float().clamp(min=1)  #所有类型边下入度之和
+            graph.multi_update_all(update_dict, 'sum')  #每种类型边反向聚合消息之和，没有加attention即加权
             bsrc = graph.nodes[src].data['h_b']
 
             norm_src = torch.pow(in_degrees_b, norm_2)
             shp_src = norm_src.shape + (1,) * (feat_src.dim() - 1)
             norm_src = torch.reshape(norm_src, shp_src)
-            bsrc = bsrc * norm_src 
+            bsrc = bsrc * norm_src  #归一化
 
             return bsrc, rst
 
@@ -497,16 +503,16 @@ class GAT(nn.Module):
         self.dataset = args.dataset
         self.neg_samples = args.neg_samples  #Number of negative samples
         self.classify_as_edge = args.classify_as_edge  #default=1,only for pretrain
-        self.decay = eval(args.regs)[0]  
-        self.prompt = args.prompt
+        self.decay = eval(args.regs)[0]  #ser-item loss coeffecient用户-项目损失系数
+        self.prompt = args.prompt  #default=0
         n_users = graph.nodes('user').shape[0]
         n_items = graph.nodes('item').shape[0]
-        self.user_embedding = torch.nn.Parameter(torch.randn(n_users, self.hid_dim * 2 ** self.prompt)).to(device) 
+        self.user_embedding = torch.nn.Parameter(torch.randn(n_users, self.hid_dim * 2 ** self.prompt)).to(device) #创建一个n_user * (hid_dim*(2^prompt)) 的张量（可学习的）
 
-        self.user_hyperedge = torch.empty((n_users, self.hid_dim * 2 ** (self.prompt)), requires_grad=False).to(device)  
+        self.user_hyperedge = torch.empty((n_users, self.hid_dim * 2 ** (self.prompt)), requires_grad=False).to(device)  #创建一个n_user * (hid_dim*(2^prompt)) 的空张量（不更新梯度的）
 
-        self.item_embedding = torch.nn.Parameter(torch.randn(n_items, self.hid_dim)).to(device) 
-        self.item_hyperedge = torch.empty((n_items, self.hid_dim * 2 ** (self.prompt)), requires_grad=False).to(device)  
+        self.item_embedding = torch.nn.Parameter(torch.randn(n_items, self.hid_dim)).to(device) #创建一个n_item * hid_dim 的张量（可学习的）
+        self.item_hyperedge = torch.empty((n_items, self.hid_dim * 2 ** (self.prompt)), requires_grad=False).to(device)  #创建一个n_item * (hid_dim*(2^prompt)) 的空张量（不更新梯度的）
 
         if self.prompt:
             ui_task_embedding = torch.nn.Parameter(torch.randn(1, self.hid_dim)).to(device)  #'ui'='user-item'
@@ -514,9 +520,9 @@ class GAT(nn.Module):
             ir_task_embedding = torch.nn.Parameter(torch.randn(1, self.hid_dim)).to(device)  #'ir'='item-rate'
 
         self.cate_embedding = torch.nn.Parameter(
-            torch.randn(graph.nodes('cate').shape[0], self.hid_dim * 2 ** (self.prompt))).to(device)  
+            torch.randn(graph.nodes('cate').shape[0], self.hid_dim * 2 ** (self.prompt))).to(device)  #初始化cate的embedding
         self.rate_embedding = torch.nn.Parameter(
-            torch.randn(graph.nodes('rate').shape[0], self.hid_dim * 2 ** (self.prompt))).to(device) 
+            torch.randn(graph.nodes('rate').shape[0], self.hid_dim * 2 ** (self.prompt))).to(device) #初始化rate的embedding
         if 'xmrec' in self.dataset:
             self.bT_embedding = torch.nn.Parameter(
                 torch.randn(graph.nodes('bT_idx').shape[0], self.hid_dim * 2 ** (self.prompt))).to(device)
@@ -527,14 +533,14 @@ class GAT(nn.Module):
                 ip_task_embedding = torch.nn.Parameter(torch.randn(1, self.hid_dim)).to(device)
         # self.layer1_gu = MultiHeadGATLayer(in_dim, out_dim, num_heads)
 
-        torch.nn.init.normal_(self.user_embedding, std=0.1)  
+        torch.nn.init.normal_(self.user_embedding, std=0.1)  #正态分布初始化，标准差std=0.1
         torch.nn.init.normal_(self.item_embedding, std=0.1)
         self.build_model(device)
         if self.prompt:
             self.node_features = {'user': self.user_embedding,
                                   'item': prompt_cat(self.item_embedding, ui_task_embedding, n_items),
-                                  'item_cate': prompt_cat(self.item_embedding, ic_task_embedding, n_items), 
-                                  'item_rate': prompt_cat(self.item_embedding, ir_task_embedding, n_items), 
+                                  'item_cate': prompt_cat(self.item_embedding, ic_task_embedding, n_items), #item-cate预训练任务中item的embedding与原item的embedding拼接,ic_task_embedding先扩展到n_items行
+                                  'item_rate': prompt_cat(self.item_embedding, ir_task_embedding, n_items), #item-rate预训练任务中item的embedding与原item的embedding拼接，ir_task_embedding先扩展到n_items行
                                   'cate': self.cate_embedding, 'rate': self.rate_embedding,
                                   }
             if 'xmrec' in self.dataset:
@@ -563,18 +569,18 @@ class GAT(nn.Module):
 
     def forward(self, graph, pre_train=True):
         h = self.node_features
-        h_user = self.GATlayers[0](graph, h, ('item', 'iu', 'user'), self.prompt) 
-        h_item = self.GATlayers[0](graph, h, ('user', 'ui', 'item'), self.prompt) 
+        h_user = self.GATlayers[0](graph, h, ('item', 'iu', 'user'), self.prompt)  #初始item的消息聚合成user的消息h_user
+        h_item = self.GATlayers[0](graph, h, ('user', 'ui', 'item'), self.prompt)  #初始user的消息聚合成item的消息h_item
         if pre_train:
             if self.classify_as_edge:
-                h_cate_idx = self.GATlayers[0](graph, h, ('item', 'ic', 'cate'), self.prompt)
-                h_item_cate = self.GATlayers[0](graph, h, ('cate', 'ci', 'item'), self.prompt)
+                h_cate_idx = self.GATlayers[0](graph, h, ('item', 'ic', 'cate'), self.prompt) #初始item消息聚合成cate的消息h_cate_idx
+                h_item_cate = self.GATlayers[0](graph, h, ('cate', 'ci', 'item'), self.prompt) #初始cate消息聚合成item的消息h_item_cate
                 h_rate_idx = self.GATlayers[0](graph, h, ('item', 'ir', 'rate'), self.prompt)
                 h_item_rate = self.GATlayers[0](graph, h, ('rate', 'ri', 'item'), self.prompt)
             else:
-                h_item_cate = self.GATlayers[0](graph, h, ('cate', 'ci', 'item'), self.prompt) 
-                h_item_rate = self.GATlayers[0](graph, h, ('rate', 'ri', 'item'), self.prompt) 
-                h_item_cate = F.softmax(self.cate_fc(h_item_cate), dim=1)  
+                h_item_cate = self.GATlayers[0](graph, h, ('cate', 'ci', 'item'), self.prompt) #初始cate消息聚合成item的消息h_item_cate
+                h_item_rate = self.GATlayers[0](graph, h, ('rate', 'ri', 'item'), self.prompt) #初始rate消息聚合成item的消息h_item_rate
+                h_item_cate = F.softmax(self.cate_fc(h_item_cate), dim=1)  #维度转换后，按行归一化
                 h_item_rate = F.softmax(self.rate_fc(h_item_rate), dim=1)
             if 'xmrec' in self.dataset:
                 h_item_bT = self.GATlayers[0](graph, h, ('bT_idx', 'bi', 'item'), self.prompt)
@@ -659,41 +665,41 @@ class LightGCN(nn.Module):
         self.n_rate = graph.nodes('rate').shape[0]
 
         self.classify_as_edge = args.classify_as_edge
-        self.neg_samples = args.neg_samples  
-        self.decay = eval(args.regs)[1]  
-        self.ui_loss_alpha = eval(args.regs)[0] 
+        self.neg_samples = args.neg_samples  #负样本数目
+        self.decay = eval(args.regs)[1]  #嵌入正则化
+        self.ui_loss_alpha = eval(args.regs)[0] #用户项目损失系数
         self.dataset = args.dataset
-        self.pre_train = args.pre_train  
+        self.pre_train = args.pre_train  #default=1
         self.n_user = graph.nodes('user').shape[0]
         self.lightgcn = args.lightgcn
-        self.pre_gcn = args.pre_gcn 
-        self.trans_alpha = eval(args.hgcn_mix)[0] 
-        self.resid_beta = eval(args.hgcn_mix)[1]  
-        self.hgcn = args.hgcn 
+        self.pre_gcn = args.pre_gcn  #defalut=0
+        self.trans_alpha = eval(args.hgcn_mix)[0]  #default=10
+        self.resid_beta = eval(args.hgcn_mix)[1]  #default=0.1
+        self.hgcn = args.hgcn  #default=1
         self.norm_2 = args.norm_2  #default=-1,-0.5 for mx, -1 for cn/mx_C2EP
         self.att_conv = args.att_conv  #-1 if no trans_conv
         self.contrastive_learning = args.contrastive_learning  #default=0
 
-        self.user_embedding = torch.nn.Parameter(torch.randn(graph.nodes('user').shape[0], self.hid_dim)) 
-        self.user_hyperedge = torch.empty((graph.nodes('user').shape[0], self.hid_dim), requires_grad=False) 
+        self.user_embedding = torch.nn.Parameter(torch.randn(graph.nodes('user').shape[0], self.hid_dim))  #初始化用户embedding
+        self.user_hyperedge = torch.empty((graph.nodes('user').shape[0], self.hid_dim), requires_grad=False)  #创建空的用户embedding，存放的是由超边聚合得到的用户embedding
 
-        self.item_embedding = torch.nn.Parameter(torch.randn(graph.nodes('item').shape[0], self.hid_dim))  
-        self.item_hyperedge = torch.empty((graph.nodes('item').shape[0], self.hid_dim), requires_grad=False) 
+        self.item_embedding = torch.nn.Parameter(torch.randn(graph.nodes('item').shape[0], self.hid_dim))  #初始化项目embedding
+        self.item_hyperedge = torch.empty((graph.nodes('item').shape[0], self.hid_dim), requires_grad=False)  #创建空的项目embedding，存放是的由超边聚合得到的项目embedding
 
-        self.cate_hyperedge = torch.empty((graph.nodes('cate').shape[0], self.hid_dim), requires_grad=False) 
-        self.rate_hyperedge = torch.empty((graph.nodes('rate').shape[0], self.hid_dim), requires_grad=False)  
+        self.cate_hyperedge = torch.empty((graph.nodes('cate').shape[0], self.hid_dim), requires_grad=False)  #创建空的cate节点embedding
+        self.rate_hyperedge = torch.empty((graph.nodes('rate').shape[0], self.hid_dim), requires_grad=False)  #创建空的rate节点embedding
         if 'xmrec' in self.dataset:
             self.bT_hyperedge = torch.empty((graph.nodes('bT_idx').shape[0], self.hid_dim), requires_grad=False)
             self.cpr_hyperedge = torch.empty((graph.nodes('cpr_idx').shape[0], self.hid_dim), requires_grad=False)
         else:
             self.age_hyperedge = torch.empty((graph.nodes('age').shape[0], self.hid_dim), requires_grad=False)
-            self.job_hyperedge = torch.empty((graph.nodes('job').shape[0], self.hid_dim), requires_grad=False) 
+            self.job_hyperedge = torch.empty((graph.nodes('job').shape[0], self.hid_dim), requires_grad=False)  #根据不同数据集，用户有不同的预训练超图，及对应的超边节点embedding
 
         torch.nn.init.normal_(self.user_embedding, std=0.1)
-        torch.nn.init.normal_(self.item_embedding, std=0.1)
+        torch.nn.init.normal_(self.item_embedding, std=0.1)  #正态分布，只有这俩是随梯度更新的
 
-        self.dropout = nn.Dropout(p=0.2) 
-        self.edge_dropout = dgl.transforms.DropEdge(p=0.2)  
+        self.dropout = nn.Dropout(p=0.2)  #指定一个dropout层，训练时丢弃20%的输入张量
+        self.edge_dropout = dgl.transforms.DropEdge(p=0.2)  #丢弃图中的边
         self.build_model()
         self.node_features = {'user': self.user_embedding, 'item': self.item_embedding,
                               'user_edge': self.user_hyperedge, 'item_edge': self.item_hyperedge,
@@ -761,6 +767,7 @@ class LightGCN(nn.Module):
             # else:
             #     ui_subgraph = graph
 
+            #没有pretrain信息融入的HGCNlayer要更改，加入池化和反池化
             h_user, _ = self.HGCNlayer(graph, h, ('user', 'ui', 'item'), ('item', 'iu', 'user'), norm)
             h_item, _ = self.HGCNlayer(graph, h, ('item', 'iu', 'user'), ('user', 'ui', 'item'), norm)
             if pre_train:
@@ -830,7 +837,7 @@ class LightGCN(nn.Module):
                                                       (torch.unsqueeze(h_item_cate, 1), torch.unsqueeze(h_item_rate, 1),
                                                        torch.unsqueeze(h_item_bT, 1), torch.unsqueeze(h_item_cpr, 1)
                                                        ),
-                                                      dim=1), detach=True, att=self.att_conv) 
+                                                      dim=1), detach=True, att=self.att_conv)  #经过torch.unsqueeze后n*1*d矩阵，再cat后，是n*4*d矩阵
             elif 'steam' in self.dataset:
                 if self.att_conv == 0:
                     h_user_v2, _ = self.HGCNlayer(graph, h, ('user', 'ui', 'item'), ('item', 'iu', 'user'), -1,
@@ -895,12 +902,12 @@ class LightGCN(nn.Module):
 
     def create_ssl_loss_user(self, ssl_temp):
         # ssl_temp = 0.1
-        h_user_v1 = torch.nn.functional.normalize(self.h_user_v1, p=2, dim=1)
+        h_user_v1 = torch.nn.functional.normalize(self.h_user_v1, p=2, dim=1)  #使用L2范数归一化
         h_user_v2 = torch.nn.functional.normalize(self.h_user_v2, p=2, dim=1)
-        pos_score = torch.sum(torch.mul(h_user_v1, h_user_v2), dim=1)  
-        neg_score = torch.matmul(h_user_v1, h_user_v2.T)  
+        pos_score = torch.sum(torch.mul(h_user_v1, h_user_v2), dim=1)  #对应元素相乘后按行求和，pos_score[i]表示user_i消息v1和消息v2的内积
+        neg_score = torch.matmul(h_user_v1, h_user_v2.T)  #neg_score[i,j]表示user_i的消息v1和user_j的消息v2的的内积，n*n
         pos_score = torch.exp(pos_score / ssl_temp)
-        neg_score = torch.sum(torch.exp(neg_score / ssl_temp), axis=1) 
+        neg_score = torch.sum(torch.exp(neg_score / ssl_temp), axis=1)  #neg_score[i]表示user_i的消息v1与所有user的消息v2内积之和
         ssl_loss = -torch.sum(torch.log(pos_score / neg_score))
         return ssl_loss
 
@@ -917,7 +924,7 @@ class LightGCN(nn.Module):
 
     def create_ssl_loss_batched_item(self, ssl_temp, k=4, idx=0):
         ssl_temp = 0.1
-        h_item_v1 = self.h_item_v1.split(self.h_item_v1.shape[0] // k + 1)[idx]
+        h_item_v1 = self.h_item_v1.split(self.h_item_v1.shape[0] // k + 1)[idx]  #分为k+1个batch，这为第idx个batch
         h_item_v2 = self.h_item_v2.split(self.h_item_v2.shape[0] // k + 1)[idx]
         h_item_v1 = torch.nn.functional.normalize(h_item_v1, p=2, dim=1)
         h_item_v2 = torch.nn.functional.normalize(h_item_v2, p=2, dim=1)
@@ -938,10 +945,10 @@ class LightGCN(nn.Module):
             fx = 1 - torch.tanh(beta * x - beta)
         return torch.unsqueeze(fx, 1)
 
-    def uniformity_loss(self, h_user): 
-        x = h_user[torch.randint(len(h_user), (2000,))]  
-        x = F.normalize(x, dim=-1) 
-        result = torch.pdist(x, p=2).pow(2).mul(-2).exp().mean().log()  
+    def uniformity_loss(self, h_user):  #均匀性损失
+        x = h_user[torch.randint(len(h_user), (2000,))]  #随机生成2000个索引，选择h_user中对应元素
+        x = F.normalize(x, dim=-1)  #沿着最后一个维度归一化
+        result = torch.pdist(x, p=2).pow(2).mul(-2).exp().mean().log()  #torch.pdist(x,p=2)计算张量x中两两样本的欧几里得距离
         # print(result)
         # sys.exit()
         return 0.005 * result
@@ -951,8 +958,8 @@ class LightGCN(nn.Module):
             # h['user'] = F.normalize(h['user'], dim=-1)
             # h['item'] = F.normalize(h['item'], dim=-1)
             sub_fig_feature = {'user': h['user'], 'item': h['item']}
-            pos_score = self.pred.alignment_forward(pos_g, sub_fig_feature)  
-            mf_loss = pos_score[('user', 'ui', 'item')].norm(p=2, dim=1).pow(2).mean()
+            pos_score = self.pred.alignment_forward(pos_g, sub_fig_feature)  #边两端节点差值表示边对齐score
+            mf_loss = pos_score[('user', 'ui', 'item')].norm(p=2, dim=1).pow(2).mean()  #按行归一化，平方，求平均
             # mf_loss = nn.Softplus()(pos_score[('user', 'ui', 'item')]).mean()
         elif loss_type == 'infonce':
             ssl_temp = 1e9
@@ -1008,7 +1015,7 @@ class LightGCN(nn.Module):
                                      self.item_embedding.norm(2).pow(2))
         else:
             regularizer = (1 / 2) * (self.user_embedding.norm(2).pow(2) +
-                                     self.item_embedding.norm(2).pow(2))
+                                     self.item_embedding.norm(2).pow(2))  #正则化项
         emb_loss = self.decay * regularizer
 
         # bpr_loss = self.ui_loss_alpha * mf_loss + emb_loss
@@ -1017,11 +1024,11 @@ class LightGCN(nn.Module):
 
     '''TODO: bpr_loss for boughtTogether and ComparedTogether items link-prediction task'''
 
-    def alignment(self, x, y): 
+    def alignment(self, x, y):  #求x,y的对齐损失
         x, y = F.normalize(x, dim=-1), F.normalize(y, dim=-1)
         return (x - y).norm(p=2, dim=1).pow(2).mean()
 
-    def uniformity(self, x):
+    def uniformity(self, x):  #求x的均匀性损失
         x = F.normalize(x, dim=-1)
         return torch.pdist(x, p=2).pow(2).mul(-2).exp().mean().log()
 
@@ -1124,7 +1131,7 @@ class LightGCN(nn.Module):
         bpr_loss = mf_loss + emb_loss
         return bpr_loss, mf_loss, emb_loss
 
-    def create_classify_loss(self, item_embedding, label):
+    def create_classify_loss(self, item_embedding, label): #j交叉熵损失，衡量模型输出与真实标签之间差异
         return F.cross_entropy(item_embedding, label, reduction='mean')
 
 
@@ -1134,47 +1141,49 @@ class LightGCNP(nn.Module):
         self.pool_beta = args.beta_pool
         self.hid_dim = args.embed_size  #default=128
         self.layer_num = args.layer_num #Output sizes of every layer, default=3
-        self.layer_pool = args.layer_pool  #default=2
         self.device = device
         self.n_cate = graph.nodes('cate').shape[0]
         self.n_rate = graph.nodes('rate').shape[0]
 
         self.classify_as_edge = args.classify_as_edge
-        self.neg_samples = args.neg_samples 
-        self.decay = eval(args.regs)[1]  
-        self.ui_loss_alpha = eval(args.regs)[0] 
+        self.neg_samples = args.neg_samples  #负样本数目
+        self.decay = eval(args.regs)[1]  #嵌入正则化 1e-4
+        self.ui_loss_alpha = eval(args.regs)[0] #用户项目损失系数 0.8
         self.dataset = args.dataset
-        self.pre_train = args.pre_train  
+        self.pre_train = args.pre_train  #default=1
         self.n_user = graph.nodes('user').shape[0]
-        self.lightgcn = args.lightgcn 
-        self.pre_gcn = args.pre_gcn  
-        self.trans_alpha = eval(args.hgcn_mix)[0] 
-        self.resid_beta = eval(args.hgcn_mix)[1] 
-        self.hgcn = args.hgcn 
-        self.norm_2 = args.norm_2  
+        self.lightgcn = args.lightgcn  #baseline???
+        self.pre_gcn = args.pre_gcn  #defalut=0
+        self.trans_alpha = eval(args.hgcn_mix)[0]  #default=10
+        self.resid_beta = eval(args.hgcn_mix)[1]  #default=0.1
+        if args.se == 1:
+            self.hgcn = 1
+        else:
+            self.hgcn = args.hgcn  #default=1
+        self.norm_2 = args.norm_2  #default=-1,-0.5 for mx, -1 for cn/mx_C2EP
         self.att_conv = args.att_conv  #-1 if no trans_conv
         self.contrastive_learning = args.contrastive_learning  #default=0
 
-        self.user_embedding = torch.nn.Parameter(torch.randn(graph.nodes('user').shape[0], self.hid_dim)) 
-        self.user_hyperedge = torch.empty((graph.nodes('user').shape[0], self.hid_dim), requires_grad=False)  
+        self.user_embedding = torch.nn.Parameter(torch.randn(graph.nodes('user').shape[0], self.hid_dim))  #初始化用户embedding
+        self.user_hyperedge = torch.empty((graph.nodes('user').shape[0], self.hid_dim), requires_grad=False)  #创建空的用户embedding，存放的是由超边聚合得到的用户embedding
 
-        self.item_embedding = torch.nn.Parameter(torch.randn(graph.nodes('item').shape[0], self.hid_dim))  
-        self.item_hyperedge = torch.empty((graph.nodes('item').shape[0], self.hid_dim), requires_grad=False) 
+        self.item_embedding = torch.nn.Parameter(torch.randn(graph.nodes('item').shape[0], self.hid_dim))  #初始化项目embedding
+        self.item_hyperedge = torch.empty((graph.nodes('item').shape[0], self.hid_dim), requires_grad=False)  #创建空的项目embedding，存放是的由超边聚合得到的项目embedding
 
-        self.cate_hyperedge = torch.empty((graph.nodes('cate').shape[0], self.hid_dim), requires_grad=False)  
-        self.rate_hyperedge = torch.empty((graph.nodes('rate').shape[0], self.hid_dim), requires_grad=False) 
+        self.cate_hyperedge = torch.empty((graph.nodes('cate').shape[0], self.hid_dim), requires_grad=False)  #创建空的cate节点embedding
+        self.rate_hyperedge = torch.empty((graph.nodes('rate').shape[0], self.hid_dim), requires_grad=False)  #创建空的rate节点embedding
         if 'xmrec' in self.dataset:
             self.bT_hyperedge = torch.empty((graph.nodes('bT_idx').shape[0], self.hid_dim), requires_grad=False)
             self.cpr_hyperedge = torch.empty((graph.nodes('cpr_idx').shape[0], self.hid_dim), requires_grad=False)
         else:
             self.age_hyperedge = torch.empty((graph.nodes('age').shape[0], self.hid_dim), requires_grad=False)
-            self.job_hyperedge = torch.empty((graph.nodes('job').shape[0], self.hid_dim), requires_grad=False)  
+            self.job_hyperedge = torch.empty((graph.nodes('job').shape[0], self.hid_dim), requires_grad=False)  #根据不同数据集，用户有不同的预训练超图，及对应的超边节点embedding
 
         torch.nn.init.normal_(self.user_embedding, std=0.1)
-        torch.nn.init.normal_(self.item_embedding, std=0.1) 
+        torch.nn.init.normal_(self.item_embedding, std=0.1)  #正态分布，只有这俩是随梯度更新的torch.nn.Parameter
 
-        self.dropout = nn.Dropout(p=0.2)  
-        self.edge_dropout = dgl.transforms.DropEdge(p=0.2) 
+        self.dropout = nn.Dropout(p=0.2)  #指定一个dropout层，训练时丢弃20%的输入张量
+        self.edge_dropout = dgl.transforms.DropEdge(p=0.2)  #丢弃图中的边
         self.build_model()
         self.node_features = {'user': self.user_embedding, 'item': self.item_embedding,
                               'user_edge': self.user_hyperedge, 'item_edge': self.item_hyperedge,
@@ -1200,7 +1209,7 @@ class LightGCNP(nn.Module):
 
     def build_model(self):
         self.HGCNlayer = HGCNLayer()
-        self.SEP_U = SEP_U(embed_size=self.hid_dim, beta=self.pool_beta, device=self.device, num_blocks=self.layer_pool) 
+        self.SEP_U = SEP_U(embed_size=self.hid_dim, beta=self.pool_beta, device=self.device, num_blocks=self.layer_num)  #一个SEP_U层
         self.HGCNlayer_general = HGCNLayer_general()
         self.layers = nn.ModuleList()
         self.LGCNlayer = LightGCNLayer()
@@ -1233,6 +1242,7 @@ class LightGCNP(nn.Module):
         h = self.node_features
         norm = self.norm_2
         if self.hgcn:
+            #没有pretrain信息融入的HGCNlayer变为SEP_U(graph, h0, etype_forward, etype_back, norm_2)
             #h_user, _ = self.HGCNlayer(graph, h, ('user', 'ui', 'item'), ('item', 'iu', 'user'), norm)
             h_user, _ = self.SEP_U(g_list['ui'], g_comm_list['ui'], h, ('user', 'ui', 'item'), ('item', 'iu', 'user'), norm)
             h_item, _ = self.HGCNlayer(graph, h, ('item', 'iu', 'user'), ('user', 'ui', 'item'), norm)
@@ -1279,6 +1289,7 @@ class LightGCNP(nn.Module):
                     h = {'user': h_user, 'item': h_item, 'item_cate': h_item_cate, 'item_rate': h_item_rate,
                          'user_age': h_user_age, 'user_job': h_user_job, 'age': h_age_idx, 'job': h_job_idx}
         '''Transitional HyperConv'''
+        #预训练融合部分不加图池化
         if pre_train and self.att_conv!=-1:
             '''TODO: xmrec_cn and steam - finetune transition strength'''
             h['item_edge'], h['user_edge'] = self.item_hyperedge, self.user_hyperedge
@@ -1298,7 +1309,7 @@ class LightGCNP(nn.Module):
                                                       (torch.unsqueeze(h_item_cate, 1), torch.unsqueeze(h_item_rate, 1),
                                                        torch.unsqueeze(h_item_bT, 1), torch.unsqueeze(h_item_cpr, 1)
                                                        ),
-                                                      dim=1), detach=True, att=self.att_conv)  
+                                                      dim=1), detach=True, att=self.att_conv)  #经过torch.unsqueeze后n*1*d矩阵，再cat后，是n*4*d矩阵
             elif 'steam' in self.dataset:
                 if self.att_conv == 0:
                     h_user_v2, _ = self.HGCNlayer(graph, h, ('user', 'ui', 'item'), ('item', 'iu', 'user'), -1,
@@ -1338,12 +1349,12 @@ class LightGCNP(nn.Module):
 
     def create_ssl_loss_user(self, ssl_temp):
         # ssl_temp = 0.1
-        h_user_v1 = torch.nn.functional.normalize(self.h_user_v1, p=2, dim=1) 
+        h_user_v1 = torch.nn.functional.normalize(self.h_user_v1, p=2, dim=1)  #使用L2范数归一化
         h_user_v2 = torch.nn.functional.normalize(self.h_user_v2, p=2, dim=1)
-        pos_score = torch.sum(torch.mul(h_user_v1, h_user_v2), dim=1)  
-        neg_score = torch.matmul(h_user_v1, h_user_v2.T)  
+        pos_score = torch.sum(torch.mul(h_user_v1, h_user_v2), dim=1)  #对应元素相乘后按行求和，pos_score[i]表示user_i消息v1和消息v2的内积
+        neg_score = torch.matmul(h_user_v1, h_user_v2.T)  #neg_score[i,j]表示user_i的消息v1和user_j的消息v2的的内积，n*n
         pos_score = torch.exp(pos_score / ssl_temp)
-        neg_score = torch.sum(torch.exp(neg_score / ssl_temp), axis=1)  
+        neg_score = torch.sum(torch.exp(neg_score / ssl_temp), axis=1)  #neg_score[i]表示user_i的消息v1与所有user的消息v2内积之和
         ssl_loss = -torch.sum(torch.log(pos_score / neg_score))
         return ssl_loss
 
@@ -1360,7 +1371,7 @@ class LightGCNP(nn.Module):
 
     def create_ssl_loss_batched_item(self, ssl_temp, k=4, idx=0):
         ssl_temp = 0.1
-        h_item_v1 = self.h_item_v1.split(self.h_item_v1.shape[0] // k + 1)[idx]  
+        h_item_v1 = self.h_item_v1.split(self.h_item_v1.shape[0] // k + 1)[idx]  #分为k+1个batch，这为第idx个batch
         h_item_v2 = self.h_item_v2.split(self.h_item_v2.shape[0] // k + 1)[idx]
         h_item_v1 = torch.nn.functional.normalize(h_item_v1, p=2, dim=1)
         h_item_v2 = torch.nn.functional.normalize(h_item_v2, p=2, dim=1)
@@ -1381,10 +1392,10 @@ class LightGCNP(nn.Module):
             fx = 1 - torch.tanh(beta * x - beta)
         return torch.unsqueeze(fx, 1)
 
-    def uniformity_loss(self, h_user):
-        x = h_user[torch.randint(len(h_user), (2000,))]  
-        x = F.normalize(x, dim=-1) 
-        result = torch.pdist(x, p=2).pow(2).mul(-2).exp().mean().log()  
+    def uniformity_loss(self, h_user):  #均匀性损失
+        x = h_user[torch.randint(len(h_user), (2000,))]  #随机生成2000个索引，选择h_user中对应元素
+        x = F.normalize(x, dim=-1)  #沿着最后一个维度归一化
+        result = torch.pdist(x, p=2).pow(2).mul(-2).exp().mean().log()  #torch.pdist(x,p=2)计算张量x中两两样本的欧几里得距离
         # print(result)
         # sys.exit()
         return 0.005 * result
@@ -1394,8 +1405,8 @@ class LightGCNP(nn.Module):
             # h['user'] = F.normalize(h['user'], dim=-1)
             # h['item'] = F.normalize(h['item'], dim=-1)
             sub_fig_feature = {'user': h['user'], 'item': h['item']}
-            pos_score = self.pred.alignment_forward(pos_g, sub_fig_feature)  
-            mf_loss = pos_score[('user', 'ui', 'item')].norm(p=2, dim=1).pow(2).mean() 
+            pos_score = self.pred.alignment_forward(pos_g, sub_fig_feature)  #边两端节点差值表示边对齐score
+            mf_loss = pos_score[('user', 'ui', 'item')].norm(p=2, dim=1).pow(2).mean()  #按行归一化，平方，求平均
             # mf_loss = nn.Softplus()(pos_score[('user', 'ui', 'item')]).mean()
         elif loss_type == 'infonce':
             ssl_temp = 1e9
@@ -1451,7 +1462,7 @@ class LightGCNP(nn.Module):
                                      self.item_embedding.norm(2).pow(2))
         else:
             regularizer = (1 / 2) * (self.user_embedding.norm(2).pow(2) +
-                                     self.item_embedding.norm(2).pow(2)) 
+                                     self.item_embedding.norm(2).pow(2))  #正则化项
         emb_loss = self.decay * regularizer
 
         # bpr_loss = self.ui_loss_alpha * mf_loss + emb_loss
@@ -1460,11 +1471,11 @@ class LightGCNP(nn.Module):
 
     '''TODO: bpr_loss for boughtTogether and ComparedTogether items link-prediction task'''
 
-    def alignment(self, x, y): 
+    def alignment(self, x, y):  #求x,y的对齐损失
         x, y = F.normalize(x, dim=-1), F.normalize(y, dim=-1)
         return (x - y).norm(p=2, dim=1).pow(2).mean()
 
-    def uniformity(self, x):  
+    def uniformity(self, x):  #求x的均匀性损失
         x = F.normalize(x, dim=-1)
         return torch.pdist(x, p=2).pow(2).mul(-2).exp().mean().log()
 
@@ -1507,11 +1518,11 @@ class LightGCNP(nn.Module):
             mf_loss = pos_score[(node_type, edge_dict[node_type], 'item')].norm(p=2, dim=1).pow(2).mean()
         else:
             sub_fig_feature = {node_type: h[node_type], 'item': h[item_dict[node_type]]}
-            pos_score = self.pred(pos_g, sub_fig_feature) 
+            pos_score = self.pred(pos_g, sub_fig_feature)  #用边两端向量内积表示score
             neg_score = self.pred(neg_g, sub_fig_feature)
             # pos_score = pos_score[(node_type, edge_dict[node_type], 'item')].repeat_interleave(self.neg_samples, dim=0)
             pos_score = pos_score[(node_type, edge_dict[node_type], 'item')].repeat_interleave(repeat_dict[node_type],
-                                                                                               dim=0)
+                                                                                               dim=0)  #将pos_score重复，调成与neg大小一样
             neg_score = neg_score[(node_type, edge_dict[node_type], 'item')]
             mf_loss = nn.Softplus()(neg_score - pos_score) #log(1+exp(x))
             mf_loss = mf_loss.mean()
@@ -1567,5 +1578,5 @@ class LightGCNP(nn.Module):
         bpr_loss = mf_loss + emb_loss
         return bpr_loss, mf_loss, emb_loss
 
-    def create_classify_loss(self, item_embedding, label):
+    def create_classify_loss(self, item_embedding, label): #j交叉熵损失，衡量模型输出与真实标签之间差异
         return F.cross_entropy(item_embedding, label, reduction='mean')

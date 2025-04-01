@@ -2,6 +2,7 @@ import random
 import sys
 
 import torch
+torch.cuda.empty_cache()
 import math
 import torch.optim as optim
 from utility.load_data import *
@@ -9,9 +10,11 @@ from utility.parser import *
 from utility.batch_test import *
 from utility.helper import early_stopping, random_batch_users, ensureDir, convert_dict_list, convert_list_str
 from baseline_models import *
+from model import LightGCNP
 from time import time
 import numpy as np
 import dgl
+USE_DETERMINISTIC_ALG=1 
 import os
 import json
 
@@ -25,17 +28,68 @@ def get_edges_induct(g, users_induct):
     # sys.exit()
     return idx.nonzero()[0]
 
+def partition_todevice(partition, device):
+    new_partition=[]
+    for i in range(len(partition)):
+        S = torch.LongTensor(partition[i][0]).to(device)
+        src = torch.LongTensor(partition[i][1]).to(device)
+        dst = torch.LongTensor(partition[i][2]).to(device)
+        new_partition.append([S,src,dst])
+    return tuple(partition)
 
-def main(args):
+    S1=torch.LongTensor(partition[0][0]).to(device)
+    src1=torch.LongTensor(partition[0][1]).to(device)
+    dst1=torch.LongTensor(partition[0][2]).to(device)
+
+    S2=torch.LongTensor(partition[1][0]).to(device)
+    src2=torch.LongTensor(partition[1][1]).to(device)
+    dst2=torch.LongTensor(partition[1][2]).to(device)
+
+    return ([S1,src1,dst1],[S2,src2,dst2])
+
+#create bigraph list of node and hyperedge for pooling
+def create_g_hyperedge_list(graph, etype_forward, etype_back, partition, device):
+    src_type, _, dst_type = etype_forward
+    g0=graph.node_type_subgraph([src_type, dst_type]) #create a subgraph with src_type and dst_type nodes
+    g_list=[g0]
+    for i in range(len(partition)):
+        data_dict={
+            etype_forward: (partition[i][1], partition[i][2]), #partition[][1] partition[][2]是新的二部图的src dst对
+            etype_back: (partition[i][2], partition[i][1]),
+        }
+        num_dict = {
+            src_type: max(partition[i][0])+1, dst_type: max(partition[i][2])+1,
+        }
+        g1=dgl.heterograph(data_dict, num_nodes_dict=num_dict).to(device)
+        g_list.append(g1)
+    return g_list
+#create bigraph list of node and comm for pooling
+def create_g_comm_list(partition, device):
+    g_list=[]
+    for i in range(len(partition)):
+        data_dict = {
+            ('node', 'nc', 'comm'): (list(range(len(partition[i][0]))), partition[i][0]),
+            ('comm', 'cn', 'node'): (partition[i][0], list(range(len(partition[i][0])))),  #partition[][0]为社区分配list
+        }
+        num_dict = {
+            'node': len(partition[i][0]), 'comm': max(partition[i][0])+1,
+        }
+        g_comm=dgl.heterograph(data_dict, num_nodes_dict=num_dict).to(device)
+        g_list.append(g_comm)
+    return g_list
+
+def train(args):
     # Step 1: Prepare graph data and device ================================================================= #
     if args.gpu >= 0 and torch.cuda.is_available():
         device = 'cuda:{}'.format(args.gpu)
     else:
         device = 'cpu'
+    #device = 'cpu'
+    print('device:', device)
     users_to_test = list(data_generator.test_set.keys())
     g = data_generator.g
-    r = 1/args.induct_ratio
     if args.inductive:
+        r = 1/args.induct_ratio
         original_g = g.to(device)
         users_induct = users_to_test[len(users_to_test) - math.ceil(len(users_to_test) // r):]
         users_non_induct = [u for u in list(range(data_generator.n_users)) if u not in users_induct]
@@ -79,10 +133,40 @@ def main(args):
     if args.classify_as_edge:
         pos_g_c2e_cate = construct_item_related_bigraph(g, 'cate')
         pos_g_c2e_rate = construct_item_related_bigraph(g, 'rate')
+    if args.se==1:
+        partition_dict={'ui':partition_todevice(data_generator.partition_ui, device),
+                        'iu':partition_todevice(data_generator.partition_iu, device),
+                        'ic':partition_todevice(data_generator.partition_ic, device),
+                        'ir':partition_todevice(data_generator.partition_ir, device),
+                        }
+        print('partition_ui:',len(partition_dict['ui'][0][0]),len(partition_dict['ui'][1][0]),len(partition_dict['ui'][2][0]),len(partition_dict['ui'][3][0]),len(partition_dict['ui'][4][0]),max(partition_dict['ui'][4][0])+1)
+        print('partition_iu:',len(partition_dict['iu'][0][0]),len(partition_dict['iu'][1][0]),len(partition_dict['iu'][2][0]),len(partition_dict['iu'][3][0]),len(partition_dict['iu'][4][0]),max(partition_dict['iu'][4][0])+1)
+        print('partition_ic:',len(partition_dict['ic'][0][0]),len(partition_dict['ic'][1][0]),len(partition_dict['ic'][2][0]),len(partition_dict['ic'][3][0]),len(partition_dict['ic'][4][0]),max(partition_dict['ic'][4][0])+1)
+        print('partition_ir:',len(partition_dict['ir'][0][0]),len(partition_dict['ir'][1][0]),len(partition_dict['ir'][2][0]),len(partition_dict['ir'][3][0]),len(partition_dict['ir'][4][0]),max(partition_dict['ir'][4][0])+1)
+        if args.dataset=='steam':
+            partition_dict.update({'ua': partition_todevice(data_generator.partition_ua, device), 'uj': partition_todevice(data_generator.partition_uj, device)})
+            print('partition_ua:',len(partition_dict['ua'][0][0]),len(partition_dict['ua'][1][0]),len(partition_dict['ua'][2][0]),len(partition_dict['ua'][3][0]),len(partition_dict['ua'][4][0]),max(partition_dict['ua'][4][0])+1)
+            print('partition_uj:',len(partition_dict['uj'][0][0]),len(partition_dict['uj'][1][0]),len(partition_dict['uj'][2][0]),len(partition_dict['uj'][3][0]),len(partition_dict['uj'][4][0]),max(partition_dict['uj'][4][0])+1)
+        else:
+            partition_dict.update({'ib': partition_todevice(data_generator.partition_ib, device), 'ip': partition_todevice(data_generator.partition_ip, device)})
+            print('partition_ib:',len(partition_dict['ib'][0][0]),len(partition_dict['ib'][1][0]),len(partition_dict['ib'][2][0]),len(partition_dict['ib'][3][0]),len(partition_dict['ib'][4][0]),max(partition_dict['ib'][4][0])+1)
+            print('partition_ip:',len(partition_dict['ip'][0][0]),len(partition_dict['ip'][1][0]),len(partition_dict['ip'][2][0]),len(partition_dict['ip'][3][0]),len(partition_dict['ip'][4][0]),max(partition_dict['ip'][4][0])+1)
+        
+        g_list_dict={'ui': create_g_hyperedge_list(g, ('user', 'ui', 'item'), ('item', 'iu', 'user'), partition_dict['ui'], device),
+                     'ic': create_g_hyperedge_list(g, ('item', 'ic', 'cate'), ('cate', 'ci', 'item'), partition_dict['ic'], device),
+                     'ir': create_g_hyperedge_list(g, ('item', 'ir', 'rate'), ('rate', 'ri', 'item'), partition_dict['ir'], device),
+        }
+        g_comm_list_dict={'ui': create_g_comm_list(partition_dict['ui'], device),
+                          'ic': create_g_comm_list(partition_dict['ic'], device),
+                          'ir': create_g_comm_list(partition_dict['ir'], device),
+        }
     if args.gat != 0:
         model = GAT(args, g, args.embed_size, 8, args.embed_size, device).to(device)
     else:
-        model = LightGCN(args, g, device).to(device)
+        if args.se == 1:
+            model = LightGCNP(args, g, device).to(device)
+        else:
+            model = LightGCN(args, g, device).to(device)
 
     t0 = time()
     cur_best_pre_0, stopping_step = 0, 0
@@ -106,8 +190,12 @@ def main(args):
             neg_g = construct_negative_graph(g, args.neg_samples, device=device)
             # trans_conv = True
             trans_conv = False if (args.gcc or args.sgl) else True
-            if args.sgl == 0:
+            if args.sgl == 0 and args.se == 0:
                 embedding_h = model(g, True, trans_conv)
+            if args.se == 1:
+                embedding_h = model(g, g_list_dict, g_comm_list_dict)  #根据g从初始的h中经过一轮训练到embedding_h
+            if args.se == -1:
+                embedding_h = model(g)
             bpr_loss = 0
             if args.sgl:
                 transform = dgl.DropEdge(p=0.1)
@@ -294,6 +382,7 @@ def main(args):
                     # if epoch == 99:
                     print('Pre-train stopped.')
                     break
+    model = LightGCN(args, g, device).to(device)
     optimizer = optim.Adam(model.parameters(), lr=args.lr)
     # print(embedding_h['user'],embedding_h['item'])
     # sys.exit()
@@ -313,7 +402,7 @@ def main(args):
             elif args.lightgcn == 2:
                 embedding_h = {}
                 embedding_h1 = model.lightgcn_forward(g)
-                embedding_h2 = model(g, pre_train=False, linear_transform=True)
+                embedding_h2 = model(g, pre_train=False, trans_conv=True)
                 embedding_h['user'] = embedding_h1['user'] + embedding_h2['user']
                 embedding_h['item'] = embedding_h1['item'] + embedding_h2['item']
             elif args.lightgcn == 3:
@@ -368,7 +457,7 @@ def main(args):
                 k=1
                 test_users = users_to_test[k*16384-8192:(k+1)*16384-8192]
                 if args.inductive:
-                    test_users_transduct = test_users_transduct[k*16384-8192:(k+1)*16384-8192]
+                    test_users_transduct = users_transduct[k*16384-8192:(k+1)*16384-8192]
             else:
                 test_users = users_to_test
                 if args.inductive:
@@ -505,6 +594,7 @@ def main(args):
         final_perf = "Best Iter=[%d]@[%.1f]\trecall=[%s], ndcg=[%s]" % \
                      (idx, time() - t0, '\t'.join(['%.5f' % r for r in recs[idx]]),
                       '\t'.join(['%.5f' % r for r in ndcgs[idx]]))
+        metric= [recs[idx][0], recs[idx][1], ndcgs[idx][0], ndcgs[idx][1] ]
         if args.inductive:
             final_perf += "\trecall_IN=[%s], ndcg_IN=[%s]" % \
                           ('\t'.join(['%.5f' % r for r in recs_induct[idx]]),
@@ -520,10 +610,10 @@ def main(args):
     f = open(save_path, 'a')
 
     f.write(
-        'se=%d, beta_pool=%.2f, random_seed=%d, inductive=%d, inductive_ratio=%.2f, top_k=%s, layer_pool=%s, batch_size=%d, norm=%.1f, multitask_train=%d, \n'
+        'se=%d, beta_pool=%.2f, random_seed=%d, inductive=%d, inductive_ratio=%.2f, top_k=%s, layer_num=%s, batch_size=%d, norm=%.1f, multitask_train=%d, \n'
         '\tpre_train=%d, loss=%s, finetune_loss=%s, hgcn=%d, lightgcn=%d, pre_train_task=%d, user_pretrain=%d, item_pretrain=%d, classify_as_edge=%d, \n'
-        '\tlr=%.4f, pre_lr=%.4f, att_conv=%d, hgcn_mix=%s, regs=%s\n\t--%s\n'
-        % (args.se, args.beta_pool, args.random_seed, args.inductive, args.induct_ratio, args.Ks, args.layer_pool, args.batch_size, args.norm_2, args.multitask_train,
+        '\tlr=%.5f, pre_lr=%.4f, att_conv=%d, hgcn_mix=%s, regs=%s\n\t--%s\n'
+        % (args.se, args.beta_pool, args.random_seed, args.inductive, args.induct_ratio, args.Ks, args.layer_num, args.batch_size, args.norm_2, args.multitask_train,
            args.pre_train, args.loss, args.finetune_loss, args.hgcn, args.lightgcn, args.pre_train_task, args.user_pretrain, args.item_pretrain, args.classify_as_edge,
            args.lr, args.pre_lr, args.att_conv, args.hgcn_mix, args.regs, final_perf))
     f.close()
@@ -544,35 +634,38 @@ def main(args):
                args.beta_group, args.beta_item,
                args.regs, final_perf))
         f_split.close()
-
+    return metric
 
 if __name__ == '__main__':
     args = parse_args()
-    args = parse_args()
+    args.inductive = 0
+    args.induct_ratio = 0.1
+
+    args.model_name = 'UPRTH+LightGCN'
+    args.random_seed = 189 #steam:188,cn:470,au:323,br:312,mx:189
+    args.pre_lr = 0.01
+    args.lr = 0.01
+    args.regs = '[0.8, 1e-7]' #steam:[0.7,1e-4],cn:[0.7,1e-7],au:[0.2,1e-7],br:[0.4,1e-5],mx:[0.8, 1e-7]
+    args.verbose = 2 #steam:1,xmrec:2
+    args.layer_num = 2
+    args.se = -1 #UPRHSE:1,UPRTH:-1,other:0
+    args.att_conv = 1 #UPRHSE:-1,other:1
+    args.beta_pool = 0.19  #steam:0.07,cn:0.25,br:0.79,au:0.95,mx:0.19
+    args.lightgcn = 1 #LightGCN/DirectAU/SGL:1; HCCF:2; DHCF:3; UltraGCN:4; HGNN/GCC/AttriMask:0
+    args.hgcn = 0 #LightGCN/DirectAU/UltraGCN/SGL:0; HGNN/HCCF/DHCF/Attrimask:1
+    args.pre_train = 0 #LightGCN/DirectAU/UltraGCN/HGNN/HCCF/DHCF:0; GCC/SGL/AttriMask:1
+    args.finetune_loss = 'bpr' #LightGCN/HGNN/HCCF/DHCF:bpr; DirectAU:auloss; UltraGCN:ultragcn
+    args.attrimask = 0
+    args.sgl = 0
+    args.gcc = 0
+
     random.seed(args.random_seed)
     np.random.seed(args.random_seed)
     torch.manual_seed(args.random_seed)
     torch.cuda.manual_seed(args.random_seed)
     torch.cuda.manual_seed_all(args.random_seed)
     torch.backends.cudnn.benchmark = False
-    torch.backends.cudnn.deterministic = True 
+    torch.backends.cudnn.deterministic = True #使得网络相同输入下每次运行的输出固定
     dgl.seed(args.random_seed)
-
-    args.model_name = 'AttriMask' #
-    args.random_seed=132
-    args.pre_lr=0.01
-    args.lr=0.05
-    args.regs='[0.7, 1e-4]'
-    args.verbose=1
-    args.layer_num=2
-    args.se=0
-    args.lightgcn=0 #LightGCN/DirectAU/SGL:1; HCCF:2; DHCF:3; UltraGCN:4; HGNN/GCC/AttriMask:0
-    args.hgcn=1 #LightGCN/DirectAU/UltraGCN:0; HGNN/HCCF:1
-    args.pre_train=1 #LightGCN/DirectAU/UltraGCN/HGNN/HCCF/DHCF:0; GCC/SGL/AttriMask:1
-    args.finetune_loss='bpr' #LightGCN/HGNN/HCCF/DHCF:bpr; DirectAU:auloss; UltraGCN:ultragcn
-    args.attrimask=1
-    args.sgl=0
-    args.gcc=0
-
     print(args)
-    main(args)
+    train(args)
