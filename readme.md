@@ -1,1 +1,1 @@
-EPRHSE@TOIS
+Enhanced Pre-training for Recommendation via Hypergraph Structural Entropy@TOIS
