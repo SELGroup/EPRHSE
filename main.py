@@ -320,7 +320,17 @@ def train(args):
                     # if epoch == 99:
                     print('Pre-train stopped.')
                     break
-                
+    
+    '''
+    #restore pretrained embedding
+    user_embedding = embedding_h['user']
+    item_embedding = embedding_h['item']
+    np.save("./saved_embedding/"+args.model_name+"_"+args.dataset+"_user.npy", user_embedding.cpu().detach().numpy())
+    np.save("./saved_embedding/"+args.model_name+"_"+args.dataset+"_item.npy", item_embedding.cpu().detach().numpy())
+    print('saved user/item embedding.')
+    '''
+
+
     optimizer = optim.Adam(model.parameters(), lr=args.lr)
     # print(embedding_h['user'],embedding_h['item'])
     # sys.exit()
@@ -429,6 +439,14 @@ def train(args):
             if should_stop == True:
                 break
             
+    
+    #restore final embedding
+    user_embedding = embedding_h['user']
+    item_embedding = embedding_h['item']
+    np.save("./saved_embedding/"+args.model_name+"_"+args.dataset+"_user_final.npy", user_embedding.cpu().detach().numpy())
+    np.save("./saved_embedding/"+args.model_name+"_"+args.dataset+"_item_final.npy", item_embedding.cpu().detach().numpy())
+    print('saved user/item final embedding.')
+    
 
     '''
     if args.train_curve:
@@ -487,8 +505,6 @@ def train(args):
         ndcg20 = ndcgs[:,1]
         data_curve = np.column_stack((recs10, recs20, ndcg10, ndcg20))
         np.savetxt('./curve/%s_%s.txt' % (args.dataset, args.model_name), data_curve, fmt='%.5f', delimiter=',')
-
-
 
 
     if args.inductive:
@@ -553,9 +569,9 @@ if __name__ == '__main__':
     args = parse_args()
     args.train_curve = 0
     if args.dataset == 'xmrec_br':  
-        args.model_name = 'EPRHSE'
-        args.se = 1  #1:UPRHSE, 0:UPRTH
-        args.att_conv = -1  #-1: w/o TA; 1: TA; 0: sum; 2: cat
+        args.model_name = 'UPRTH'
+        args.se = 0  #1:EPRHSE, 0:UPRTH
+        args.att_conv = 1  #-1: w/o TA; 1: TA; 0: sum; 2: cat
         args.random_seed=312
         args.beta_pool=0.79
         args.hgcn_mix='[5, 1e-3]'
@@ -565,22 +581,22 @@ if __name__ == '__main__':
         args.verbose=2
         args.layer_num=2
     elif args.dataset == 'xmrec_cn':
-        args.model_name = 'UPRTH'
-        args.se = 0  #1:UPRHSE, 0:UPRTH
-        args.att_conv = 1  #-1: w/o TA; 1: TA; 0: sum; 2: cat
-        args.random_seed=440
-        args.beta_pool=0.17
+        args.model_name = 'EPRHSE'
+        args.se = 1  #1:EPRHSE, 0:UPRTH
+        args.att_conv = -1  #-1: w/o TA; 1: TA; 0: sum; 2: cat
+        args.random_seed=470
+        args.beta_pool=0.25
         args.hgcn_mix='[2, 1e-3]'
         args.pre_lr=0.05
         args.lr=0.005
-        args.regs='[0.6, 1e-7]'       
+        args.regs='[0.7, 1e-7]'
         args.verbose=2
         args.layer_num=2
     elif args.dataset == 'xmrec_au':
-        args.model_name = 'UPRTH'
-        args.se = 0  #1:UPRHSE, 0:UPRTH
-        args.att_conv = 1  #-1: w/o TA; 1: TA; 0: sum; 2: cat
-        args.random_seed=323
+        args.model_name = 'EPRHSE'
+        args.se = 1  #1:EPRHSE, 0:UPRTH
+        args.att_conv = -1  #-1: w/o TA; 1: TA; 0: sum; 2: cat
+        args.random_seed=323 #323
         args.beta_pool=0.95
         args.hgcn_mix='[5, 1e-5]'
         args.pre_lr=0.005
@@ -589,17 +605,17 @@ if __name__ == '__main__':
         args.verbose=2
         args.layer_num=2
     elif args.dataset == 'steam':
-        args.model_name = 'UPRTH'
-        args.se = 0  #1:UPRHSE, 0:UPRTH
-        args.att_conv = 1  #-1: w/o TA; 1: TA; 0: sum; 2: cat
-        args.random_seed=188
+        args.model_name = 'EPRHSE'
+        args.se = 1  #1:EPRHSE, 0:UPRTH
+        args.att_conv = -1  #-1: w/o TA; 1: TA; 0: sum; 2: cat
+        args.random_seed=188   #188
         args.beta_pool=0.07
         args.hgcn_mix='[14, 1e-1]'
         args.pre_lr=0.01
         args.lr=0.1
         args.regs='[0.7, 1e-4]'       
         args.verbose=1
-        args.layer_num=2
+        args.layer_num=3
     elif args.dataset == 'xmrec_mx':
         args.model_name = 'UPRTH'
         args.se = 0  #1:UPRHSE, 0:UPRTH
@@ -611,8 +627,10 @@ if __name__ == '__main__':
         args.lr=0.01
         args.regs='[0.8, 1e-7]'           
         args.verbose=2
-        args.layer_num=2
+        args.layer_num=3
     
+
+
     random.seed(args.random_seed)
     np.random.seed(args.random_seed)
     torch.manual_seed(args.random_seed)

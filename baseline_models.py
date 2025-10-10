@@ -282,7 +282,99 @@ class HGCNLayer_general(nn.Module):
 
             return bsrc, rst
 
+class SEP(nn.Module):
+    def __init__(self, dim):
+        super().__init__()
+        self.dim=dim
+        self.nn = nn.Sequential(
+            #nn.Linear(dim, dim),
+            nn.ReLU(),
+            #nn.BatchNorm1d(dim),
+        )
+    
+    def forward(self, graph, h, etype_forward, norm_2=-1):
+        with graph.local_scope():
+            src, _, dst = etype_forward  #节点类型
+            feat_src = h
+            feat_dst = torch.empty((graph.nodes(dst).shape[0], self.dim), requires_grad=False)
+            #消息函数
+            aggregate_fn = fn.copy_u('h', 'm')
+            graph.nodes[src].data['h'] = feat_src
+            #聚合函数
+            reduce_fn = fn.sum(msg='m', out='h')
+            #更新函数
+            graph.update_all(aggregate_fn,reduce_fn,etype=etype_forward)
 
+            rst = graph.nodes[dst].data['h']
+            #归一化
+            in_degrees = graph.in_degrees(etype=etype_forward).float().clamp(min=1) #etype_forward边类型下节点入度
+            norm_dst = torch.pow(in_degrees, norm_2)
+            shp_dst = norm_dst.shape + (1,) * (feat_dst.dim() - 1)
+            norm = torch.reshape(norm_dst, shp_dst)
+            rst = rst * norm
+
+            return self.nn(rst)  #是否需要激活函数？
+        
+class SEP_U(torch.nn.Module):
+    def __init__(self, embed_size, beta, device, num_blocks=2):
+        super(SEP_U, self).__init__()
+        self.dim = embed_size  
+        self.num_blocks=num_blocks
+        self.HGCN = HGCNLayer()
+        self.HGCNLayers = self.get_HGCNs()  #一个还是多个HGCNLayer？
+        self.sep = SEP(self.dim)
+        self.sepools = self.get_sepool()  #一个还是多个SEP？
+        self.device=device
+        self.fc = nn.Linear(2*embed_size,embed_size)
+        self.beta = beta
+
+    def get_HGCNs(self):
+        HGCNs = nn.ModuleList()  #管理模型层的容器
+        for _ in range(self.num_blocks*2 + 1):
+            hgcn = HGCNLayer()
+            HGCNs.append(hgcn)
+        return HGCNs
+    
+    def get_sepool(self):
+        pools = nn.ModuleList()  #管理模型层的容器
+        for _ in range(self.num_blocks*2):
+            '''
+            pool = SEPooling(
+                nn.Sequential(
+                    #nn.Linear(self.dim, self.dim),
+                    nn.ReLU(),
+                    #nn.BatchNorm1d(self.dim),
+                ))
+            '''
+            pool = SEP(self.dim)
+            pools.append(pool)
+        return pools
+
+    def forward(self, g_list, g_comm_list, h0, etype_forward, etype_back, norm_2):
+        h_save=[]
+        src_type, _, dst_type = etype_forward
+        h=h0
+        #down sampling
+        for _ in range(self.num_blocks): #_取0,1
+            #HGCN
+            h_src, h_dst = self.HGCN(g_list[_], h, etype_forward, etype_back, norm_2)
+            h_save.append(h_src)
+            #SEP
+            h_src = self.sep(g_comm_list[_], h_src, ('node', 'nc', 'comm'))
+            h={src_type: h_src, dst_type + '_edge': h_dst}
+        #up sampling
+        for _ in range(self.num_blocks,0,-1): #_取2，1
+            #HGCN
+            h_src, h_dst=self.HGCN(g_list[_], h, etype_forward, etype_back, norm_2)
+            #SEP-U
+            h_src = self.sep(g_comm_list[_-1], h_src, ('comm', 'cn', 'node'))
+            h_src=h_src+self.beta*h_save[_-1]
+            h={src_type: h_src, dst_type + '_edge': h_dst}
+        #last HGCN
+        h_src, h_dst=self.HGCN(g_list[0], h, etype_forward, etype_back, norm_2)
+
+        return h_src, h_dst
+    
 def prompt_cat(node_embedding, prompt_embedding, n_node):
     return torch.cat((prompt_embedding.expand(n_node, -1), node_embedding), dim=1)
 
@@ -451,6 +543,7 @@ class GAT(nn.Module):
 class LightGCN(nn.Module):
     def __init__(self, args, graph, device):
         super().__init__()
+        self.pool_beta = args.beta_pool
         self.hid_dim = args.embed_size
         self.layer_num = args.layer_num
         self.device = device
@@ -523,6 +616,7 @@ class LightGCN(nn.Module):
 
     def build_model(self):
         self.HGCNlayer = HGCNLayer()
+        self.SEP_U = SEP_U(embed_size=self.hid_dim, beta=self.pool_beta, device=self.device, num_blocks=self.layer_num)  #一个SEP_U层
         self.HGCNlayer_general = HGCNLayer_general()
         self.layers = nn.ModuleList()
         self.LGCNlayer = LightGCNLayer()
@@ -582,6 +676,115 @@ class LightGCN(nn.Module):
         h_item, _ = self.HGCNlayer(g_i, h, ('item', 'iu', 'user'), ('user', 'ui', 'item'))
         item_embed=self.linear(h_item+item_embed)
         h = {'user': user_embed, 'item': item_embed}
+        return h
+    
+    def se_forward(self, graph, g_list, g_comm_list, pre_train=True):
+        h = self.node_features
+        norm = self.norm_2
+        if self.hgcn:
+            #没有pretrain信息融入的HGCNlayer变为SEP_U(graph, h0, etype_forward, etype_back, norm_2)
+            #h_user, _ = self.HGCNlayer(graph, h, ('user', 'ui', 'item'), ('item', 'iu', 'user'), norm)
+            h_user, _ = self.SEP_U(g_list['ui'], g_comm_list['ui'], h, ('user', 'ui', 'item'), ('item', 'iu', 'user'), norm)
+            h_item, _ = self.HGCNlayer(graph, h, ('item', 'iu', 'user'), ('user', 'ui', 'item'), norm)
+            #h_item, _ = self.SEP_U(partition['i'], graph, h, ('item', 'iu', 'user'), ('user', 'ui', 'item'), norm)
+
+            if pre_train:
+                if self.classify_as_edge:
+                    h_item_cate, h_cate_idx = self.SEP_U(g_list['ic'], g_comm_list['ic'], h, ('item', 'ic', 'cate'), ('cate', 'ci', 'item'),
+                                                             norm)
+                    h_item_rate, h_rate_idx = self.SEP_U(g_list['ir'], g_comm_list['ir'], h, ('item', 'ir', 'rate'), ('rate', 'ri', 'item'),
+                                                             norm)
+                else:
+                    h_item_cate, _ = self.SEP_U(g_list['ic'], g_comm_list['ic'], h, ('item', 'ic', 'cate'), ('cate', 'ci', 'item'), norm)
+                    h_item_rate, _ = self.SEP_U(g_list['ir'], g_comm_list['ir'], h, ('item', 'ir', 'rate'), ('rate', 'ri', 'item'), norm)
+                    h_item_cate = F.softmax(self.cate_fc(h_item_cate), dim=1)
+                    h_item_rate = F.softmax(self.rate_fc(h_item_rate), dim=1)
+                if 'xmrec' in self.dataset:
+                    h_item_bT, h_bT_idx = self.HGCNlayer(graph, h, ('item', 'ib', 'bT_idx'), ('bT_idx', 'bi', 'item'),
+                                                         norm)
+                    h_item_cpr, h_cpr_idx = self.HGCNlayer(graph, h, ('item', 'ip', 'cpr_idx'),
+                                                           ('cpr_idx', 'pi', 'item'),
+                                                           norm)
+                if 'steam' in self.dataset:
+                    h_user_age, h_age_idx = self.HGCNlayer(graph, h, ('user', 'ua', 'age'), ('age', 'au', 'user'), norm)
+                    #h_user_age, h_age_idx = self.SEP_U(partition['u'], graph, h, ('user', 'ua', 'age'), ('age', 'au', 'user'), norm)
+                    h_user_job, h_job_idx = self.HGCNlayer(graph, h, ('user', 'uj', 'job'), ('job', 'ju', 'user'), norm)
+                    #h_user_job, h_job_idx = self.SEP_U(partition['u'], graph, h, ('user', 'uj', 'job'), ('job', 'ju', 'user'), norm)
+            else:
+                h_item_cate, h_item_rate, h_item_bT, h_item_cpr, h_user_age, h_user_job, h_bT_idx, h_cpr_idx, h_cate_idx, h_rate_idx, h_age_idx, h_job_idx = [], [], [], [], [], [], [], [], [], [], [], []
+            if self.classify_as_edge:
+                if 'xmrec' in self.dataset:
+                    h = {'user': h_user, 'item': h_item, 'item_cate': h_item_cate, 'item_rate': h_item_rate,
+                         'item_bT': h_item_bT, 'item_cpr': h_item_cpr, 'cate': h_cate_idx, 'rate': h_rate_idx,
+                         'bT_idx': h_bT_idx, 'cpr_idx': h_cpr_idx}
+                else:
+                    h = {'user': h_user, 'item': h_item, 'item_cate': h_item_cate, 'item_rate': h_item_rate,
+                         'user_age': h_user_age, 'user_job': h_user_job, 'cate': h_cate_idx, 'rate': h_rate_idx,
+                         'age': h_age_idx, 'job': h_job_idx}
+            else:
+                if 'xmrec' in self.dataset:
+                    h = {'user': h_user, 'item': h_item, 'item_cate': h_item_cate, 'item_rate': h_item_rate,
+                         'item_bT': h_item_bT, 'item_cpr': h_item_cpr, 'bT_idx': h_bT_idx, 'cpr_idx': h_cpr_idx}
+                else:
+                    h = {'user': h_user, 'item': h_item, 'item_cate': h_item_cate, 'item_rate': h_item_rate,
+                         'user_age': h_user_age, 'user_job': h_user_job, 'age': h_age_idx, 'job': h_job_idx}
+        '''Transitional HyperConv'''
+        #预训练融合部分不加图池化
+        if pre_train and self.att_conv!=-1:
+            '''TODO: xmrec_cn and steam - finetune transition strength'''
+            h['item_edge'], h['user_edge'] = self.item_hyperedge, self.user_hyperedge
+            if 'xmrec' in self.dataset:
+                if self.att_conv == 0:
+                    h_user_v2, _ = self.HGCNlayer(graph, h, ('user', 'ui', 'item'), ('item', 'iu', 'user'), -1,
+                                                  self.trans_alpha,
+                                                  h_item_cate + h_item_rate + h_item_bT + h_item_cpr, detach=True)
+                elif self.att_conv == 2:
+                    h_user_v2, _ = self.HGCNlayer(graph, h, ('user', 'ui', 'item'), ('item', 'iu', 'user'), -1,
+                                                  self.trans_alpha, torch.cat((h_item_cate, h_item_rate,h_item_bT,h_item_cpr), dim=1),
+                                                  detach=True,att=self.att_conv)
+                else:
+                    h_user_v2, _ = self.HGCNlayer(graph, h, ('user', 'ui', 'item'), ('item', 'iu', 'user'), -1,
+                                                  self.trans_alpha,
+                                                  torch.cat(
+                                                      (torch.unsqueeze(h_item_cate, 1), torch.unsqueeze(h_item_rate, 1),
+                                                       torch.unsqueeze(h_item_bT, 1), torch.unsqueeze(h_item_cpr, 1)
+                                                       ),
+                                                      dim=1), detach=True, att=self.att_conv)  #经过torch.unsqueeze后n*1*d矩阵，再cat后，是n*4*d矩阵
+            elif 'steam' in self.dataset:
+                if self.att_conv == 0:
+                    h_user_v2, _ = self.HGCNlayer(graph, h, ('user', 'ui', 'item'), ('item', 'iu', 'user'), -1,
+                                                  self.trans_alpha, h_item_cate + h_item_rate, detach=True)
+                    h_item_v2, _ = self.HGCNlayer(graph, h, ('item', 'iu', 'user'), ('user', 'ui', 'item'), -1,
+                                                  self.trans_alpha, h_user_age + h_user_job, detach=True)
+                elif self.att_conv == 2:
+                    h_user_v2, _ = self.HGCNlayer(graph, h, ('user', 'ui', 'item'), ('item', 'iu', 'user'), -1,
+                                                  self.trans_alpha, torch.cat((h_item_cate,h_item_rate),dim=1), detach=True,att=self.att_conv)
+                    h_item_v2, _ = self.HGCNlayer(graph, h, ('item', 'iu', 'user'), ('user', 'ui', 'item'), -1,
+                                                  self.trans_alpha, torch.cat((h_user_age,h_user_job),dim=1), detach=True,att=self.att_conv)
+                else:
+                    h_user_v2, _ = self.HGCNlayer(graph, h, ('user', 'ui', 'item'), ('item', 'iu', 'user'), -1,
+                                                  self.trans_alpha,
+                                                  torch.cat(
+                                                      (
+                                                      torch.unsqueeze(h_item_cate, 1), torch.unsqueeze(h_item_rate, 1)),
+                                                      dim=1), detach=True, att=self.att_conv)
+                    h_item_v2, _ = self.HGCNlayer(graph, h, ('item', 'iu', 'user'), ('user', 'ui', 'item'), -1,
+                                                  self.trans_alpha,
+                                                  torch.cat(
+                                                      (torch.unsqueeze(h_user_age, 1), torch.unsqueeze(h_user_job, 1)),
+                                                      dim=1), detach=True, att=self.att_conv)
+            if 'xmrec' in self.dataset:
+                h_user = h_user + self.resid_beta * h_user_v2
+                h = {'user': h_user, 'item': h_item, 'item_cate': h_item_cate, 'item_rate': h_item_rate,
+                     'item_bT': h_item_bT, 'item_cpr': h_item_cpr, 'cate': h_cate_idx, 'rate': h_rate_idx,
+                     'bT_idx': h_bT_idx, 'cpr_idx': h_cpr_idx}
+            else:
+                h_user = h_user + self.resid_beta * h_user_v2
+                h_item = h_item + self.resid_beta * h_item_v2
+                h = {'user': h_user, 'item': h_item, 'item_cate': h_item_cate,
+                     'item_rate': h_item_rate,
+                     'user_age': h_user_age, 'user_job': h_user_job, 'cate': h_cate_idx, 'rate': h_rate_idx,
+                     'age': h_age_idx, 'job': h_job_idx}
         return h
     
     def forward(self, graph, pre_train=True, trans_conv=True):

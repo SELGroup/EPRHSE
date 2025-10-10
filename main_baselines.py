@@ -10,7 +10,6 @@ from utility.parser import *
 from utility.batch_test import *
 from utility.helper import early_stopping, random_batch_users, ensureDir, convert_dict_list, convert_list_str
 from baseline_models import *
-from model import LightGCNP
 from time import time
 import numpy as np
 import dgl
@@ -164,7 +163,7 @@ def train(args):
         model = GAT(args, g, args.embed_size, 8, args.embed_size, device).to(device)
     else:
         if args.se == 1:
-            model = LightGCNP(args, g, device).to(device)
+            model = LightGCN(args, g, device).to(device)
         else:
             model = LightGCN(args, g, device).to(device)
 
@@ -193,7 +192,7 @@ def train(args):
             if args.sgl == 0 and args.se == 0:
                 embedding_h = model(g, True, trans_conv)
             if args.se == 1:
-                embedding_h = model(g, g_list_dict, g_comm_list_dict)  #根据g从初始的h中经过一轮训练到embedding_h
+                embedding_h = model.se_forward(g, g_list_dict, g_comm_list_dict)  #根据g从初始的h中经过一轮训练到embedding_h
             if args.se == -1:
                 embedding_h = model(g)
             bpr_loss = 0
@@ -385,8 +384,15 @@ def train(args):
                     # if epoch == 99:
                     print('Pre-train stopped.')
                     break
-                
-    model = LightGCN(args, g, device).to(device)
+    
+    #restore pre embedding
+    user_embedding = embedding_h['user']
+    item_embedding = embedding_h['item']
+    np.save("./saved_embedding/"+args.model_name+"_"+args.dataset+"_user.npy", user_embedding.cpu().detach().numpy())
+    np.save("./saved_embedding/"+args.model_name+"_"+args.dataset+"_item.npy", item_embedding.cpu().detach().numpy())
+    print('saved user/item pre embedding.')
+
+    #model = LightGCN(args, g, device).to(device)
     optimizer = optim.Adam(model.parameters(), lr=args.lr)
     # print(embedding_h['user'],embedding_h['item'])
     # sys.exit()
@@ -417,7 +423,7 @@ def train(args):
                 embedding_h = model.ultragcn_forward()
                 args.finetune_loss = 'ultragcn'
             else:
-                embedding_h = model(g, pre_train=False)
+                embedding_h = model.forward(g, pre_train=False)
             #print(embedding_h['user'].shape, embedding_h['item'].shape)
             #sys.exit()
             if args.inductive:
@@ -556,6 +562,13 @@ def train(args):
         with open(ndcg_20_path, 'w') as ndcg_20_file:
             ndcg_20_file.write(ndcg_20_data)
     '''
+    #restore final embedding
+    user_embedding = embedding_h['user']
+    item_embedding = embedding_h['item']
+    np.save("./saved_embedding/"+args.model_name+"_"+args.dataset+"_user_final.npy", user_embedding.cpu().detach().numpy())
+    np.save("./saved_embedding/"+args.model_name+"_"+args.dataset+"_item_final.npy", item_embedding.cpu().detach().numpy())
+    print('saved user/item final embedding.')
+
     # print(embedding_h['user'],embedding_h['item'])
     # sys.exit()
     if args.save_flag == 1:
@@ -651,33 +664,45 @@ if __name__ == '__main__':
     args = parse_args()
     args.inductive = 0
     args.induct_ratio = 0.1
-    args.train_curve = 1
+    args.train_curve = 0
 
-    args.model_name = 'SGL'
-    args.random_seed = 312 #steam:188,cn:470,au:323,br:312,mx:189
-    args.pre_lr = 0.01
-    args.lr = 0.1
-    args.regs = '[0.4, 1e-5]' #steam:[0.7,1e-4],cn:[0.7,1e-7],au:[0.2,1e-7],br:[0.4,1e-5],mx:[0.8, 1e-7]
+    args.model_name = 'AttriMask'
+    args.random_seed = 189 #steam:188,cn:470,au:323,br:312,mx:189
+    args.pre_lr = 0.01  #stean_se:0.01,cn_se:0.05,mx_se:0.01,au_se:0.005,br_se:0.1
+    args.lr = 0.01
+    #LightGCN:br:0.005,au:0.01,mx:0.001,cn:0.001,steam:0.1
+    #DirectAU:br:0.005,au:0.01,mx:0.01,cn:0.005,steam:0.01
+    #UltraGCN:br:0.001,au:0.001,mx:0.005,cn:0.001,steam:0.005
+    #HGNN:br:0.005,au:0.01,mx:0.05,cn:0.005,steam:0.005
+    #HCCF:br:0.005,au:0.005,mx:0.01,cn:0.005,steam:
+    #DHCF:br:0.001,au:0.001,mx:0.005,cn:0.001,steam:0.001
+    args.hgcn_mix='[1,1e-1]' #steam:[14,1e-1],cn_se:[2,1e-3],mx_se:[1,1e-1],au_se:[5,1e-5],br_se:[5, 1e-3]
+    args.regs = '[0.8,1e-47]' #steam:[0.7,1e-4],cn:[0.7,1e-7],au:[0.2,1e-7],br:[0.4,1e-5],mx:[0.8, 1e-7]
     args.verbose = 2 #steam:1,xmrec:2
     args.layer_num = 2
     args.se = 0 #UPRHSE:1,UPRTH:-1,other:0
     args.att_conv = 1 #UPRHSE:-1,other:1
-    args.beta_pool = 0.79  #steam:0.07,cn:0.25,br:0.79,au:0.95,mx:0.19
-    args.lightgcn = 1 #LightGCN/DirectAU/SGL:1; HCCF:2; DHCF:3; UltraGCN:4; HGNN/GCC/AttriMask:0
-    args.hgcn = 0 #LightGCN/DirectAU/UltraGCN/SGL:0; HGNN/HCCF/DHCF/GCC/AttriMask:1
+    args.beta_pool = 0.19  #steam:0.07,cn:0.25,br:0.79,au:0.95,mx:0.19
+    args.lightgcn = 0 #LightGCN/DirectAU/SGL:1; HCCF:2; DHCF:3; UltraGCN:4; HGNN/GCC/AttriMask:0
+    args.hgcn = 1 #LightGCN/DirectAU/UltraGCN/SGL:0; HGNN/HCCF/DHCF/GCC/AttriMask:1
     args.pre_train = 1 #LightGCN/DirectAU/UltraGCN/HGNN/HCCF/DHCF:0; GCC/SGL/AttriMask:1
     args.finetune_loss = 'bpr' #LightGCN/HGNN/HCCF/DHCF:bpr; DirectAU:auloss; UltraGCN:ultragcn
-    args.attrimask = 0
-    args.sgl = 1
+    args.attrimask = 1
+    args.sgl = 0
     args.gcc = 0
 
-    random.seed(args.random_seed)
-    np.random.seed(args.random_seed)
-    torch.manual_seed(args.random_seed)
-    torch.cuda.manual_seed(args.random_seed)
-    torch.cuda.manual_seed_all(args.random_seed)
-    torch.backends.cudnn.benchmark = False
-    torch.backends.cudnn.deterministic = True #使得网络相同输入下每次运行的输出固定
-    dgl.seed(args.random_seed)
-    print(args)
-    train(args)
+
+
+    for seed in [188]:
+        args.random_seed = seed
+
+        random.seed(args.random_seed)
+        np.random.seed(args.random_seed)
+        torch.manual_seed(args.random_seed)
+        torch.cuda.manual_seed(args.random_seed)
+        torch.cuda.manual_seed_all(args.random_seed)
+        torch.backends.cudnn.benchmark = False
+        torch.backends.cudnn.deterministic = True #使得网络相同输入下每次运行的输出固定
+        dgl.seed(args.random_seed)
+        print(args)
+        train(args)
